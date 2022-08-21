@@ -8,7 +8,6 @@ Django==3.2.15
 django-allauth==0.51.0
 idna==3.3
 oauthlib==3.2.0
-pkg_resources==0.0.0
 pycparser==2.21
 PyJWT==2.4.0
 python3-openid==3.2.0
@@ -20,3 +19,4 @@ setuptools-rust==1.1.2
 sqlparse==0.4.2
 typing_extensions==4.1.1
 urllib3==1.26.11
+psycopg
