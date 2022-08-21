@@ -6,4 +6,5 @@ from login.views import login
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', login),
+
 ]
