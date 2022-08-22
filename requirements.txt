@@ -18,9 +18,6 @@ semantic-version==2.10.0
 setuptools-rust==1.1.2
 sqlparse==0.4.2
 typing_extensions==4.1.1
-<<<<<<< HEAD
 urllib3==1.26.11
 psycopg2-binary
-=======
-urllib3==1.26.11
->>>>>>> 8c441274e7b47597087f496a6ac99ce1a7674392
+django-crispy-forms
