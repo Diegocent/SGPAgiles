@@ -29,11 +29,8 @@ INSTALLED_APPS = [
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-<<<<<<< HEAD
     'allauth.socialaccount.providers.google',
     'crispy_forms',
-=======
->>>>>>> 8c441274e7b47597087f496a6ac99ce1a7674392
 ]
 SITE_ID = 1
 
@@ -78,21 +75,12 @@ WSGI_APPLICATION = 'SGPAgiles.wsgi.application'
 # }
 DATABASES = {
     'default': {
-<<<<<<< HEAD
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'is2sgpa',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
         'HOST': 'djangoproject.localhost',
         'PORT': '5432',
-=======
-        'ENGINE ': 'django.db.backends.postgresql',
-        'NAME': 'is2SGPA',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432'
->>>>>>> 8c441274e7b47597087f496a6ac99ce1a7674392
     }
 }
 
