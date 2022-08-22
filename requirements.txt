@@ -19,4 +19,4 @@ setuptools-rust==1.1.2
 sqlparse==0.4.2
 typing_extensions==4.1.1
 urllib3==1.26.11
-psycopg
+psycopg2-binary
