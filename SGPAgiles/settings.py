@@ -79,7 +79,7 @@ DATABASES = {
         'NAME': 'is2sgpa',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'djangoproject.localhost',
+        'HOST': 'postgres',
         'PORT': '5432',
     }
 }
