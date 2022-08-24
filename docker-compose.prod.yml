@@ -13,13 +13,13 @@ services:
     volumes: 
       - postgres:/var/lib/postgresql/data
     networks:
-      is2:
+      prueba:
         aliases:
           - postgres
   django-apache2:
     build: .
     container_name: django-deployment
-    command:  bash -c "pip install -r requirements.txt && python3 manage.py migrate && python3 manage.py runserver 127.0.0.1:8000"
+    command:  bash -c "pip install -r requirements.txt && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
     ports:
       - '8005:80'
       - '3501:3500'
@@ -28,9 +28,9 @@ services:
     env_file:
       - .env
     volumes: 
-      - .:/usr/src/app/
+      - $PWD/www:/var/www/html
     networks:
-      is2:
+      prueba:
         aliases:
           - django
     depends_on:
@@ -42,4 +42,4 @@ volumes:
   postgres:
     driver: local
 networks:
-  is2:
+  prueba:
