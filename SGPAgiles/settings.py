@@ -9,11 +9,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '2f@csb63@jsi5b^%5n0oo&xjxgu*176a)z1fz3_@ybu4_l40(6'
 
-ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(" ")
+ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-
-ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -69,17 +67,17 @@ WSGI_APPLICATION = 'SGPAgiles.wsgi.application'
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'is2sgpa',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'postgres',
+        'HOST': os.environ.get("POSTGRES_HOST"),
         'PORT': '5432',
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
@@ -116,6 +114,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
@@ -133,10 +132,6 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {
             'access_type': 'online',
         },
-        'APP': {
-            'client_id': os.environ.get("GOOGLE_CLIENT_ID"),
-            'secret': os.environ.get("GOOGLE_CLIENT_SECRET"),
-        }
     }
 }
 
@@ -144,7 +139,7 @@ SOCIALACCOUNT_PROVIDERS = {
 # Provider specific settings
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-SITE_ID = 2
+SITE_ID = 1
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'

@@ -8,5 +8,9 @@ RUN ln /usr/bin/python3.9 /usr/bin/python
 RUN apt-get -y install python3-pip
 RUN ln -sf /usr/bin/pip3 /usr/bin/pip
 RUN pip install --upgrade pip
-COPY . .
+COPY . /usr/src/is2/
+COPY ./apache-confs/SGPAgiles.conf /etc/apache2/sites-available
+WORKDIR /etc/apache2/sites-available
+RUN a2ensite SGPAgiles.conf
+WORKDIR /usr/src/is2
 ENV PYTHONUNBUFFERED 1
