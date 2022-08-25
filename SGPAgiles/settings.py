@@ -9,7 +9,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '2f@csb63@jsi5b^%5n0oo&xjxgu*176a)z1fz3_@ybu4_l40(6'
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "sgpagiles.localhost", "super.fake.py"]
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
