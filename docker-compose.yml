@@ -25,7 +25,7 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/usr/src/app/
+      - .:/usr/src/is2/
     networks:
       is2:
         aliases:
