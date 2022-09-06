@@ -21,4 +21,4 @@ typing_extensions==4.1.1
 urllib3==1.26.11
 psycopg2-binary
 django-crispy-forms
-pytest
+pytest-django
