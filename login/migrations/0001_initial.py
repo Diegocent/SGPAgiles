@@ -2,12 +2,14 @@
 
 from django.db import migrations
 
+
 def llenar_aplicacion_social(apps, schema_editor):
     Social = apps.get_model('socialaccount', 'SocialApp')
     Sitio = apps.get_model('sites', 'Site')
     sitiocreado = Sitio.objects.create(domain="127.0.0.1:8000",name='127.0.0.1:8000')
     appsocial = Social.objects.create(provider="google", name="Google", client_id="242966506793-k6sheufi3jmm593app1vki34fq2oppis.apps.googleusercontent.com", secret = "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")
     appsocial.sites.add(sitiocreado)
+
 
 class Migration(migrations.Migration):
 

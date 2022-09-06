@@ -23,15 +23,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'login',
+    'Usuario',
     'django.contrib.sites',
-
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'crispy_forms',
 ]
+
 SITE_ID = 1
+AUTH_USER_MODEL = 'Usuario.Usuario'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -66,7 +68,7 @@ WSGI_APPLICATION = 'SGPAgiles.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 DATABASES = {
     'default': {
@@ -139,7 +141,11 @@ SOCIALACCOUNT_PROVIDERS = {
 # Provider specific settings
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-SITE_ID = 1
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
