@@ -18,12 +18,12 @@ class RolProyecto(models.Model):
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     permisos = models.ManyToManyField(Permisos)
-    # proyecto = models.ForeignKey()
+    proyecto = models.ForeignKey("proyecto.Proyecto", on_delete=models.CASCADE)
 
 
 # Create your models here.
 class Usuario(AbstractBaseUser):
-
+    nombre = models.CharField(max_length=100, default="desconocido")
     username = None
     password = None
     email = models.EmailField(unique=True)
