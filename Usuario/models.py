@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from .managers import CustomUserManager
@@ -38,3 +39,10 @@ class Usuario(AbstractBaseUser):
 
     class Meta:
         db_table = 'usuario_custom_sgpa'
+
+    def es_admin(self):
+        try:
+            admin = self.rolSistema.get(name="admin")
+            return True
+        except ObjectDoesNotExist:
+            return False

@@ -1,4 +1,4 @@
-from Usuario.models import Usuario
+from Usuario.models import Usuario, RolSistema
 import pytest
 
 
@@ -15,3 +15,11 @@ def test_crear_usuario():
     Usuario.objects.create_user("prueba@a.a")
     usuarios = Usuario.objects.all()
     assert(len(usuarios) == 1)
+
+@pytest.mark.django_db
+def test_verificar_si_es_admin():
+    user = Usuario.objects.create_user("prueba@a.a")
+    rol_a_guardar = RolSistema.objects.create(nombre="admin", descripcion="Admin del sistema")
+    user.rolSistema.add(rol_a_guardar)
+    rol = user.rolSistema.get(nombre="admin")
+    assert rol
