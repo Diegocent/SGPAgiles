@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.http import HttpResponseRedirect
-from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto
+from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto
 from .models import Proyecto, EstadoProyecto, Equipo
 from Usuario.models import Usuario, RolProyecto
 from django.contrib import messages
@@ -18,6 +18,7 @@ Actualmente contamos con los siguientes views en Proyecto:
 4. **VerProyectosView** - Vista para visualizar listado de los Proyectos (salta a la seccion [[views.py#VerProyectosView]])
 5 **IniciarProyecto** - Vista para iniciar proyecto (salta a la seccion [[views.py#IniciarProyectoView]])
 """
+
 
 class VerProyectosView(View, LoginRequiredMixin):
 
@@ -67,6 +68,7 @@ class CrearProyectoView(View, LoginRequiredMixin):
                                        proyecto=proyecto)
             usuario: Usuario = cleaned_data["scrum_master"]
             usuario.rolProyecto.add(scrum)
+            usuario.save()
             messages.success(request, 'Creado exitosamente!')
             return HttpResponseRedirect('ver_proyectos')
         return render(request, 'crear_proyecto.html', {'form': form})
@@ -82,13 +84,14 @@ class VerProyectoView(View, LoginRequiredMixin):
             if equipo:
                 miembros = equipo.miembros.all()
 
-                if usuario not in miembros and not usuario.es_admin():
+                if usuario not in miembros and not usuario.es_admin() and not usuario.es_scrum_master():
                     messages.warning(request, "No puedes ver este proyecto.")
                     return HttpResponseRedirect('ver_proyectos')
+
                 context = {
                     "proyecto": p,
                     "equipo": equipo,
-                    "miembros": miembros
+                    "miembros": miembros,
                 }
             else:
                 if not usuario.es_admin():
@@ -149,3 +152,47 @@ class IniciarProyectoView(View, LoginRequiredMixin):
             return HttpResponseRedirect('.')
         return render(request, 'iniciar_proyecto.html', {'form': form})
 
+
+class CrearRolProyectoView(View, LoginRequiredMixin):
+    form_class = FormRolProyecto
+
+    def get(self, request, id_proyecto):
+        form = self.form_class()
+        return render(request, 'roles/crear_rol_proyecto.html', {'form': form})
+
+    def post(self, request, id_proyecto):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            rol_del_post = form.cleaned_data
+            array_de_roles = RolProyecto.objects.all().filter(nombre=rol_del_post['nombre'])
+            if len(array_de_roles) == 0:
+                rol = RolProyecto.objects.create(nombre=rol_del_post['nombre'], descripcion=rol_del_post['descripcion']
+                                                 , proyecto_id=id_proyecto)
+
+                for permisos in rol_del_post['permisos']:
+                    rol.permisos.add(permisos)
+                rol.save()
+                messages.success(request, 'Creado exitosamente!')
+            else:
+                messages.error(request="Ya existe un rol con ese nombre")
+
+            return HttpResponseRedirect('ver_roles')
+        return render(request, 'roles/crear_rol_proyecto.html', {'form': form})
+
+
+class VerRolesProyectoView(View, LoginRequiredMixin):
+
+    def get(self, request, id_proyecto):
+        usuario: Usuario = request.user
+        if usuario.es_admin() or usuario.es_scrum_master():
+            roles = RolProyecto.objects.all().filter(proyecto=id_proyecto)
+            context = {
+                'crear_rol': True,
+                'roles': roles
+            }
+        else:
+            context = {
+                'crear_rol': False,
+                "roles": []
+            }
+        return render(request, 'roles/ver_roles.html', context)

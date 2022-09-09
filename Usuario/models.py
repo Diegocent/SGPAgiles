@@ -46,3 +46,10 @@ class Usuario(AbstractBaseUser):
             return True
         except ObjectDoesNotExist:
             return False
+
+    def es_scrum_master(self, id_proyecto):
+        try:
+            scrum = self.rolProyecto.get(nombre="scrum master", proyecto=id_proyecto)
+            return True
+        except ObjectDoesNotExist:
+            return False

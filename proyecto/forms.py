@@ -1,5 +1,5 @@
 from .models import Equipo
-from .models import Usuario
+from Usuario.models import Permisos, Usuario
 from django import forms
 
 
@@ -25,3 +25,9 @@ class FormCrearEquipo(forms.Form):
 class FormIniciarProyecto(forms.Form):
     fecha_fin_estimada = forms.DateTimeField(required=True,
                                              label="Fecha estimada de fin",)
+
+class FormRolProyecto(forms.Form):
+    nombre = forms.CharField(max_length=100)
+    descripcion = forms.CharField(max_length=100)
+    permisos = forms.ModelMultipleChoiceField(
+        queryset=Permisos.objects.all(), widget=forms.CheckboxSelectMultiple())

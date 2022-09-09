@@ -3,7 +3,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib import messages
 from django.http import HttpResponseRedirect
-from .forms import FormRolSistema, FormRolProyecto, FormCrearPermisos, FormAsignarRol
+from .forms import FormRolSistema, FormCrearPermisos, FormAsignarRol
 from .models import RolProyecto, RolSistema, Permisos, Usuario
 
 """
@@ -53,6 +53,7 @@ class CrearRolSistemaView(View, LoginRequiredMixin):
 
                 for permisos in rol_del_post['permisos']:
                     rol.permisos.add(permisos)
+                rol.save()
                 messages.success(request, 'Creado exitosamente!')
             else:
                 messages.error(request="Ya existe un rol con ese nombre")
@@ -76,6 +77,7 @@ class AsignarRolSistemaView(View, LoginRequiredMixin):
             roles = cleaned_data["rol"]
             for rol in roles:
                 usuario.rolSistema.add(rol)
+            usuario.save()
             messages.success(request, 'Creado exitosamente!')
 
             return HttpResponseRedirect('asignar_rol')
