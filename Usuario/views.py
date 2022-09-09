@@ -10,8 +10,9 @@ from .models import RolProyecto, RolSistema, Permisos, Usuario
 Todos los views para SGPAgiles 
 Actualmente contamos con los siguientes views:
 
-1. **crear_rol_sistema** - Se crean los roles del sistema (salta a la seccion [[views.py#crear_rol_sistema]] )
-2. **crear_rol_proyecto** - Se crean los roles del proyecto (salta a la seccion [[views.py#crear_rol_proyecto]] )
+1. **crear_rol_sistema** - Se crean los roles del sistema (salta a la seccion [[views.py#crear_rol_sistema]])
+2. **CrearPermisoView** - Se crean los permisos del proyecto (salta a la seccion [[views.py#CrearPermisoView]])
+3. **AsignarRolSistemaView** - Se asignan los roles al sistema (salta a la seccion [[views.py#AsignarRolSistemaView]])
 """
 
 def crear_rol_sistema(request):

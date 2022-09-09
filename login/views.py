@@ -9,6 +9,7 @@ Actualmente contamos con los siguientes views:
 
 1. **login** - Funcion para hacer el login 
 """
+# === login ===
 def login(request):
     if not request.user.is_authenticated:
         return render(request,'account/login.html')

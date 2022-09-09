@@ -12,8 +12,10 @@ from datetime import date
 Todos los views para SGPAgiles 
 Actualmente contamos con los siguientes views en Proyecto:
 
-1. **CrearProyectoView** - Se crea la vista del Proyecto (salta a la seccion [[views.py#CrearProyectoView]] )
-2. **CrearEquipoView** - Se crea la vista para Equipo (salta a la seccion [[views.py#CrearEquipoView]] )
+1. **CrearProyectoView** - Vista para crear Proyectos (salta a la seccion [[views.py#CrearProyectoView]])
+2. **CrearEquipoView** - Se crea la vista para Equipo (salta a la seccion [[views.py#CrearEquipoView]])
+3. **VerProyectosView** - Vista para visualizar listado de los Proyectos (salta a la seccion [[views.py#VerProyectosView]])
+4 **IniciarProyecto** - Vista para iniciar proyecto (salta a la seccion [[views.py#IniciarProyectoView]])
 """
 
 class VerProyectosView(View, LoginRequiredMixin):
