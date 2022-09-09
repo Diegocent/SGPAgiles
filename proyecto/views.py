@@ -19,6 +19,7 @@ Actualmente contamos con los siguientes views en Proyecto:
 """
 
 class VerProyectosView(View, LoginRequiredMixin):
+
     def get(self, request):
         usuario: Usuario = request.user
         if usuario.es_admin():
@@ -68,28 +69,6 @@ class CrearProyectoView(View, LoginRequiredMixin):
             messages.success(request, 'Creado exitosamente!')
             return HttpResponseRedirect('ver_proyectos')
         return render(request, 'crear_proyecto.html', {'form': form})
-
-
-class VerProyectosView(View, LoginRequiredMixin):
-
-    def get(self, request):
-        usuario: Usuario = request.user
-        if usuario.es_admin():
-            proyectos = Proyecto.objects.all()
-            context = {
-                'admin': True,
-                'proyectos': proyectos
-            }
-        else:
-            context = {
-                "admin": False,
-                "proyectos": []
-            }
-            equipos = Equipo.objects.all().filter(miembros__id=usuario.id)
-            for equipo in equipos:
-                proyecto = Proyecto.objects.get(equipo=equipo)
-                context['proyectos'].append(proyecto)
-        return render(request, 'ver_proyectos.html', context)
 
 
 class VerProyectoView(View, LoginRequiredMixin):
