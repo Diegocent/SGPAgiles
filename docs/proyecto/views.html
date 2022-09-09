@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>views.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>views.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span>
+<span class="kn">from</span> <span class="nn">django.contrib.auth.mixins</span> <span class="kn">import</span> <span class="n">LoginRequiredMixin</span>
+<span class="kn">from</span> <span class="nn">django.views</span> <span class="kn">import</span> <span class="n">View</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponseRedirect</span>
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="n">FormCrearProyecto</span><span class="p">,</span> <span class="n">FormCrearEquipo</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Proyecto</span><span class="p">,</span> <span class="n">EstadoProyecto</span><span class="p">,</span> <span class="n">Equipo</span>
+<span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      <p>Create your views here.</p>
+<p>Todos los views para SGPAgiles 
+Actualmente contamos con los siguientes views en Proyecto:</p>
+<ol>
+<li><strong>CrearProyectoView</strong> - Se crea la vista del Proyecto (salta a la seccion  <a href="views.html#CrearProyectoView">views.py</a> )</li>
+<li><strong>CrearEquipoView</strong> - Se crea la vista para Equipo (salta a la seccion  <a href="views.html#CrearEquipoView">views.py</a> )</li>
+</ol>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearProyectoView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormCrearProyecto</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;crear_proyecto.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">cleaned_data</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
+            <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">nombre</span><span class="o">=</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;nombre&quot;</span><span class="p">],</span>
+                <span class="n">descripcion</span><span class="o">=</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;descripcion&quot;</span><span class="p">],</span>
+                <span class="n">equipo</span><span class="o">=</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;equipo&quot;</span><span class="p">],</span>
+                <span class="n">estado</span><span class="o">=</span><span class="n">EstadoProyecto</span><span class="o">.</span><span class="n">NO_INICIADO</span>
+            <span class="p">)</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Creado exitosamente!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;crear_proyecto.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearEquipoView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormCrearEquipo</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;crear_equipo.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-6'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-6'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">cleaned_data</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
+            <span class="n">Equipo</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">nombre</span><span class="o">=</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;nombre&quot;</span><span class="p">],</span>
+                <span class="n">miembros</span><span class="o">=</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;miembros&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Creado exitosamente!&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;crear_proyecto.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

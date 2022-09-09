@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">
+  <title>views.py</title>
+  <link rel="stylesheet" href="../pycco.css">
+</head>
+<body>
+<div id='container'>
+  <div id="background"></div>
+  <div class='section'>
+    <div class='docs'><h1>views.py</h1></div>
+  </div>
+  <div class='clearall'>
+  <div class='section' id='section-0'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-0'>#</a>
+      </div>
+      <p>Todos los views para SGPAgiles 
+Actualmente contamos con los siguientes views:</p>
+<ol>
+<li><strong>crear_rol_sistema</strong> - Se crean los roles del sistema (salta a la seccion  <a href="views.html#crear_rol_sistema">views.py</a> )</li>
+<li><strong>crear_rol_proyecto</strong> - Se crean los roles del proyecto (salta a la seccion  <a href="views.html#crear_rol_proyecto">views.py</a> )</li>
+</ol>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span>
+
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="n">FormRolSistema</span><span class="p">,</span> <span class="n">FormRolProyecto</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">RolProyecto</span><span class="p">,</span> <span class="n">RolSistema</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-1'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-1'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">crear_rol_sistema</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">rol_creado</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">mensaje_error</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+        <span class="n">post_request</span> <span class="o">=</span> <span class="n">FormRolSistema</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">post_request</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">rol_del_post</span> <span class="o">=</span> <span class="n">post_request</span><span class="o">.</span><span class="n">cleaned_data</span>
+            <span class="n">array_de_roles</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">rol_del_post</span><span class="p">[</span><span class="s1">&#39;name_role&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_de_roles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">rol</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">rol_del_post</span><span class="p">[</span><span class="s1">&#39;name_role&#39;</span><span class="p">],</span> <span class="n">descripcion</span><span class="o">=</span><span class="n">rol_del_post</span><span class="p">[</span><span class="s1">&#39;description_role&#39;</span><span class="p">])</span>
+                <span class="n">rol</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+                <span class="k">for</span> <span class="n">permisos</span> <span class="ow">in</span> <span class="n">rol_del_post</span><span class="p">[</span><span class="s1">&#39;permissions&#39;</span><span class="p">]:</span>
+                    <span class="n">rol</span><span class="o">.</span><span class="n">permisos</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">permisos</span><span class="p">)</span>
+
+                <span class="n">rol_creado</span><span class="o">=</span><span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mensaje_error</span> <span class="o">=</span> <span class="s2">&quot;Ya existe un rol con el mismo nombre.&quot;</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">FormRolSistema</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;crear_rol_sistema.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span> <span class="s1">&#39;rol_creado&#39;</span><span class="p">:</span> <span class="n">rol_creado</span><span class="p">,</span>
+                                                      <span class="s2">&quot;mensaje_error&quot;</span><span class="p">:</span> <span class="n">mensaje_error</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">crear_rol_proyecto</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">rol_creado</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">mensaje_error</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+        <span class="n">post_request</span> <span class="o">=</span> <span class="n">FormRolProyecto</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">post_request</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">rol_del_post</span> <span class="o">=</span> <span class="n">post_request</span><span class="o">.</span><span class="n">cleaned_data</span>
+            <span class="n">array_de_roles</span> <span class="o">=</span> <span class="n">RolProyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">rol_del_post</span><span class="p">[</span><span class="s1">&#39;name_role&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_de_roles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">rol</span> <span class="o">=</span> <span class="n">RolProyecto</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">rol_del_post</span><span class="p">[</span><span class="s1">&#39;name_role&#39;</span><span class="p">],</span> <span class="n">descripcion</span><span class="o">=</span><span class="n">rol_del_post</span><span class="p">[</span><span class="s1">&#39;description_role&#39;</span><span class="p">])</span>
+                <span class="n">rol</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+                <span class="k">for</span> <span class="n">permisos</span> <span class="ow">in</span> <span class="n">rol_del_post</span><span class="p">[</span><span class="s1">&#39;permissions&#39;</span><span class="p">]:</span>
+                    <span class="n">rol</span><span class="o">.</span><span class="n">permisos</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">permisos</span><span class="p">)</span>
+
+                <span class="n">rol_creado</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mensaje_error</span> <span class="o">=</span> <span class="s2">&quot;Ya existe un rol con el mismo nombre.&quot;</span>
+
+    <span class="n">form</span> <span class="o">=</span> <span class="n">FormRolProyecto</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>formRol.fields[&lsquo;permissions&rsquo;].choices=CHOICES #agregamos los permisos al form
+enviamos el form vacio y el numero que indica si se cargo un rol o no</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;crear_rol_proyecto.html&#39;</span><span class="p">,</span>
+                  <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">,</span> <span class="s1">&#39;rol_creado&#39;</span><span class="p">:</span> <span class="n">rol_creado</span><span class="p">,</span> <span class="s2">&quot;mensaje_error&quot;</span><span class="p">:</span> <span class="n">mensaje_error</span><span class="p">})</span>
+
+</pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+</div>
+</body>

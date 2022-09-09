@@ -3,6 +3,13 @@ from django.shortcuts import render
 from .forms import FormRolSistema, FormRolProyecto
 from .models import RolProyecto, RolSistema
 
+"""
+Todos los views para SGPAgiles 
+Actualmente contamos con los siguientes views:
+
+1. **crear_rol_sistema** - Se crean los roles del sistema (salta a la seccion [[views.py#crear_rol_sistema]] )
+2. **crear_rol_proyecto** - Se crean los roles del proyecto (salta a la seccion [[views.py#crear_rol_proyecto]] )
+"""
 
 def crear_rol_sistema(request):
     rol_creado = False
@@ -26,7 +33,6 @@ def crear_rol_sistema(request):
     form = FormRolSistema()
     return render(request, 'crear_rol_sistema.html', {'form': form, 'rol_creado': rol_creado,
                                                       "mensaje_error": mensaje_error})
-
 
 def crear_rol_proyecto(request):
     rol_creado = False
