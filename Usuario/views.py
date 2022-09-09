@@ -82,3 +82,72 @@ class AsignarRolSistemaView(View, LoginRequiredMixin):
 
             return HttpResponseRedirect('asignar_rol')
         return render(request, 'roles/asignar_rol.html', {'form': form})
+
+
+class VerConfigView(View, LoginRequiredMixin):
+
+    def get(self, request):
+        usuario: Usuario = request.user
+        if usuario.es_admin():
+            context = {
+                'admin': True,
+            }
+        else:
+            context = {
+                "admin": False,
+            }
+        return render(request, 'ver_config.html', context)
+
+
+class VerRolesSistemaView(View, LoginRequiredMixin):
+
+    def get(self, request):
+        #usuario: Usuario = request.user
+        #if usuario.es_admin() or usuario.es_scrum_master():
+        roles = RolSistema.objects.all()
+        context = {
+                'crear_rol': True,
+                'roles': roles
+        }
+        #else:
+         #   context = {
+          #      'crear_rol': False,
+           #     "roles": []
+           # }
+        return render(request, 'roles/ver_roles_sistema.html', context)
+
+
+class VerPermisosView(View, LoginRequiredMixin):
+
+    def get(self, request):
+        #usuario: Usuario = request.user
+        #if usuario.es_admin() or usuario.es_scrum_master():
+        permisos = Permisos.objects.all()
+        context = {
+                'crear_permiso': True,
+                'permisos': permisos
+        }
+        #else:
+         #   context = {
+          #      'crear_rol': False,
+           #     "roles": []
+           # }
+        return render(request, 'roles/ver_permisos.html', context)
+
+
+class VerUsuariosConRolesView(View, LoginRequiredMixin):
+
+    def get(self, request):
+        #usuario: Usuario = request.user
+        #if usuario.es_admin() or usuario.es_scrum_master():
+        usuarios = Usuario.objects.all()
+
+        context = {
+                'usuarios': usuarios
+        }
+        #else:
+         #   context = {
+          #      'crear_rol': False,
+           #     "roles": []
+           # }
+        return render(request, 'roles/ver_usuarios_con_roles.html', context)

@@ -1,0 +1,14 @@
+<h1>Permisos</h1>
+
+{% if permisos %}
+    <h3>Permisos disponibles: </h3>
+     <ol>
+     {% for perm in permisos %}
+         <li><a>
+              {{ perm.nombre }} - {{ perm.descripcion }}
+            </a></li>
+     {% endfor %}
+    </ol>
+{% else %}
+    <h3>No hay permisos actualmente.</h3>
+{% endif %}

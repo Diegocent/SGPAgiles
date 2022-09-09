@@ -1,0 +1,14 @@
+<h1>Roles del sistema</h1>
+
+{% if roles %}
+    <h3>Roles disponibles: </h3>
+     <ol>
+     {% for rol in roles %}
+         <li><a>
+              {{ rol.nombre }}
+            </a></li>
+     {% endfor %}
+    </ol>
+{% else %}
+    <h3>No hay roles actualmente.</h3>
+{% endif %}

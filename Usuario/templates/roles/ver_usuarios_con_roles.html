@@ -1,0 +1,13 @@
+{% for usuario in usuarios %}
+    <li><a>
+              {{ usuario.nombre }}
+
+
+    {% for rol in usuario.rolSistema.all %}
+        <a>
+              {{ rol.nombre }}
+        </a>
+
+        {% endfor %}
+     </a></li>
+{% endfor %}
