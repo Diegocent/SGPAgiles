@@ -70,7 +70,7 @@ class CrearProyectoView(View, LoginRequiredMixin):
             usuario.rolProyecto.add(scrum)
             usuario.save()
             messages.success(request, 'Creado exitosamente!')
-            return HttpResponseRedirect('ver_proyectos')
+            return HttpResponseRedirect('/proyecto')
         return render(request, 'crear_proyecto.html', {'form': form})
 
 
