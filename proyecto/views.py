@@ -8,7 +8,13 @@ from Usuario.models import Usuario, RolProyecto
 from django.contrib import messages
 from datetime import date
 # Create your views here.
+"""
+Todos los views para SGPAgiles 
+Actualmente contamos con los siguientes views en Proyecto:
 
+1. **CrearProyectoView** - Se crea la vista del Proyecto (salta a la seccion [[views.py#CrearProyectoView]] )
+2. **CrearEquipoView** - Se crea la vista para Equipo (salta a la seccion [[views.py#CrearEquipoView]] )
+"""
 
 class VerProyectosView(View, LoginRequiredMixin):
     def get(self, request):

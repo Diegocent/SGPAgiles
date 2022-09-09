@@ -6,6 +6,13 @@ from django.http import HttpResponseRedirect
 from .forms import FormRolSistema, FormRolProyecto, FormCrearPermisos, FormAsignarRol
 from .models import RolProyecto, RolSistema, Permisos, Usuario
 
+"""
+Todos los views para SGPAgiles 
+Actualmente contamos con los siguientes views:
+
+1. **crear_rol_sistema** - Se crean los roles del sistema (salta a la seccion [[views.py#crear_rol_sistema]] )
+2. **crear_rol_proyecto** - Se crean los roles del proyecto (salta a la seccion [[views.py#crear_rol_proyecto]] )
+"""
 
 def crear_rol_sistema(request):
     rol_creado = False
