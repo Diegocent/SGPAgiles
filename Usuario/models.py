@@ -42,7 +42,7 @@ class Usuario(AbstractBaseUser):
 
     def es_admin(self):
         try:
-            admin = self.rolSistema.get(name="admin")
+            admin = self.rolSistema.get(nombre="admin")
             return True
         except ObjectDoesNotExist:
             return False

@@ -1,0 +1,18 @@
+<h1>Proyectos</h1>
+
+{% if admin %}
+    <a href="crear"> crear proyecto </a>
+{% endif %}
+
+{% if proyectos %}
+    <h3>Proyectos disponibles: </h3>
+     <ol>
+     {% for proyecto in proyectos %}
+         <li><a href="{% url 'detalle_proyecto' id_proyecto=proyecto.id %}">
+              {{ proyecto.nombre }} ({{ proyecto.estado }})
+            </a></li>
+     {% endfor %}
+    </ol>
+{% else %}
+    <h3>No hay proyectos actualmente.</h3>
+{% endif %}

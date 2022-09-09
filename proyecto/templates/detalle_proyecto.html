@@ -1,0 +1,12 @@
+<h1> Proyecto {{ proyecto.nombre }}</h1>
+<h2> {{ proyecto.estado }}</h2>
+
+
+
+{% if not miembros %}
+    <a href="crear_equipo">Crear Equipo</a>
+{% else %}
+    {% if proyecto.estado == "NO_INICIADO" %}
+        <a href="iniciar_proyecto">Iniciar proyecto</a>
+    {% endif %}
+{% endif %}
