@@ -37,9 +37,9 @@
       <div class="highlight"><pre><span class="k">class</span> <span class="nc">FormCrearProyecto</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">Form</span><span class="p">):</span>
     <span class="n">nombre</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Nombre del proyecto&#39;</span><span class="p">,</span> <span class="n">empty_value</span><span class="o">=</span><span class="s2">&quot;Escriba el nombre del proyecto.&quot;</span><span class="p">)</span>
     <span class="n">descripcion</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Descripcion del proyecto&#39;</span><span class="p">,</span> <span class="n">empty_value</span><span class="o">=</span><span class="s2">&quot;Describa el proyecto.&quot;</span><span class="p">)</span>
-    <span class="n">equipo</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">ModelChoiceField</span><span class="p">(</span>
-        <span class="n">queryset</span><span class="o">=</span><span class="n">Equipo</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Equipo&quot;</span><span class="p">,</span> <span class="n">empty_label</span><span class="o">=</span><span class="s2">&quot;Seleccione el equipo.&quot;</span><span class="p">,</span>
-        <span class="n">help_text</span><span class="o">=</span><span class="s2">&quot;Seleccione aqui el equipo que llevara el proyecto.&quot;</span>
+    <span class="n">scrum_master</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">ModelChoiceField</span><span class="p">(</span>
+        <span class="n">queryset</span><span class="o">=</span><span class="n">Usuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Scrum Master&quot;</span><span class="p">,</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="s2">&quot;Seleccione el Scrum Master del proyecto.&quot;</span>
     <span class="p">)</span></pre></div>
     </div>
   </div>
@@ -55,9 +55,24 @@
       <div class="highlight"><pre><span class="k">class</span> <span class="nc">FormCrearEquipo</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">Form</span><span class="p">):</span>
     <span class="n">nombre</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CharField</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="s1">&#39;Nombre del equipo&#39;</span><span class="p">,</span> <span class="n">empty_value</span><span class="o">=</span><span class="s2">&quot;Escriba el nombre del equipo&quot;</span><span class="p">)</span>
     <span class="n">miembros</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">ModelMultipleChoiceField</span><span class="p">(</span>
-        <span class="n">queryset</span><span class="o">=</span><span class="n">Usuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Miembros&quot;</span><span class="p">,</span> <span class="n">empty_label</span><span class="o">=</span><span class="s2">&quot;Seleccione a los miembros del equipo.&quot;</span><span class="p">,</span>
-        <span class="n">help_text</span><span class="o">=</span><span class="s2">&quot;Seleccione aqui a los miembros del equipo a crear.&quot;</span>
-    <span class="p">)</span>
+        <span class="n">queryset</span><span class="o">=</span><span class="n">Usuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">(),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Miembros&quot;</span><span class="p">,</span>
+        <span class="n">help_text</span><span class="o">=</span><span class="s2">&quot;Seleccione aqui a los miembros del equipo a crear.&quot;</span><span class="p">,</span>
+        <span class="n">widget</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">CheckboxSelectMultiple</span><span class="p">()</span>
+    <span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">FormIniciarProyecto</span><span class="p">(</span><span class="n">forms</span><span class="o">.</span><span class="n">Form</span><span class="p">):</span>
+    <span class="n">fecha_fin_estimada</span> <span class="o">=</span> <span class="n">forms</span><span class="o">.</span><span class="n">DateTimeField</span><span class="p">(</span><span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                             <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Fecha estimada de fin&quot;</span><span class="p">,)</span>
 
 </pre></div>
     </div>
