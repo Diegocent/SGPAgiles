@@ -9,7 +9,7 @@ from django.contrib import messages
 from datetime import date
 # Create your views here.
 """
-Todos los views para SGPAgiles 
+Todos los vgikiews para SGPAgiles 
 Actualmente contamos con los siguientes views en Proyecto:
 
 1. **CrearProyectoView** - Vista para crear Proyectos (salta a la seccion [[views.py#CrearProyectoView]])
