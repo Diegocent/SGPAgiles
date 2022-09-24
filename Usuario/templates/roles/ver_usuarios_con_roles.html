@@ -1,3 +1,9 @@
+{% extends "bases.html" %}
+
+{% load static %}
+
+{% block content %}
+
 {% for usuario in usuarios %}
     <li><a>
               {{ usuario.nombre }}
@@ -11,3 +17,5 @@
         {% endfor %}
      </a></li>
 {% endfor %}
+
+{% endblock %}

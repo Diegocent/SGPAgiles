@@ -1,7 +1,13 @@
-<h1>Permisos</h1>
+{% extends "bases.html" %}
+
+{% load static %}
+
+{% block content %}
+
+    <span style = "color : white"> <h1>Permisos</h1> </span>
 
 {% if permisos %}
-    <h3>Permisos disponibles: </h3>
+    <span style = "color : white"> <h3>Permisos disponibles: </h3> </span>
      <ol>
      {% for perm in permisos %}
          <li><a>
@@ -10,5 +16,7 @@
      {% endfor %}
     </ol>
 {% else %}
-    <h3>No hay permisos actualmente.</h3>
+    <span style = "color : white"> <h3>No hay permisos actualmente.</h3> </span>
 {% endif %}
+
+{% endblock %}

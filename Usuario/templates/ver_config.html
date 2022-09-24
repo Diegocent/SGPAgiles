@@ -1,10 +1,22 @@
-<h1>CONFIGURACIONES DEL SISTEMA</h1>
+{% extends "bases.html" %}
 
-<a href="crear_permiso">Crear permiso</a>
-<a href="crear_roles">Crear rol</a>
-<a href="asignar_rol">Asignar rol</a>
+{% load static %}
 
-<a href="ver_roles">Ver roles</a>
-<a href="ver_permisos">Ver permisos</a>
 
-<a href="usuarios_con_roles">Ver usuarios y sus roles</a>
+
+{% block content %}
+
+
+
+<span style = "color : white"> <h1>CONFIGURACIONES DEL SISTEMA</h1> </span>
+<ul>
+    <li> <a href="crear_permiso">Crear permiso</a> </li>
+    <li> <a href="crear_roles">Crear rol</a> </li>
+    <li> <a href="asignar_rol">Asignar rol</a> </li>
+
+    <li> <a href="ver_roles">Ver roles</a> </li>
+    <li> <a href="ver_permisos">Ver permisos</a> </li>
+
+    <li> <a href="usuarios_con_roles">Ver usuarios y sus roles</a> </li>
+</ul>
+{% endblock %}
