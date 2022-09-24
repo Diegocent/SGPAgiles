@@ -1,11 +1,12 @@
+{% extends "base.html" %}
+{% block content %}
 <h1>Proyectos</h1>
-
 {% if admin %}
-    <a href="crear"> crear proyecto </a>
+    <a href="crear"> Crear Proyecto </a>
 {% endif %}
 
 {% if proyectos %}
-    <h3>Proyectos disponibles: </h3>
+    <h3>Proyectos Disponibles: </h3>
      <ol>
      {% for proyecto in proyectos %}
          <li><a href="{% url 'detalle_proyecto' id_proyecto=proyecto.id %}">
@@ -16,3 +17,4 @@
 {% else %}
     <h3>No hay proyectos actualmente.</h3>
 {% endif %}
+{% endblock %}

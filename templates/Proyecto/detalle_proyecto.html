@@ -1,3 +1,5 @@
+{% extends "base.html" %}
+{% block content %}
 <h1> Proyecto {{ proyecto.nombre }}</h1>
 <h2> {{ proyecto.estado }}</h2>
 <h3> Fecha inicio: {{ proyecto.fecha_inicio }}</h3>
@@ -10,6 +12,7 @@
     <a href="crear_equipo">Crear Equipo</a>
 {% else %}
     {% if proyecto.estado == "NO_INICIADO" %}
-        <a href="iniciar_proyecto">Iniciar proyecto</a>
+        <a href="iniciar_proyecto">Iniciar Proyecto</a>
     {% endif %}
 {% endif %}
+{% endblock %}

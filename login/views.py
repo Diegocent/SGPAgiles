@@ -14,4 +14,4 @@ def login(request):
     if not request.user.is_authenticated:
         return render(request,'account/login.html')
     else:
-        return render(request,'index.html')
+        return render(request, '../Templates/indexProyecto.html')

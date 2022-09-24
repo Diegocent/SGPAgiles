@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Crear Proyecto</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <br><br><br><br><input type="submit" value="Guardar"> </br>
+</form>
+{% endblock %}

@@ -41,7 +41,7 @@ class VerProyectosView(View, LoginRequiredMixin):
             for equipo in equipos:
                 proyecto = Proyecto.objects.get(equipo=equipo)
                 context['proyectos'].append(proyecto)
-        return render(request, 'ver_proyectos.html', context)
+        return render(request, '../Templates/ver_proyectos.html', context)
 
 
 class CrearProyectoView(View, LoginRequiredMixin):
@@ -51,7 +51,7 @@ class CrearProyectoView(View, LoginRequiredMixin):
         if not request.user.es_admin():
            return HttpResponseRedirect('/')
         form = self.form_class()
-        return render(request, 'crear_proyecto.html', {'form': form})
+        return render(request, '../Templates/crear_proyecto.html', {'form': form})
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -73,7 +73,7 @@ class CrearProyectoView(View, LoginRequiredMixin):
             usuario.save()
             messages.success(request, 'Creado exitosamente!')
             return HttpResponseRedirect('/proyecto')
-        return render(request, 'crear_proyecto.html', {'form': form})
+        return render(request, '../Templates/crear_proyecto.html', {'form': form})
 
 
 class VerProyectoView(View, LoginRequiredMixin):
@@ -102,7 +102,7 @@ class VerProyectoView(View, LoginRequiredMixin):
                 context = {
                     "proyecto": p
                 }
-            return render(request, 'detalle_proyecto.html', context)
+            return render(request, '../Templates/detalle_proyecto.html', context)
 
 
 class CrearEquipoView(View, LoginRequiredMixin):
@@ -112,7 +112,7 @@ class CrearEquipoView(View, LoginRequiredMixin):
         if not request.user.es_admin():
             return HttpResponseRedirect('/')
         form = self.form_class()
-        return render(request, 'crear_equipo.html', {'form': form})
+        return render(request, '../Templates/crear_equipo.html', {'form': form})
 
     def post(self, request, id_proyecto):
         form = self.form_class(request.POST)
@@ -129,7 +129,7 @@ class CrearEquipoView(View, LoginRequiredMixin):
             proyecto.save()
             messages.success(request, 'Creado exitosamente!')
             return HttpResponseRedirect('.')
-        return render(request, 'crear_proyecto.html', {'form': form})
+        return render(request, '../Templates/crear_proyecto.html', {'form': form})
 
 
 class IniciarProyectoView(View, LoginRequiredMixin):
@@ -139,7 +139,7 @@ class IniciarProyectoView(View, LoginRequiredMixin):
         if not request.user.es_admin():
             return HttpResponseRedirect('/')
         form = self.form_class()
-        return render(request, 'iniciar_proyecto.html', {'form': form})
+        return render(request, '../Templates/iniciar_proyecto.html', {'form': form})
 
     def post(self, request, id_proyecto):
         form = self.form_class(request.POST)
@@ -152,7 +152,7 @@ class IniciarProyectoView(View, LoginRequiredMixin):
             proyecto.save()
             messages.success(request, 'Creado exitosamente!')
             return HttpResponseRedirect('.')
-        return render(request, 'iniciar_proyecto.html', {'form': form})
+        return render(request, '../Templates/iniciar_proyecto.html', {'form': form})
 
 
 class CrearRolProyectoView(View, LoginRequiredMixin):
