@@ -1,5 +1,68 @@
-<h1>Hola, {{request.user.nombre}} </h1>
+{% extends "bases.html" %}
 
-<a href="proyecto/">Ver Proyectos</a>
-<a href="config/">Configuraciones</a>
-<a href="accounts/logout/">Cerrar sesion</a>
+{% load static %}
+
+{% block content %}
+<!-- Navbar -->
+ <nav class="navbar navbar-expand-lg navbar-dark py-lg-4" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand text-uppercase text-expanded font-weight-bold d-lg-none" href="home.html">Gestión de Proyectos</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item active px-lg-4">
+            <a href="proyecto/">Ver Proyectos</a>
+          </li>
+          <li class="nav-item px-lg-4">
+            <a href="config/">Configuraciones</a>
+          </li>
+          <li class="nav-item px-lg-4">
+            <a href="accounts/logout/">Cerrar sesion</a>
+          </li>
+
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+   <!-- Heading -->
+   <section class="page-section clearfix">
+    <div class="container">
+      <div class="intro">
+        <img class="intro-img img-fluid mb-3 mb-lg-0 rounded" src="{% static 'proyecto/img/principal.jpg' %}" alt="">
+        <div class="intro-text left-0 text-center bg-faded p-5 rounded">
+          <h2 class="section-heading mb-4" >
+            <span class="section-heading-upper">Ingenieria de Software II</span>
+            <span class="section-heading-lower">Grupo 9</span>
+          </h2>
+          <p class="mb-3">Sistema de Gestion de Proyectos Agiles.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+    <!-- Message -->
+    <section class="page-section cta">
+      <div class="container">
+        <div class="row">
+          <div class="col-xl-9 mx-auto">
+            <div class="cta-inner text-center rounded">
+              <h2 class="section-heading mb-4">
+                <span class="section-heading-upper">Facultad</span>
+                <span class="section-heading-lower">Politecnica</span>
+              </h2>
+              <p class="mb-0">Prof. Lic. Guillermo González, Mst. PMP, <br> Prof.  Lic. Carolina Argüello, MBA, <br> Prof. Ing. María José Franco</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+{% endblock %}

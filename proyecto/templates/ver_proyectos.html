@@ -1,11 +1,17 @@
-<h1>Proyectos</h1>
+{% extends "bases.html" %}
+
+{% load static %}
+
+{% block content %}
+
+    <span style = "color : white"> <h1>Proyectos</h1> </span>
 
 {% if admin %}
     <a href="crear"> crear proyecto </a>
 {% endif %}
 
 {% if proyectos %}
-    <h3>Proyectos disponibles: </h3>
+    <span style = "color : white"> <h3>Proyectos disponibles: </h3> </span>
      <ol>
      {% for proyecto in proyectos %}
          <li><a href="{% url 'detalle_proyecto' id_proyecto=proyecto.id %}">
@@ -14,5 +20,7 @@
      {% endfor %}
     </ol>
 {% else %}
-    <h3>No hay proyectos actualmente.</h3>
+    <span style = "color : white"> <h3>No hay proyectos actualmente.</h3> </span>
 {% endif %}
+
+{% endblock %}

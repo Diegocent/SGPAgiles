@@ -1,6 +1,14 @@
-<h1>Asignar Roles</h1>
+{% extends "bases.html" %}
+
+{% load static %}
+
+{% block content %}
+
+    <span style = "color : white"> <h1>Asignar Roles</h1> </span>
 <form method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Guardar">
 </form>
+
+{% endblock %}

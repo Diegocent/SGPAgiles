@@ -13,8 +13,12 @@ Actualmente contamos con los siguientes views:
 1. **CrearRolSistemaView** - Se crean los roles del sistema (salta a la seccion [[views.py#CrearRolSistemaView]])
 2. **CrearPermisoView** - Se crean los permisos del proyecto (salta a la seccion [[views.py#CrearPermisoView]])
 3. **AsignarRolSistemaView** - Se asignan los roles al sistema (salta a la seccion [[views.py#AsignarRolSistemaView]])
+4. **VerRolesSistemaView** - Se podra visualizar los roles asignados al sistema (salta a la seccion [[views.py#VerRolesSistemaView]])
+5. **VerPermisosView** - Se podra visualizar los Permisos (salta a la seccion [[views.py#VerPermisosView]])
+6. **VerConfigView** - Se podra ver la configuracion a seguir (salta a la seccion [[views.py#VerConfigView]])
+7. **VerUsuariosConRolesView** - Se podra visualizar la lista con los usuarios y 
+    los respectivos roles que le fueron asignados (salta a la seccion [[views.py#VerUsuariosConRolesView]])
 """
-
 
 class CrearPermisoView(View, LoginRequiredMixin):
     form_class = FormCrearPermisos
