@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'crispy_forms',
+    'widget_tweaks',
 ]
 
 SITE_ID = 1
@@ -51,7 +52,7 @@ ROOT_URLCONF = 'SGPAgiles.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

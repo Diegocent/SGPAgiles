@@ -1,17 +1,32 @@
-{% extends "bases.html" %}
+{% extends "base.html" %}
 
 {% load static %}
 
 {% block content %}
+    <style>
+    body{
+        text-align: center;
+        padding: 100px;
+    }
+    h3{
+        font-size: 40px;
+        text-align: center;
+    }
 
-    <span style = "color : white"> <h1>Proyectos</h1> </span>
-
-{% if admin %}
-    <a href="crear"> crear proyecto </a>
-{% endif %}
-
+    a{
+        font-size: 20px;
+        color: cadetblue;
+    }
+    b{
+        font-size: 20px;
+        padding: 40px;
+        text-align: center;
+    }
+    </style>
+<body>
 {% if proyectos %}
-    <span style = "color : white"> <h3>Proyectos disponibles: </h3> </span>
+    <br><br>
+    <span style = "color : white"> <h3> Proyectos Actuales: </h3> </span><br>
      <ol>
      {% for proyecto in proyectos %}
          <li><a href="{% url 'detalle_proyecto' id_proyecto=proyecto.id %}">
@@ -20,7 +35,15 @@
      {% endfor %}
     </ol>
 {% else %}
+    <br>
     <span style = "color : white"> <h3>No hay proyectos actualmente.</h3> </span>
 {% endif %}
 
+{% if admin %}
+    <br><br>
+    <a href="crear"> <button type="button" class="btn btn-secondary"><b>Crear Proyecto</b></button> </a>
+{% endif %}
+
+
+</body>
 {% endblock %}

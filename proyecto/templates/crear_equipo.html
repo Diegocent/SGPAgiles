@@ -1,6 +1,37 @@
-<h1>Crear Equipo</h1>
+{% extends "base.html" %}
+{% block content %}
+    {% load widget_tweaks %}
+    <style>
+    div{
+        color: white;
+    }
+    h1{
+        text-align: center;
+    }
+    .form-group class pb-2{
+        font-size: 25px;
+    }
+    </style>
+    <div>
+        <br><br><h1><b>Crear Equipo</b></h1>
 <form method="post">
     {% csrf_token %}
-    {{ form }}
+    {% for field in form.visible_fields %}
+    <div class="form-group class pb-2">
+        {% if field.name == 'nombre'%}
+         Nombre del Equipo
+        {{field.errors}}
+            {% render_field field class="form-control" %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+        {% endif %}
+         {% if field.name == 'miembros'%}
+             Seleccione miembros del Equipo:
+             {{field}}
+         {% endif %}
+     </div>
+    {% endfor %}
     <input type="submit" value="Guardar">
-</form>
+</form></div>
+{% endblock %}
