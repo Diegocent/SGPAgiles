@@ -42,7 +42,9 @@
 {% else %}
     <h3>User stories:</h3>
     {% for u in us %}
-        <li>{{ u.nombre}}</li>
+        <li>{{ u.nombre}} </li>
+        <a href="{% url 'editar_US' id_proyecto=proyecto.id id_us=u.id%}">Editar</a>
+        <a href="{% url 'borrar_US' id_proyecto=proyecto.id id_us=u.id%}">Borrar</a>
     {% endfor %}
 {% endif %}
 

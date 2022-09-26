@@ -11,6 +11,8 @@
          <li>
               {{ us.nombre }} - Tipo: {{ us.tipo.nombre }}
             </li>
+         <a href="{% url 'editar_US' id_proyecto=id_proyecto id_us=us.id%}">Editar</a>
+        <a href="{% url 'borrar_US' id_proyecto=id_proyecto id_us=us.id%}">Borrar</a>
      {% endfor %}
     </ol>
 {% else %}

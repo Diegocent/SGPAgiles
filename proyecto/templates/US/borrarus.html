@@ -1,0 +1,6 @@
+<h1>ESTAS SEGURO DE QUE QUERES BORRAR??</h1>
+<form method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Borrar">
+</form>

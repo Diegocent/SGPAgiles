@@ -15,4 +15,6 @@ urlpatterns = [
     path('<int:id_proyecto>/tipoUS/<int:id_tipous>/crear_estadoUS', views.CrearEstadosUSView.as_view(), name='crear_estadoUS'),
     path('<int:id_proyecto>/US/crear_US', views.CrearUSView.as_view(), name='crear_US'),
     path('<int:id_proyecto>/US', views.VerUSView.as_view(), name='ver_US'),
+    path('<int:id_proyecto>/US/<int:id_us>', views.ActualizarUSView.as_view(), name='editar_US'),
+    path('<int:id_proyecto>/US/<int:id_us>/borrar', views.BorrarUSView.as_view(), name='borrar_US'),
 ]

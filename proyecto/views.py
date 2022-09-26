@@ -363,3 +363,45 @@ class VerUSView(View, LoginRequiredMixin):
                 'id_proyecto': id_proyecto
             }
         return render(request, 'US/ver_US.html', context)
+
+
+class ActualizarUSView(View, LoginRequiredMixin):
+    form_class = FormUS
+
+    def get(self, request, id_proyecto, id_us):
+        us = UserStory.objects.get(id=id_us)
+        form = FormUS(instance=us)
+        form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
+        return render(request, 'US/editarus.html', {'form': form})
+
+    def post(self, request, id_proyecto, id_us):
+        us = UserStory.objects.get(id=id_us)
+        form = FormUS(request.POST, instance=us)
+        if form.is_valid():
+            us = form.cleaned_data
+            array_de_us = UserStory.objects.all().filter(nombre=us['nombre'], proyecto_id=id_proyecto)
+
+            if len(array_de_us) == 0:
+                form.save()
+
+                messages.success(request, 'Creado exitosamente!')
+            else:
+                return render(request, 'US/editarus.html', {'form': form})
+            return HttpResponseRedirect('/proyecto/{}/US'.format(id_proyecto))
+        return render(request, 'US/editarus.html', {'form': form})
+
+
+class BorrarUSView(View, LoginRequiredMixin):
+    form_class = FormUS
+
+    def get(self, request, id_proyecto, id_us):
+        us = UserStory.objects.get(id=id_us)
+        form = FormUS(instance=us)
+        return render(request, 'US/borrarus.html', {'form': form})
+
+    def post(self, request, id_proyecto, id_us):
+        us = UserStory.objects.get(id=id_us)
+
+        us.delete()
+
+        return HttpResponseRedirect('/proyecto/{}/US'.format(id_proyecto))

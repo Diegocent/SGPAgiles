@@ -1,4 +1,6 @@
-from .models import Equipo, TipoUserStory
+from django.forms import ModelForm
+
+from .models import Equipo, TipoUserStory, UserStory
 from Usuario.models import Permisos, Usuario
 from django import forms
 
@@ -43,8 +45,7 @@ class FormEstadoUS(forms.Form):
     nombre = forms.CharField(max_length=100)
 
 
-class FormUS(forms.Form):
-    nombre = forms.CharField(max_length=100, required=True)
-    descripcion = forms.CharField(max_length=100)
-    tipo = forms.ModelChoiceField(
-        queryset=TipoUserStory.objects.all(), widget=forms.Select, required=True)
+class FormUS(ModelForm):
+    class Meta:
+        model = UserStory
+        fields = ["nombre", "descripcion", "tipo"]
