@@ -23,7 +23,6 @@ class FormCrearEquipo(forms.Form):
 
 
 class FormIniciarProyecto(forms.Form):
-    fecha_inicio = forms.DateTimeField(required=True,label="Fecha Inicio", )
     fecha_fin_estimada = forms.DateTimeField(required=True,
                                              label="Fecha estimada de fin",)
 
