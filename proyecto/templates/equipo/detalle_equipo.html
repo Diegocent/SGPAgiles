@@ -1,0 +1,15 @@
+<h1>Equipo {{ equipo.nombre }} <a href="{% url 'editar_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Editar</a></h1>
+
+{% for miembrorol in miembrosroles %}
+    <li>
+    {% for key, value in miembrorol.items %}
+        {% if key == "rol" %}
+            {% for rol in value %}
+                <p>rol:{{ rol.nombre }}</p>
+            {% endfor %}
+        {% else %}
+            <p>{{ key}}:{{ value }}</p>
+        {% endif %}
+    {% endfor %}
+        </li>
+{% endfor %}

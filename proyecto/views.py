@@ -405,3 +405,44 @@ class BorrarUSView(View, LoginRequiredMixin):
         us.delete()
 
         return HttpResponseRedirect('/proyecto/{}/US'.format(id_proyecto))
+
+
+class DetalleEquipoView(View, LoginRequiredMixin):
+
+    def get(self, request, id_proyecto, id_equipo):
+        usuario: Usuario = request.user
+        if usuario.es_admin() or usuario.es_scrum_master():
+            equipo = Equipo.objects.get(id=id_equipo)
+
+            miembros = equipo.miembros.all()
+
+            miembrosroles = []
+            for miembro in miembros:
+                rol = miembro.rolProyecto.filter(proyecto_id=id_proyecto)
+                dicc = {"miembro": miembro, "rol": rol}
+                miembrosroles.append(dicc)
+            context = {
+                'equipo': equipo,
+                'miembrosroles': miembrosroles,
+                'id_proyecto': id_proyecto,
+            }
+            return render(request, 'equipo/detalle_equipo.html', context)
+        else:
+            return render(request, '/')
+
+
+class ActualizarEquipoView(View, LoginRequiredMixin):
+
+    def get(self, request, id_proyecto, id_equipo):
+        equipo = Equipo.objects.get(id=id_equipo)
+        form = FormCrearEquipo(instance=equipo)
+        return render(request, 'equipo/editarequipo.html', {'form': form})
+
+    def post(self, request, id_proyecto, id_equipo):
+        equipo = Equipo.objects.get(id=id_equipo)
+        form = FormCrearEquipo(request.POST, instance=equipo)
+        if form.is_valid():
+            form.save()
+
+            return HttpResponseRedirect('/proyecto/{}/equipo/{}'.format(id_proyecto, id_equipo))
+        return render(request, 'US/editarus.html', {'form': form})

@@ -17,4 +17,6 @@ urlpatterns = [
     path('<int:id_proyecto>/US', views.VerUSView.as_view(), name='ver_US'),
     path('<int:id_proyecto>/US/<int:id_us>', views.ActualizarUSView.as_view(), name='editar_US'),
     path('<int:id_proyecto>/US/<int:id_us>/borrar', views.BorrarUSView.as_view(), name='borrar_US'),
+    path('<int:id_proyecto>/equipo/<int:id_equipo>', views.DetalleEquipoView.as_view(), name='ver_equipo'),
+    path('<int:id_proyecto>/equipo/<int:id_equipo>/editar', views.ActualizarEquipoView.as_view(), name='editar_equipo'),
 ]

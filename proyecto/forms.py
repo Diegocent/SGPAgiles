@@ -15,13 +15,10 @@ class FormCrearProyecto(forms.Form):
     )
 
 
-class FormCrearEquipo(forms.Form):
-    nombre = forms.CharField(label='Nombre del equipo', empty_value="Escriba el nombre del equipo")
-    miembros = forms.ModelMultipleChoiceField(
-        queryset=Usuario.objects.all(), label="Miembros",
-        help_text="Seleccione aqui a los miembros del equipo a crear.",
-        widget=forms.CheckboxSelectMultiple()
-    )
+class FormCrearEquipo(ModelForm):
+    class Meta:
+        model = Equipo
+        fields = ("nombre", "miembros")
 
 
 class FormIniciarProyecto(forms.Form):
