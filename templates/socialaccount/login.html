@@ -1,0 +1,43 @@
+<! DOCTYPE HTML>
+<head>
+    <style>
+       body {
+       text-align: center;
+           color: white;
+       padding: 200px 0;}
+       h1   {color: white;
+        text-align: center;}
+       p {color:white;
+        text-align: center;}
+       .container {text-align: center;
+           margin: auto;
+           color: white;
+           display: flex;
+       justify-content: center;
+       align-items: center;}
+       div { text-align: justify;
+       color: white;}
+    </style>
+</head>
+{% extends "base.html" %}
+{% load i18n %}
+<body>
+{% block head_title %}"Sign In" %}{% endblock %}
+
+{% block content %}
+{% if process == "Conectar" %}
+<div style="text-align: center;"/>
+    <h1>{% blocktrans with provider.name as provider %}Conectar {{ provider }}{% endblocktrans %}</h1>
+    <p>{% blocktrans with provider.name as provider %}Usted esta por iniciar sesión desde una cuenta tercerizada {{ provider }}.{% endblocktrans %}</p>
+{% else %}
+<h1>{% blocktrans with provider.name as provider %}Inicie Sesión Vía {{ provider }}{% endblocktrans %}</h1>
+<p>{% blocktrans with provider.name as provider %}Usted esta por iniciar sesión desde una cuenta tercerizada  {{ provider }}.{% endblocktrans %}</p>
+{% endif %}
+<div class="container">
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">{% trans "Continuar" %}</button>
+</form>
+</div>
+    </body>
+{% endblock %}

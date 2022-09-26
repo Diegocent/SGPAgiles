@@ -1,6 +1,50 @@
-<h1>Crear Proyecto</h1>
+{% extends "base.html" %}
+{% block content %}
+    {% load widget_tweaks %}
+    <style>
+    div{
+        color: white;
+    }
+    h1{
+        text-align: center;
+    }
+    h2{
+        font-size: 15px;
+    }
+    </style>
+    <div>
+<br><br><h1><b>Crear Nuevo Proyecto</b></h1>
+        <h2 style="text-align:start;">
+            <span style="color: tomato; "> <b>TODOS LOS CAMPOS SON REQUERIDOS</b></span>
+        </h2>
 <form method="post">
-    {% csrf_token %}
-    {{ form }}
+    {% csrf_token %}<br>
+    {% for field in form.visible_fields %}
+    <div class="form-group class pb-2">
+        {% if field.name == 'nombre'%}
+         Nombre del Proyecto
+        {{field.errors}}
+            {% render_field field class="form-control" %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+        {% endif %}
+         {% if field.name == 'descripcion'%}
+             Descripción del Proyecto
+             {{field.errors}}
+             {% render_field field class="form-control" %}
+             {% if field.help_text %}
+                 <small class="form-text text-muted">{{ field.help_text }}</small>
+             {% endif %}
+         {% endif %}
+    {% if field.name == 'scrum_master'%}
+             Seleccione el Scrum Master del Proyecto
+             {{field.errors}}
+             {% render_field field class="form-control" %}
+         {% endif %}
+     </div>
+    {% endfor %}
+    <br>
     <input type="submit" value="Guardar">
-</form>
+</form></div>
+{% endblock %}

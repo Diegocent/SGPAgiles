@@ -1,4 +1,17 @@
-<h1> Proyecto {{ proyecto.nombre }}</h1>
+{% extends "base.html" %}
+{% block content %}
+    <style>
+    div{
+        color: white;
+        text-align: center;
+    }
+    h1{
+        text-align: left;
+        font-size: 30px;
+    }
+    </style>
+    <div>
+<br><br><h1><b>Proyecto : </b> {{ proyecto.nombre }}</h1><br>
 <h2> {{ proyecto.estado }}</h2>
 <h3> Fecha inicio: {{ proyecto.fecha_inicio }}</h3>
 <h3> Fecha fin estimada: {{ proyecto.fecha_fin_estimada }}</h3>
@@ -11,5 +24,6 @@
 {% else %}
     {% if proyecto.estado == "NO_INICIADO" %}
         <a href="iniciar_proyecto">Iniciar proyecto</a>
-    {% endif %}
+    {% endif %}</div>
 {% endif %}
+{% endblock %}
