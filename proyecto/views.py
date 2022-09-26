@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
-from django.http import HttpResponseRedirect
-from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto
-from .models import Proyecto, EstadoProyecto, Equipo
+from django.http import HttpResponseRedirect, HttpResponse
+from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
+    FormUS
+from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS
 from Usuario.models import Usuario, RolProyecto
 from django.contrib import messages
 from datetime import date
@@ -26,22 +27,25 @@ class VerProyectosView(View, LoginRequiredMixin):
 
     def get(self, request):
         usuario: Usuario = request.user
-        if usuario.es_admin():
-            proyectos = Proyecto.objects.all()
-            context = {
-                'admin': True,
-                'proyectos': proyectos
-            }
+        if usuario.is_authenticated:
+            if usuario.es_admin():
+                proyectos = Proyecto.objects.all()
+                context = {
+                    'admin': True,
+                    'proyectos': proyectos
+                }
+            else:
+                context = {
+                    "admin": False,
+                    "proyectos": []
+                }
+                equipos = Equipo.objects.all().filter(miembros__id=usuario.id)
+                for equipo in equipos:
+                    proyecto = Proyecto.objects.get(equipo=equipo)
+                    context['proyectos'].append(proyecto)
+            return render(request, 'ver_proyectos.html', context)
         else:
-            context = {
-                "admin": False,
-                "proyectos": []
-            }
-            equipos = Equipo.objects.all().filter(miembros__id=usuario.id)
-            for equipo in equipos:
-                proyecto = Proyecto.objects.get(equipo=equipo)
-                context['proyectos'].append(proyecto)
-        return render(request, 'ver_proyectos.html', context)
+            return render(request, 'account/login.html')
 
 
 class CrearProyectoView(View, LoginRequiredMixin):
@@ -78,11 +82,22 @@ class CrearProyectoView(View, LoginRequiredMixin):
 
 class VerProyectoView(View, LoginRequiredMixin):
 
+        def verificar_estados(self, tipos):
+            ok = True
+            for tipo in tipos:
+                estado = EstadoUS.objects.all().filter(tipoUserStory=tipo)
+                if len(estado) == 0:
+                    ok = False
+            return ok
+
         def get(self, request, id_proyecto):
             usuario: Usuario = request.user
             p = Proyecto.objects.get(id=id_proyecto)
-            equipo = p.equipo
+            tipos = TipoUserStory.objects.all().filter(proyecto=p)
 
+            us = UserStory.objects.all().filter(proyecto=p)
+            equipo = p.equipo
+            todos_con_estados = self.verificar_estados(tipos)
             if equipo:
                 miembros = equipo.miembros.all()
 
@@ -94,13 +109,20 @@ class VerProyectoView(View, LoginRequiredMixin):
                     "proyecto": p,
                     "equipo": equipo,
                     "miembros": miembros,
+                    "tipos": tipos,
+                    "todos_con_estados": todos_con_estados,
+                    "us":us
                 }
             else:
                 if not usuario.es_admin():
                     messages.warning(request, "No puedes ver este proyecto.")
                     return HttpResponseRedirect('ver_proyectos')
                 context = {
-                    "proyecto": p
+                    "proyecto": p,
+                    "equipo": equipo,
+                    "tipos": tipos,
+                    "todos_con_estados": todos_con_estados,
+                    "us": us
                 }
             return render(request, 'detalle_proyecto.html', context)
 
@@ -198,3 +220,146 @@ class VerRolesProyectoView(View, LoginRequiredMixin):
                 "roles": []
             }
         return render(request, 'roles/ver_roles.html', context)
+
+
+class VerTiposdeUSView(View, LoginRequiredMixin):
+
+    def get(self, request, id_proyecto):
+
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+
+        usuario: Usuario = request.user
+        if usuario.es_admin() or usuario.es_scrum_master():
+            tipos = TipoUserStory.objects.all().filter(proyecto=id_proyecto)
+            context = {
+                'crear_tipoUS': True,
+                'tipos': tipos,
+                "id_proyecto": id_proyecto
+            }
+        else:
+            context = {
+                'crear_tipoUS': False,
+                "tipos": [],
+                "id_proyecto": id_proyecto
+            }
+        return render(request, 'tipoUS/ver_tiposUS.html', context)
+
+
+class CrearTiposUSView(View, LoginRequiredMixin):
+    form_class = FormTiposUS
+
+    def get(self, request, id_proyecto):
+        form = self.form_class()
+        return render(request, 'tipoUS/creartipous.html', {'form': form})
+
+    def post(self, request, id_proyecto):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            tipo_del_post = form.cleaned_data
+            array_de_tipos = TipoUserStory.objects.all().filter(nombre=tipo_del_post['nombre'], proyecto_id=id_proyecto) | TipoUserStory.objects.\
+                all().filter(nombre=tipo_del_post['prefijo'], proyecto_id=id_proyecto)
+
+            if len(array_de_tipos) == 0:
+                TipoUserStory.objects.create(nombre=tipo_del_post['nombre'], prefijo=tipo_del_post['prefijo']
+                                                 , proyecto_id=id_proyecto)
+
+                messages.success(request, 'Creado exitosamente!')
+            else:
+                return render(request, 'tipoUS/creartipous.html', {'form': form})
+            return HttpResponseRedirect('ver_tipoUS', messages)
+        return render(request, 'tipoUS/creartipous.html', {'form': form})
+
+
+class DetalleTiposUSView(View, LoginRequiredMixin):
+
+    def get(self, request, id_proyecto, id_tipous):
+        usuario: Usuario = request.user
+        if usuario.es_admin() or usuario.es_scrum_master():
+            tipo = TipoUserStory.objects.get(id= id_tipous)
+            estados = EstadoUS.objects.all().filter(tipoUserStory_id=id_tipous)
+            context = {
+                'tipo': tipo,
+                'estados': estados,
+                'id_proyecto': id_proyecto,
+                'id_tipous': id_tipous
+            }
+            return render(request, 'tipoUS/detalle_tipoUS.html', context)
+        else:
+            return render(request, '/')
+
+
+class CrearEstadosUSView(View, LoginRequiredMixin):
+    form_class = FormEstadoUS
+
+    def get(self, request, id_proyecto, id_tipous):
+        form = self.form_class()
+        default = request.GET["default"]
+        if default == 'true':
+            tipo = TipoUserStory.objects.get(id=id_tipous)
+            EstadoUS.objects.create(nombre="TO DO", tipoUserStory=tipo)
+            EstadoUS.objects.create(nombre="DOING", tipoUserStory=tipo)
+            EstadoUS.objects.create(nombre="DONE", tipoUserStory=tipo)
+            return HttpResponseRedirect('/proyecto/{}/tipoUS/{}'.format(id_proyecto, id_tipous))
+        elif default == 'false':
+            return render(request, 'tipoUS/crearestadous.html', {'form': form})
+
+    def post(self, request, id_proyecto, id_tipous):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            estado_del_post = form.cleaned_data
+            array_de_estados = EstadoUS.objects.all().filter(nombre=estado_del_post['nombre'], tipoUserStory_id=id_tipous)
+
+            if len(array_de_estados) == 0:
+                tipo = TipoUserStory.objects.get(id=id_tipous)
+                EstadoUS.objects.create(nombre=estado_del_post['nombre'], tipoUserStory=tipo)
+
+                messages.success(request, 'Creado exitosamente!')
+            else:
+                return render(request, 'tipoUS/crearestadous.html', {'form': form})
+            return HttpResponseRedirect('/proyecto/{}/tipoUS/{}'.format(id_proyecto, id_tipous))
+        return render(request, 'tipoUS/crearestadous.html', {'form': form})
+
+
+class CrearUSView(View, LoginRequiredMixin):
+    form_class = FormUS
+
+    def get(self, request, id_proyecto):
+        form = self.form_class()
+        form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
+        return render(request, 'US/crearus.html', {'form': form})
+
+    def post(self, request, id_proyecto):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            us = form.cleaned_data
+            array_de_us = UserStory.objects.all().filter(nombre=us['nombre'], proyecto_id=id_proyecto)
+
+            if len(array_de_us) == 0:
+                p = Proyecto.objects.get(id=id_proyecto)
+                UserStory.objects.create(nombre=us['nombre'], descripcion=us['descripcion'], proyecto_id=id_proyecto,
+                                         tipo=us['tipo'])
+
+                messages.success(request, 'Creado exitosamente!')
+            else:
+                return render(request, 'US/crearus.html', {'form': form})
+            return HttpResponseRedirect('/proyecto/{}/US'.format(id_proyecto))
+        return render(request, 'US/crearus.html', {'form': form})
+
+
+class VerUSView(View, LoginRequiredMixin):
+
+    def get(self, request, id_proyecto):
+        usuario: Usuario = request.user
+        if usuario.es_admin() or usuario.es_scrum_master():
+            uss = UserStory.objects.all().filter(proyecto=id_proyecto)
+            context = {
+                'uss': uss,
+                'id_proyecto' : id_proyecto
+            }
+        else:
+            context = {
+                "uss": [],
+                'id_proyecto': id_proyecto
+            }
+        return render(request, 'US/ver_US.html', context)

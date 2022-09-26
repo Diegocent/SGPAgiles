@@ -3,13 +3,38 @@
 <h3> Fecha inicio: {{ proyecto.fecha_inicio }}</h3>
 <h3> Fecha fin estimada: {{ proyecto.fecha_fin_estimada }}</h3>
 
+
+
 <a href="ver_roles">Roles</a>
-
-
-{% if not miembros %}
-    <a href="crear_equipo">Crear Equipo</a>
-{% else %}
-    {% if proyecto.estado == "NO_INICIADO" %}
-        <a href="iniciar_proyecto">Iniciar proyecto</a>
+<br>
+{% if proyecto.estado == "NO_INICIADO" %}
+    {% if not equipo %}
+        <a href="crear_equipo">Crear Equipo</a>
+    {% else %}
+        <p>Equipo: {{ equipo.nombre }}</p>
     {% endif %}
+    <br>
+    {% if not tipos %}
+        <a href="crear_tipoUS">Crear Tipos de US para el proyecto</a>
+    {% else %}
+        {% if not todos_con_estados %}
+            <p>Hay Tipos de US sin estados!</p>
+        {% endif %}
+        <a href="{% url 'ver_tipoUS' id_proyecto=proyecto.id %}">Ver Tipos de US</a>
+    {% endif %}
+    <br>
+    {% if not us %}
+        <a href="{% url 'crear_US' id_proyecto=proyecto.id %}">Crear User Stories para el proyecto</a>
+    {% else %}
+        <a href="{% url 'ver_US' id_proyecto=proyecto.id %}">Ver User Stories</a>
+    {% endif %}
+{% else %}
+    <h3>User stories:</h3>
+    {% for u in us %}
+        <li>{{ u.nombre}}</li>
+    {% endfor %}
+{% endif %}
+
+{% if proyecto.estado == "NO_INICIADO" and equipo and tipos and us and todos_con_estados%}
+    <a href="iniciar_proyecto">Iniciar proyecto</a>
 {% endif %}

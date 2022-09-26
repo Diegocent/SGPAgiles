@@ -1,0 +1,18 @@
+<h1>User Stories del proyecto</h1>
+
+
+<a href="US/crear_US"> crear User Story</a>
+
+
+{% if uss %}
+    <h3>User Stories disponibles: </h3>
+     <ol>
+     {% for us in uss %}
+         <li>
+              {{ us.nombre }} - Tipo: {{ us.tipo.nombre }}
+            </li>
+     {% endfor %}
+    </ol>
+{% else %}
+    <h3>No hay US actualmente.</h3>
+{% endif %}

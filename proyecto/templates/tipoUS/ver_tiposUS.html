@@ -1,0 +1,18 @@
+<h1>Tipos de US del proyecto</h1>
+
+{% if crear_tipoUS %}
+    <a href="crear_tipoUS"> crear Tipo de US </a>
+{% endif %}
+
+{% if tipos %}
+    <h3>Tipos de US disponibles: </h3>
+     <ol>
+     {% for tipo in tipos %}
+         <li><a href="{% url 'detalle_tipoUS' id_proyecto=id_proyecto id_tipous=tipo.id%}">
+              {{ tipo.nombre }}
+            </a></li>
+     {% endfor %}
+    </ol>
+{% else %}
+    <h3>No hay tipos de US actualmente.</h3>
+{% endif %}
