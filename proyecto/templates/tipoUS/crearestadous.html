@@ -1,6 +1,21 @@
-<h1>Crear Estado para US</h1>
+{% extends 'base.html' %}
+{% block content %}
+    {% load widget_tweaks %}
+<h1 style="text-align: center; color: white">Crear Estado para US</h1>
 <form method="post">
     {% csrf_token %}
-    {{ form }}
+    {% for field in form.visible_fields %}
+    <div class="form-group class pb-2">
+        {% if field.name == 'nombre'%}
+         Nombre del Estado US
+        {{field.errors}}
+            {% render_field field class="form-control" %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+        {% endif %}
+    </div>
+{% endfor %}
     <input type="submit" value="Guardar">
 </form>
+{% endblock %}

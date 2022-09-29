@@ -1,14 +1,17 @@
-<h1> Tipo de US: {{ tipo.nombre }}</h1>
+{% extends 'base.html' %}
+{% block content %}
+<h1 style="text-align: center; color: white"> Tipo de US: {{ tipo.nombre }}</h1>
 
 {% if estados %}
-    <p>Estados de US:</p>
+    <p style="text-align: center; color: white">Estados de US:</p>
     {% for estado in estados %}
         <p>{{ estado.nombre }}</p>
     {% endfor %}
     <br>
     <a href="{% url 'crear_estadoUS' id_proyecto=id_proyecto id_tipous=id_tipous%}?default=false">Crear Estados</a>
 {% else %}
-    <a href="{% url 'crear_estadoUS' id_proyecto=id_proyecto id_tipous=id_tipous%}?default=true">Clic aqui para utilizar los estados por default (TO DO, DOING, DONE)?</a>
+    <a href="{% url 'crear_estadoUS' id_proyecto=id_proyecto id_tipous=id_tipous%}?default=true">Click aqui para utilizar los estados por default (TO DO, DOING, DONE)?</a>
     <br>
     <a href="{% url 'crear_estadoUS' id_proyecto=id_proyecto id_tipous=id_tipous%}?default=false">Crear Estados</a>
 {% endif %}
+{% endblock %}

@@ -30,7 +30,8 @@ class FormRolProyecto(forms.Form):
     nombre = forms.CharField(max_length=100)
     descripcion = forms.CharField(max_length=100)
     permisos = forms.ModelChoiceField(
-        queryset=Permisos.objects.all())
+        queryset=Permisos.objects.all(), label="Permisos",
+        help_text="Seleccione los Permisos.")
 
 
 class FormTiposUS(forms.Form):
