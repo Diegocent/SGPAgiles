@@ -101,7 +101,7 @@ class VerProyectoView(View, LoginRequiredMixin):
             if equipo:
                 miembros = equipo.miembros.all()
 
-                if usuario not in miembros and not usuario.es_admin() and not usuario.es_scrum_master():
+                if usuario not in miembros and not usuario.es_admin() and not usuario.es_scrum_master(id_proyecto):
                     messages.warning(request, "No puedes ver este proyecto.")
                     return HttpResponseRedirect('ver_proyectos')
 
@@ -208,7 +208,7 @@ class VerRolesProyectoView(View, LoginRequiredMixin):
 
     def get(self, request, id_proyecto):
         usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master():
+        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
             roles = RolProyecto.objects.all().filter(proyecto=id_proyecto)
             context = {
                 'crear_rol': True,
@@ -230,7 +230,7 @@ class VerTiposdeUSView(View, LoginRequiredMixin):
             return self.handle_no_permission()
 
         usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master():
+        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
             tipos = TipoUserStory.objects.all().filter(proyecto=id_proyecto)
             context = {
                 'crear_tipoUS': True,
@@ -275,7 +275,7 @@ class DetalleTiposUSView(View, LoginRequiredMixin):
 
     def get(self, request, id_proyecto, id_tipous):
         usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master():
+        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
             tipo = TipoUserStory.objects.get(id= id_tipous)
             estados = EstadoUS.objects.all().filter(tipoUserStory_id=id_tipous)
             context = {
@@ -351,7 +351,7 @@ class VerUSView(View, LoginRequiredMixin):
 
     def get(self, request, id_proyecto):
         usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master():
+        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
             uss = UserStory.objects.all().filter(proyecto=id_proyecto)
             context = {
                 'uss': uss,
@@ -411,7 +411,7 @@ class DetalleEquipoView(View, LoginRequiredMixin):
 
     def get(self, request, id_proyecto, id_equipo):
         usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master():
+        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
             equipo = Equipo.objects.get(id=id_equipo)
 
             miembros = equipo.miembros.all()
