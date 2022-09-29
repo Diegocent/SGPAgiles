@@ -7,50 +7,83 @@
     }
     h1{
         text-align: left;
-        font-size: 30px;
+        font-size: 25px;
     }
+   .sidebar {
+  height: 100%;
+  width: 300px;
+  position: fixed;
+  z-index: 1;
+  top: 56px;
+  left: 0;
+  background-color: tan;
+  overflow-x: hidden;
+  padding-top: 100px;
+}
+
+/* Style sidebar links */
+.sidebar a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  color: black;
+  display: block;
+}
+
+/* Style links on mouse-over */
+.sidebar a:hover {
+  color: black;
+}
+
+/* Style the main content */
+.main {
+  margin-left: 160px; /* Same as the width of the sidenav */
+  padding: 0px 10px;
+}
     </style>
     <div>
-<br><br><h1><b>Proyecto : </b> {{ proyecto.nombre }}</h1><br>
-<h2> {{ proyecto.estado }}</h2>
-<h3> Fecha inicio: {{ proyecto.fecha_inicio }}</h3>
-<h3> Fecha fin estimada: {{ proyecto.fecha_fin_estimada }}</h3>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<h1 style="text-align: center"><b>PROYECTO :</b>{{proyecto.nombre}}</h1>
+<h2 style="font-size: 20px"> {{ proyecto.estado }}</h2>
+<h3 style="font-size: 20px"> Fecha inicio: {{ proyecto.fecha_inicio }}</h3>
+<h4 style="font-size: 20px"> Fecha fin estimada: {{ proyecto.fecha_fin_estimada }}</h4>
+    <div class="sidebar">
 
-<a href="ver_roles">Roles</a>
+        <a href="ver_roles"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Roles</button></a>
 <br>
 {% if proyecto.estado == "NO_INICIADO" %}
     {% if not equipo %}
-        <a href="crear_equipo">Crear Equipo</a>
+        <a href="crear_equipo"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Crear Equipo</button></a>
     {% else %}
         <p>Equipo: {{ equipo.nombre }}</p>
     {% endif %}
     <br>
     {% if not tipos %}
-        <a href="crear_tipoUS">Crear Tipos de US para el proyecto</a>
+        <a href="crear_tipoUS"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear Tipos de US</button></a>
     {% else %}
         {% if not todos_con_estados %}
             <p>Hay Tipos de US sin estados!</p>
         {% endif %}
-        <a href="{% url 'ver_tipoUS' id_proyecto=proyecto.id %}">Ver Tipos de US</a>
+        <a href="{% url 'ver_tipoUS' id_proyecto=proyecto.id %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Tipos de US</button></a>
     {% endif %}
     <br>
     {% if not us %}
-        <a href="{% url 'crear_US' id_proyecto=proyecto.id %}">Crear User Stories para el proyecto</a>
+        <a href="{% url 'crear_US' id_proyecto=proyecto.id %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear User Stories</button></a>
     {% else %}
-        <a href="{% url 'ver_US' id_proyecto=proyecto.id %}">Ver User Stories</a>
+        <a href="{% url 'ver_US' id_proyecto=proyecto.id %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver User Stories</button></a>
     {% endif %}
 {% else %}
-    <h3>User stories:</h3>
+    <p style="color: black; font-size: 20px">User stories:</p>
     {% for u in us %}
-        <li>{{ u.nombre}} </li>
-        <a href="{% url 'editar_US' id_proyecto=proyecto.id id_us=u.id%}">Editar</a>
-        <a href="{% url 'borrar_US' id_proyecto=proyecto.id id_us=u.id%}">Borrar</a>
+        <li style="color: black">{{ u.nombre}} </li>
+        <a href="{% url 'editar_US' id_proyecto=proyecto.id id_us=u.id%}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Editar</button></a>
+        <a href="{% url 'borrar_US' id_proyecto=proyecto.id id_us=u.id%}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Borrar</button></a>
     {% endfor %}
-    <p>Equipo: <a href="{% url 'ver_equipo' id_proyecto=proyecto.id id_equipo=equipo.id %}">{{ equipo.nombre }}</a></p>
+    <p style="color: black; font-size: 20px" >Equipo: <a href="{% url 'ver_equipo' id_proyecto=proyecto.id id_equipo=equipo.id %}">{{ equipo.nombre }}</a></p>
 {% endif %}
 
 {% if proyecto.estado == "NO_INICIADO" and equipo and tipos and us and todos_con_estados%}
-    <a href="iniciar_proyecto">Iniciar proyecto</a>
+    <a href="iniciar_proyecto"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Iniciar proyecto</button></a>
 {% endif %}
-    </div>
+    </div></div>
 {% endblock %}

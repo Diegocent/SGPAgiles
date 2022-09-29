@@ -1,24 +1,11 @@
 {% extends "base.html" %}
 {% block content %}
     {% load widget_tweaks %}
-    <style>
-    div{
-        color: white;
-    }
-    h1{
-        text-align: center;
-    }
-    h2{
-        font-size: 15px;
-    }
-    </style>
     <div>
-<br><br><h1><b>Crear Nuevo Proyecto</b></h1>
-        <h2 style="text-align:start;">
-            <span style="color: tomato; "> <b>TODOS LOS CAMPOS SON REQUERIDOS</b></span>
-        </h2>
+        <span><h1><b>CREAR NUEVO PROYECTO</b></h1>
+            <h2 style="color: tomato; text-align:left"><b>* Todos los campos son requeridos *</b></h2></span>
 <form method="post">
-    {% csrf_token %}<br>
+    {% csrf_token %}
     {% for field in form.visible_fields %}
     <div class="form-group class pb-2">
         {% if field.name == 'nombre'%}
@@ -44,7 +31,6 @@
          {% endif %}
      </div>
     {% endfor %}
-    <br>
-    <input type="submit" value="Guardar">
+    <input type="submit" value="Crear">
 </form></div>
 {% endblock %}

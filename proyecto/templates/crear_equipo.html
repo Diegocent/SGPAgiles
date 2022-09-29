@@ -10,10 +10,13 @@
     }
     .form-group class pb-2{
         font-size: 25px;
+        overflow: scroll;
     }
+
+
     </style>
     <div>
-        <br><br><h1><b>Crear Equipo</b></h1>
+        <h1><b>Crear Equipo</b></h1>
 <form method="post">
     {% csrf_token %}
     {% for field in form.visible_fields %}
@@ -28,10 +31,11 @@
         {% endif %}
          {% if field.name == 'miembros'%}
              Seleccione miembros del Equipo:
-             {{field}}
+             {{field.errors}}
+             {% render_field field class="form-control" %}
          {% endif %}
      </div>
     {% endfor %}
-    <input type="submit" value="Guardar">
+    <input type="submit" value="Crear">
 </form></div>
 {% endblock %}

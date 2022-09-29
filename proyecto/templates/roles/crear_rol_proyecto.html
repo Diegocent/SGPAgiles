@@ -1,6 +1,35 @@
-<h1>Crear rol de proyecto</h1>
+{% extends 'base.html' %}
+{% block content %}
+    {% load widget_tweaks %}
+    <div>
+<h1>Crear Rol de Proyecto</h1>
 <form method="post">
     {% csrf_token %}
-    {{ form }}
+    {% for field in form.visible_fields %}
+    <div class="form-group class pb-2">
+        {% if field.name == 'nombre'%}
+         Nombre del Rol
+        {{field.errors}}
+            {% render_field field class="form-control" %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+        {% endif %}
+         {% if field.name == 'descripcion'%}
+             Descripción del Rol
+             {{field.errors}}
+             {% render_field field class="form-control" %}
+             {% if field.help_text %}
+                 <small class="form-text text-muted">{{ field.help_text }}</small>
+             {% endif %}
+         {% endif %}
+    {% if field.name == 'permisos'%}
+             Seleccione los Permisos
+             {{field.errors}}
+             {% render_field field class="form-control" %}
+         {% endif %}
+     </div>
+    {% endfor %}
     <input type="submit" value="Guardar">
-</form>
+</form></div>
+{% endblock %}

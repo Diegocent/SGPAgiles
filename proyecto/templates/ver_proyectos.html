@@ -1,39 +1,19 @@
 {% extends "base.html" %}
-
 {% load static %}
-
 {% block content %}
-    <style>
-    body{
-        text-align: center;
-        padding: 100px;
-    }
-    h3{
-        font-size: 40px;
-        text-align: center;
-    }
-
-    a{
-        font-size: 20px;
-        color: cadetblue;
-    }
-    b{
-        font-size: 20px;
-        padding: 40px;
-        text-align: center;
-    }
-    </style>
+<div class="verProyecto">
 <body>
 {% if proyectos %}
-    <br><br>
-    <span style = "color : white"> <h3> Proyectos Actuales: </h3> </span><br>
-     <ol>
+    <span style = "color : white"><h3> Proyectos Actuales: </h3> </span><br>
+
      {% for proyecto in proyectos %}
-         <li><a href="{% url 'detalle_proyecto' id_proyecto=proyecto.id %}">
+         <ul style="list-style: none;">
+         <li><a style="color: #117a8b" href="{% url 'detalle_proyecto' id_proyecto=proyecto.id %}">
               {{ proyecto.nombre }} ({{ proyecto.estado }})
-            </a></li>
+         </a></li>
+         </ul>
      {% endfor %}
-    </ol>
+
 {% else %}
     <br>
     <span style = "color : white"> <h3>No hay proyectos actualmente.</h3> </span>
@@ -41,9 +21,9 @@
 
 {% if admin %}
     <br><br>
-    <a href="crear"> <button type="button" class="btn btn-secondary"><b>Crear Proyecto</b></button> </a>
+    <a href="crear"> <button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black"><b>Crear Proyecto</b></button> </a>
 {% endif %}
 
 
-</body>
+</body></div>
 {% endblock %}

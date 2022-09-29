@@ -1,41 +1,105 @@
-<html>
+<head>
 <style>
     /*
  * Header
  */
+       body {
+           text-align: center;
+           color: white;
+           padding: 0px;}
+       .inicio{
+           text-align: center;
+           padding: 200px;
+       }
+       h1   {
+           text-align: center;
+           padding: 100px;
+           color: white;
+           font-size: 30px;
+       }
+       h2   {
+           text-align: center;
+           color: white;
+           font-size: 30px;
+       }
+       body {
+           text-shadow: 0 .05rem .1rem rgba(0, 0, 0, .5);
+            box-shadow: inset 0 0 5rem rgba(0, 0, 0, .5);
+        }
 
-.nav-masthead .nav-link {
-  padding: .25rem 0;
-  font-weight: 700;
-  color: rgba(255, 255, 255, .5);
-  background-color: transparent;
-  border-bottom: .25rem solid transparent;
+.cover-container {
+  max-width: 42em;
 }
 
-.nav-masthead .nav-link:hover,
-.nav-masthead .nav-link:focus {
-  border-bottom-color: rgba(255, 255, 255, .25);
+.botones {
+  height: 200px;
+  position: relative;
+    padding-top: 100px;
 }
 
-.nav-masthead .nav-link + .nav-link {
-  margin-left: 1rem;
+.centrar{
+  margin: 0;
+    padding-top: 300px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
+ .verProyecto{
+        text-align: center;
+        padding: 100px;
+        font-size: 20px;
+        color: cadetblue;
+    }
+ .verRoles{
+        text-align: center;
+        padding: 0px;
+        font-size: 20px;
+        color: white;
+    }
 
-.nav{
-    float: right;
-}
+    .form-group class pb-2{
+        font-size: 30px;
+        text-align: center;
+        padding: 0;
+        color:blue;
+    }
+    b{
+        font-size: 20px;
+        padding: 40px;
+        text-align: center;
+    }
+       p {
+           color:white;
+           text-align: center;}
+       .container {text-align: center;
+           margin: auto;
+           color: white;
+       justify-content: center;
+      }
+       div {
+           text-align: justify;
+       color: white;}
+        .nav-link{
+            color: black;
+        }
+
 </style>
+</head>
 <div>
-    <div class="nav">
-    <header class="mb-auto">
-    <div>
-      <nav class="nav nav-masthead justify-content-center float-md-end">
-        <!--<a class="nav-link active" aria-current="page" href="http://127.0.0.1:8000/inicio/">Inicio</a>-->
-        <a class="nav-link" href="http://127.0.0.1:8000/docs/">Documentación</a>
-        <a class="nav-link" href="accounts/logout">Salir</a>
+<header>
+      <nav class="navbar navbar-expand-sm bg-light">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="http://127.0.0.1:8000/docs/">Documentación</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="accounts/logout">Salir</a>
+            </li>
+        </ul>
       </nav>
-    </div>
-    </header></div>
+</header>
     {% load static %}
     <!-- Bootstrap -->
     <link href="{% static 'proyecto/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -47,7 +111,7 @@
 
     <!-- Styles -->
     <link href="{% static 'proyecto/css/gestion.css' %}" rel="stylesheet">
-</head>
+
 
 
  <!-- contenido cambiante-->

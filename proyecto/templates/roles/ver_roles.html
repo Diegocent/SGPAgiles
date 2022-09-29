@@ -1,18 +1,25 @@
-<h1>Roles del proyecto</h1>
+{% extends 'base.html' %}
+{% block content %}
+    <div class="verRoles">
+  <body>
+<h1>Roles</h1>
 
 {% if crear_rol %}
-    <a href="crear_rol_proyecto"> crear rol </a>
+    <a href="crear_rol_proyecto"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black"> Crear Rol </button></a>
 {% endif %}
 
 {% if roles %}
-    <h3>Roles disponibles: </h3>
-     <ol>
+    <br><br>
+    <h3>Roles Disponibles: </h3>
+     <ul style="list-style: none;">
      {% for rol in roles %}
          <li><a>
               {{ rol.nombre }}
             </a></li>
      {% endfor %}
-    </ol>
+     </ul>
 {% else %}
     <h3>No hay roles actualmente.</h3>
 {% endif %}
+    </body></div>
+{% endblock %}

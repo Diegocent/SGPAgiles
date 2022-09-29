@@ -1,6 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load widget_tweaks %}
 <h1>Iniciar Proyecto</h1>
 <form method="post">
     {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Iniciar">
+    {% for field in form.visible_fields %}
+    <div class="form-group class pb-2">
+        {% if field.name == 'fecha_fin_estimada'%}
+         Fecha Fin
+        {{field.errors}}
+            {% render_field field class="form-control" %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    <input type="submit" value="Iniciar"></div>
 </form>
+{% endblock %}
