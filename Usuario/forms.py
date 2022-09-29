@@ -7,7 +7,7 @@ class FormRolSistema(forms.Form):
     nombre = forms.CharField(max_length=100, required=True)
     descripcion = forms.CharField(max_length=100)
     permisos = forms.ModelMultipleChoiceField(
-        queryset=Permisos.objects.all(), widget=forms.CheckboxSelectMultiple(), required=True, )
+        queryset=Permisos.objects.all(), required=True)
 
 
 class FormCrearPermisos(forms.Form):

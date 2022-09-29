@@ -7,16 +7,16 @@
     <span style = "color : white"> <h1>Roles del sistema</h1> </span>
 
 {% if roles %}
-    <span style = "color : white"> <h3>Roles disponibles: </h3> </span>
-     <ol>
+    <span style = "color : white; text-align: center"> <h3>Roles Disponibles: </h3> </span>
+     <ol style="text-align: center">
      {% for rol in roles %}
-         <li><a>
+         <li style="text-align:center; list-style: inside"><a>
               {{ rol.nombre }}
             </a></li>
      {% endfor %}
     </ol>
 {% else %}
-    <span style = "color : white"> <h3>No hay roles actualmente.</h3> </span>
+    <span style = "color : white; text-align: center"> <h3>No hay roles actualmente.</h3> </span>
 {% endif %}
 
 {% endblock %}

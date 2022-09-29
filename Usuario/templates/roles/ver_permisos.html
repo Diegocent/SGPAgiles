@@ -1,16 +1,14 @@
 {% extends "base.html" %}
-
 {% load static %}
-
 {% block content %}
 
     <span style = "color : white"> <h1>Permisos</h1> </span>
 
 {% if permisos %}
-    <span style = "color : white"> <h3>Permisos disponibles: </h3> </span>
-     <ol>
+    <span style = "color : white; text-align: center"> <h3>Permisos Disponibles: </h3> </span>
+     <ol style="text-align: center">
      {% for perm in permisos %}
-         <li><a>
+         <li style="text-align:center; list-style: inside"><a>
               {{ perm.nombre }} - {{ perm.descripcion }}
             </a></li>
      {% endfor %}

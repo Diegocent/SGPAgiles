@@ -1,13 +1,35 @@
 {% extends "base.html" %}
-
 {% load static %}
-
 {% block content %}
-
-    <span style = "color : white"> <h1>Crear Roles</h1> </span>
+{% load widget_tweaks %}
+    <span style = "color : white"> <h4>Crear Roles</h4> </span>
 <form method="post">
     {% csrf_token %}
-    {{ form }}
+     {% for field in form.visible_fields %}
+    <div class="form-group class pb-2">
+        {% if field.name == 'nombre'%}
+         Nombre del Rol
+        {{field.errors}}
+            {% render_field field class="form-control" %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+        {% endif %}
+         {% if field.name == 'descripcion'%}
+             Descripción del Rol
+             {{field.errors}}
+             {% render_field field class="form-control" %}
+             {% if field.help_text %}
+                 <small class="form-text text-muted">{{ field.help_text }}</small>
+             {% endif %}
+         {% endif %}
+     {% if field.name == 'permisos'%}
+             Seleccione los Permisos
+             {{field.errors}}
+             {% render_field field class="form-control" %}
+         {% endif %}
+     </div>
+    {% endfor %}
     <input type="submit" value="Guardar">
 </form>
 

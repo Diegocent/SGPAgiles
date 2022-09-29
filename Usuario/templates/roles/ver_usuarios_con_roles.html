@@ -1,21 +1,21 @@
 {% extends "base.html" %}
-
 {% load static %}
-
 {% block content %}
 
+    <span style = "color : white"> <h1>Usuarios con sus Roles</h1> </span>
 {% for usuario in usuarios %}
-    <li><a>
+    <span style = "color : white; text-align: center"> <h3>Usuario: </h3> </span>
+    <li style="text-align: center; list-style: inside"><a>
               {{ usuario.nombre }}
 
-
+     <br><br><span style = "color : white; text-align: center"> <h3>Rol: </h3> </span>
     {% for rol in usuario.rolSistema.all %}
-        <a>
+        <li style="text-align: center; list-style: inside"><a>
               {{ rol.nombre }}
         </a>
 
         {% endfor %}
-     </a></li>
+        </li></li></a></li>
 {% endfor %}
 
 {% endblock %}

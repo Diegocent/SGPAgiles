@@ -1,13 +1,30 @@
 {% extends "base.html" %}
-
 {% load static %}
-
 {% block content %}
-    
+   {% load widget_tweaks %}
     <span style = "color : white"> <h1>Crear Permisos</h1> </span>
 <form action="crear_permiso" method="post">
     {% csrf_token %}
-    {{ form }}
+    {% for field in form.visible_fields %}
+    <div class="form-group class pb-2">
+        {% if field.name == 'nombre'%}
+         Nombre del Permiso
+        {{field.errors}}
+            {% render_field field class="form-control" %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+        {% endif %}
+         {% if field.name == 'descripcion'%}
+             Descripción del Permiso
+             {{field.errors}}
+             {% render_field field class="form-control" %}
+             {% if field.help_text %}
+                 <small class="form-text text-muted">{{ field.help_text }}</small>
+             {% endif %}
+         {% endif %}
+     </div>
+    {% endfor %}
     <input type="submit" value="Guardar">
 </form>
 
