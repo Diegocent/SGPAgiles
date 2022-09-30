@@ -47,6 +47,13 @@
 <h2 style="font-size: 20px"> {{ proyecto.estado }}</h2>
 <h3 style="font-size: 20px"> Fecha inicio: {{ proyecto.fecha_inicio }}</h3>
 <h4 style="font-size: 20px"> Fecha fin estimada: {{ proyecto.fecha_fin_estimada }}</h4>
+    {% if sprint %}
+        {% for s in sprint %}
+            <h4><a href="{% url 'ver_sprint' id_proyecto=proyecto.id id_sprint=s.id %}">sprint: {{s.numero}}</a></h4>
+        {% endfor %}
+    {% else %}
+        <h4><a href="{% url 'crear_sprint' id_proyecto=proyecto.id %}">Crear Sprint</a></h4>
+    {% endif %}
     <div class="sidebar">
 
         <a href="ver_roles"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Roles</button></a>
@@ -75,7 +82,7 @@
 {% else %}
     <p style="color: black; font-size: 20px">User stories:</p>
     {% for u in us %}
-        <li style="color: black">{{ u.nombre}} </li>
+        <li style="color: black">{{ u.nombre}} {% if u.sprint %}en sprint {{ u.sprint.numero }}{% endif %}</li>
         <a href="{% url 'editar_US' id_proyecto=proyecto.id id_us=u.id%}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Editar</button></a>
         <a href="{% url 'borrar_US' id_proyecto=proyecto.id id_us=u.id%}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Borrar</button></a>
     {% endfor %}

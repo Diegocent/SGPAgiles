@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
@@ -95,6 +96,10 @@ class VerProyectoView(View, LoginRequiredMixin):
             p = Proyecto.objects.get(id=id_proyecto)
             tipos = TipoUserStory.objects.all().filter(proyecto=p)
 
+
+            sprint = Sprint.objects.all().filter(proyecto_id=id_proyecto, estado=EstadoProyecto.EN_PROCESO)
+
+
             us = UserStory.objects.all().filter(proyecto=p)
             equipo = p.equipo
             todos_con_estados = self.verificar_estados(tipos)
@@ -107,6 +112,7 @@ class VerProyectoView(View, LoginRequiredMixin):
 
                 context = {
                     "proyecto": p,
+                    "sprint": sprint,
                     "equipo": equipo,
                     "miembros": miembros,
                     "tipos": tipos,
@@ -480,3 +486,19 @@ class CrearSprint(View, LoginRequiredMixin):
                 return render(request, 'sprint/crearsprint.html', {'form': form})
             return HttpResponseRedirect('/proyecto/{}'.format(id_proyecto))
         return render(request, 'sprint/crearsprint.html', {'form': form})
+
+class DetalleSprintView(View, LoginRequiredMixin):
+
+    def get(self, request, id_proyecto, id_sprint):
+        usuario: Usuario = request.user
+        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
+            user_stories = UserStory.objects.filter(proyecto_id=id_proyecto, sprint_id=id_sprint)
+            sprint = Sprint.objects.get(id = id_sprint)
+            context = {
+                'user_stories': user_stories,
+                'id_proyecto': id_proyecto,
+                "sprint" : sprint
+            }
+            return render(request, 'sprint/detalle_sprint.html', context)
+        else:
+            return render(request, '/')
