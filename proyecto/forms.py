@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from .models import Equipo, TipoUserStory, UserStory
+from .models import Equipo, TipoUserStory, UserStory, Sprint
 from Usuario.models import Permisos, Usuario
 from django import forms
 
@@ -29,7 +29,7 @@ class FormIniciarProyecto(forms.Form):
 class FormRolProyecto(forms.Form):
     nombre = forms.CharField(max_length=100)
     descripcion = forms.CharField(max_length=100)
-    permisos = forms.ModelChoiceField(
+    permisos = forms.ModelMultipleChoiceField(
         queryset=Permisos.objects.all(), label="Permisos",
         help_text="Seleccione los Permisos.")
 
@@ -47,3 +47,10 @@ class FormUS(ModelForm):
     class Meta:
         model = UserStory
         fields = ["nombre", "descripcion", "tipo"]
+
+
+class FormSprint(ModelForm):
+    product_backlog = forms.ModelMultipleChoiceField(queryset=UserStory.objects.all())
+    class Meta:
+        model = Sprint
+        fields = ["numero", "descripcion", "fecha_fin", ]

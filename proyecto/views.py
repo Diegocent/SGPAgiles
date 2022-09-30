@@ -3,8 +3,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.http import HttpResponseRedirect, HttpResponse
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
-    FormUS
-from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS
+    FormUS, FormSprint
+from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint
 from Usuario.models import Usuario, RolProyecto
 from django.contrib import messages
 from datetime import date
@@ -446,3 +446,37 @@ class ActualizarEquipoView(View, LoginRequiredMixin):
 
             return HttpResponseRedirect('/proyecto/{}/equipo/{}'.format(id_proyecto, id_equipo))
         return render(request, 'US/editarus.html', {'form': form})
+
+
+class CrearSprint(View, LoginRequiredMixin):
+    form_class = FormSprint
+
+    def get(self, request, id_proyecto):
+        sprints = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoProyecto.EN_PROCESO)
+        if len(sprints) == 0:
+            form = self.form_class()
+            form.fields['product_backlog'].queryset = UserStory.objects.filter(proyecto_id=id_proyecto, sprint_id__isnull=True)
+            return render(request, 'sprint/crearsprint.html', {'form': form})
+        else:
+            return render(request, 'sprint/warning.html',)
+
+    def post(self, request, id_proyecto):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            sprintform = form.cleaned_data
+            array_de_sprint = Sprint.objects.all().filter(numero=sprintform['numero'], proyecto_id=id_proyecto)
+
+            if len(array_de_sprint) == 0:
+                p = Proyecto.objects.get(id=id_proyecto)
+                sprint = Sprint.objects.create(numero=sprintform['numero'], descripcion=sprintform['descripcion'],
+                                             proyecto_id=id_proyecto, fecha_fin=sprintform["fecha_fin"],
+                                             fecha_inicio=date.today(), estado=EstadoProyecto.EN_PROCESO)
+
+                user_stories = sprintform["product_backlog"]
+                for us in user_stories:
+                    us.sprint_id = sprint.id
+                    us.save()
+            else:
+                return render(request, 'sprint/crearsprint.html', {'form': form})
+            return HttpResponseRedirect('/proyecto/{}'.format(id_proyecto))
+        return render(request, 'sprint/crearsprint.html', {'form': form})
