@@ -1,9 +1,46 @@
 
 
-    <span style = "color : white"> <h1>Crear Sprint</h1> </span>
-<form action="" method="post">
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% load widget_tweaks %}
+    <span style = "color : white"> <h4>Crear Sprint</h4> </span>
+<form method="post">
     {% csrf_token %}
-    {{ form }}
+     {% for field in form.visible_fields %}
+    <div class="form-group class pb-2">
+        {% if field.name == 'numero'%}
+         Numero del Sprint
+        {{field.errors}}
+            {% render_field field class="form-control" %}
+            {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+            {% endif %}
+        {% endif %}
+         {% if field.name == 'descripcion'%}
+             Descripción del Sprint
+             {{field.errors}}
+             {% render_field field class="form-control" %}
+             {% if field.help_text %}
+                 <small class="form-text text-muted">{{ field.help_text }}</small>
+             {% endif %}
+         {% endif %}
+        {% if field.name == 'fecha_fin'%}
+             Duracion
+             {{field.errors}}
+             {% render_field field class="form-control" %}
+             {% if field.help_text %}
+                 <small class="form-text text-muted">{{ field.help_text }}</small>
+             {% endif %}
+         {% endif %}
+     {% if field.name == 'product_backlog'%}
+             Product Backlog
+             {{field.errors}}
+             {% render_field field class="form-control" %}
+         {% endif %}
+     </div>
+    {% endfor %}
     <input type="submit" value="Guardar">
 </form>
 
+{% endblock %}
