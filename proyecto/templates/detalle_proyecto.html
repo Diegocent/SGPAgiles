@@ -52,7 +52,10 @@
             <h4><a href="{% url 'ver_sprint' id_proyecto=proyecto.id id_sprint=s.id %}">sprint: {{s.numero}}</a></h4>
         {% endfor %}
     {% else %}
-        <h4><a href="{% url 'crear_sprint' id_proyecto=proyecto.id %}">Crear Sprint</a></h4>
+        {% if proyecto.estado == "EN_PROCESO" %}
+            <h4><a href="{% url 'crear_sprint' id_proyecto=proyecto.id %}">Crear Sprint</a></h4>
+        {% endif  %}
+
     {% endif %}
     <div class="sidebar">
 
