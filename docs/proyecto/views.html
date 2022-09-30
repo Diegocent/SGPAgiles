@@ -20,12 +20,14 @@
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ObjectDoesNotExist</span>
+<span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span>
 <span class="kn">from</span> <span class="nn">django.contrib.auth.mixins</span> <span class="kn">import</span> <span class="n">LoginRequiredMixin</span>
 <span class="kn">from</span> <span class="nn">django.views</span> <span class="kn">import</span> <span class="n">View</span>
-<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponseRedirect</span>
-<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="n">FormCrearProyecto</span><span class="p">,</span> <span class="n">FormCrearEquipo</span><span class="p">,</span> <span class="n">FormIniciarProyecto</span><span class="p">,</span> <span class="n">FormRolProyecto</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Proyecto</span><span class="p">,</span> <span class="n">EstadoProyecto</span><span class="p">,</span> <span class="n">Equipo</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponseRedirect</span><span class="p">,</span> <span class="n">HttpResponse</span>
+<span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="n">FormCrearProyecto</span><span class="p">,</span> <span class="n">FormCrearEquipo</span><span class="p">,</span> <span class="n">FormIniciarProyecto</span><span class="p">,</span> <span class="n">FormRolProyecto</span><span class="p">,</span> <span class="n">FormTiposUS</span><span class="p">,</span> <span class="n">FormEstadoUS</span><span class="p">,</span> \
+    <span class="n">FormUS</span><span class="p">,</span> <span class="n">FormSprint</span>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Proyecto</span><span class="p">,</span> <span class="n">EstadoProyecto</span><span class="p">,</span> <span class="n">Equipo</span><span class="p">,</span> <span class="n">TipoUserStory</span><span class="p">,</span> <span class="n">UserStory</span><span class="p">,</span> <span class="n">EstadoUS</span><span class="p">,</span> <span class="n">Sprint</span>
 <span class="kn">from</span> <span class="nn">Usuario.models</span> <span class="kn">import</span> <span class="n">Usuario</span><span class="p">,</span> <span class="n">RolProyecto</span>
 <span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span></pre></div>
@@ -38,7 +40,7 @@
         <a class='octothorpe' href='#section-1'>#</a>
       </div>
       <p>Create your views here.</p>
-<p>Todos los views para SGPAgiles 
+<p>Todos los vgikiews para SGPAgiles 
 Actualmente contamos con los siguientes views en Proyecto:</p>
 <ol>
 <li><strong>CrearProyectoView</strong> - Vista para crear Proyectos (salta a la seccion  <a href="views.html#CrearProyectoView">views.py</a>)</li>
@@ -48,6 +50,18 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 <li><strong>IniciarProyecto</strong> - Vista para iniciar proyecto (salta a la seccion  <a href="views.html#IniciarProyectoView">views.py</a>)</li>
 <li><strong>CrearRolProyectoView</strong> - Vista para crear los roles del proyecto (salta a la seccion  <a href="views.html#CrearRolProyectoView">views.py</a>)</li>
 <li><strong>VerRolesProyectoView</strong> - Se podra visualizar los roles asignados al proyecto (salta a la seccion  <a href="views.html#VerRolesProyectoView">views.py</a>)</li>
+<li><strong>CrearSprint</strong> Vista para crear los Sprints (salta a la seccion  <a href="views.html#CrearSprint">views.py</a>)</li>
+<li><strong>DetalleSprintView</strong> - Se podran visualizar los Sprints del proyecto (salta a la seccion  <a href="views.html#DetalleSprintView">views.py</a>)</li>
+<li><strong>ActualizarEquipoView</strong> - Vista para actualizar/modificar los datos del Equipo (salta a la seccion  <a href="views.html#ActualizarEquipoView">views.py</a>)</li>
+<li><strong>DetalleEquipoView</strong> - Se podra visualizar los detalles del equipo (salta a la seccion  <a href="views.html#DetalleEquipoView">views.py</a>)</li>
+<li><strong>CrearTiposUSView</strong> - Vista para crear los Tipos de US (salta a la seccion  <a href="views.html#CrearTipoUSView">views.py</a>)</li>
+<li><strong>VerTiposdeUSView</strong> - Se visualiza los tipos de US (salta a la seccion  <a href="views.html#VerTiposUSView">views.py</a>)</li>
+<li><strong>DetalleTiposUSView</strong> - Se podra visualizar los detalles del Tipo de US (salta a la seccion  <a href="views.html#DetalleTiposUSView">views.py</a>)</li>
+<li><strong>CrearEstadosUSView</strong> - Vista para crear los estados del US (salta a la seccion  <a href="views.html#CrearEstadoUSView">views.py</a>)</li>
+<li><strong>CrearUSView</strong> - Vista para crear un US (salta a la seccion  <a href="views.html#CrearUSView">views.py</a>)</li>
+<li><strong>VerUSView</strong> - Vista para visualizar los US existentes (salta a la seccion  <a href="views.html#VerUSView">views.py</a>)</li>
+<li><strong>BorrarUSView</strong> - Vista para eliminar un US (salta a la seccion  <a href="views.html#BorrarUSView">views.py</a>)</li>
+<li><strong>ActualizarUSView</strong> - Vista para actualizar/modificar los datos del Equipo (salta a la seccion  <a href="views.html#ActualizarUSView">views.py</a>)</li>
 </ol>
     </div>
     <div class='code'>
@@ -77,22 +91,25 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
         <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
-        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
-            <span class="n">proyectos</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;admin&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                <span class="s1">&#39;proyectos&#39;</span><span class="p">:</span> <span class="n">proyectos</span>
-            <span class="p">}</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
+                <span class="n">proyectos</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;admin&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                    <span class="s1">&#39;proyectos&#39;</span><span class="p">:</span> <span class="n">proyectos</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;admin&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                    <span class="s2">&quot;proyectos&quot;</span><span class="p">:</span> <span class="p">[]</span>
+                <span class="p">}</span>
+                <span class="n">equipos</span> <span class="o">=</span> <span class="n">Equipo</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">miembros__id</span><span class="o">=</span><span class="n">usuario</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">equipo</span> <span class="ow">in</span> <span class="n">equipos</span><span class="p">:</span>
+                    <span class="n">proyecto</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">equipo</span><span class="o">=</span><span class="n">equipo</span><span class="p">)</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s1">&#39;proyectos&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proyecto</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;ver_proyectos.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;admin&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                <span class="s2">&quot;proyectos&quot;</span><span class="p">:</span> <span class="p">[]</span>
-            <span class="p">}</span>
-            <span class="n">equipos</span> <span class="o">=</span> <span class="n">Equipo</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">miembros__id</span><span class="o">=</span><span class="n">usuario</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">equipo</span> <span class="ow">in</span> <span class="n">equipos</span><span class="p">:</span>
-                <span class="n">proyecto</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">equipo</span><span class="o">=</span><span class="n">equipo</span><span class="p">)</span>
-                <span class="n">context</span><span class="p">[</span><span class="s1">&#39;proyectos&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proyecto</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;ver_proyectos.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;account/login.html&#39;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -177,31 +194,13 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
-            <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
-            <span class="n">p</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
-            <span class="n">equipo</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">equipo</span>
-
-            <span class="k">if</span> <span class="n">equipo</span><span class="p">:</span>
-                <span class="n">miembros</span> <span class="o">=</span> <span class="n">equipo</span><span class="o">.</span><span class="n">miembros</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-
-                <span class="k">if</span> <span class="n">usuario</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">miembros</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_scrum_master</span><span class="p">():</span>
-                    <span class="n">messages</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No puedes ver este proyecto.&quot;</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;ver_proyectos&#39;</span><span class="p">)</span>
-
-                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;proyecto&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">,</span>
-                    <span class="s2">&quot;equipo&quot;</span><span class="p">:</span> <span class="n">equipo</span><span class="p">,</span>
-                    <span class="s2">&quot;miembros&quot;</span><span class="p">:</span> <span class="n">miembros</span><span class="p">,</span>
-                <span class="p">}</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
-                    <span class="n">messages</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No puedes ver este proyecto.&quot;</span><span class="p">)</span>
-                    <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;ver_proyectos&#39;</span><span class="p">)</span>
-                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;proyecto&quot;</span><span class="p">:</span> <span class="n">p</span>
-                <span class="p">}</span>
-            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;detalle_proyecto.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">verificar_estados</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tipos</span><span class="p">):</span>
+            <span class="n">ok</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">tipo</span> <span class="ow">in</span> <span class="n">tipos</span><span class="p">:</span>
+                <span class="n">estado</span> <span class="o">=</span> <span class="n">EstadoUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tipoUserStory</span><span class="o">=</span><span class="n">tipo</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">estado</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">ok</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="n">ok</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -213,8 +212,46 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearEquipoView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
-    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormCrearEquipo</span></pre></div>
+      <div class="highlight"><pre>        <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
+            <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+            <span class="n">tipos</span> <span class="o">=</span> <span class="n">TipoUserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+
+
+            <span class="n">sprint</span> <span class="o">=</span> <span class="n">Sprint</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">,</span> <span class="n">estado</span><span class="o">=</span><span class="n">EstadoProyecto</span><span class="o">.</span><span class="n">EN_PROCESO</span><span class="p">)</span>
+
+
+            <span class="n">us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">equipo</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">equipo</span>
+            <span class="n">todos_con_estados</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">verificar_estados</span><span class="p">(</span><span class="n">tipos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">equipo</span><span class="p">:</span>
+                <span class="n">miembros</span> <span class="o">=</span> <span class="n">equipo</span><span class="o">.</span><span class="n">miembros</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">usuario</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">miembros</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_scrum_master</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">):</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No puedes ver este proyecto.&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;ver_proyectos&#39;</span><span class="p">)</span>
+
+                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;proyecto&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">,</span>
+                    <span class="s2">&quot;sprint&quot;</span><span class="p">:</span> <span class="n">sprint</span><span class="p">,</span>
+                    <span class="s2">&quot;equipo&quot;</span><span class="p">:</span> <span class="n">equipo</span><span class="p">,</span>
+                    <span class="s2">&quot;miembros&quot;</span><span class="p">:</span> <span class="n">miembros</span><span class="p">,</span>
+                    <span class="s2">&quot;tipos&quot;</span><span class="p">:</span> <span class="n">tipos</span><span class="p">,</span>
+                    <span class="s2">&quot;todos_con_estados&quot;</span><span class="p">:</span> <span class="n">todos_con_estados</span><span class="p">,</span>
+                    <span class="s2">&quot;us&quot;</span><span class="p">:</span><span class="n">us</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No puedes ver este proyecto.&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;ver_proyectos&#39;</span><span class="p">)</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;proyecto&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">,</span>
+                    <span class="s2">&quot;equipo&quot;</span><span class="p">:</span> <span class="n">equipo</span><span class="p">,</span>
+                    <span class="s2">&quot;tipos&quot;</span><span class="p">:</span> <span class="n">tipos</span><span class="p">,</span>
+                    <span class="s2">&quot;todos_con_estados&quot;</span><span class="p">:</span> <span class="n">todos_con_estados</span><span class="p">,</span>
+                    <span class="s2">&quot;us&quot;</span><span class="p">:</span> <span class="n">us</span>
+                <span class="p">}</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;detalle_proyecto.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -222,6 +259,19 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearEquipoView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormCrearEquipo</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
       </div>
       
     </div>
@@ -234,10 +284,10 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-11'>
+  <div class='section' id='section-12'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
+        <a class='octothorpe' href='#section-12'>#</a>
       </div>
       
     </div>
@@ -261,10 +311,10 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-12'>
+  <div class='section' id='section-13'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
+        <a class='octothorpe' href='#section-13'>#</a>
       </div>
       
     </div>
@@ -274,10 +324,10 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-13'>
+  <div class='section' id='section-14'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-13'>#</a>
+        <a class='octothorpe' href='#section-14'>#</a>
       </div>
       
     </div>
@@ -290,10 +340,10 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-14'>
+  <div class='section' id='section-15'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-14'>#</a>
+        <a class='octothorpe' href='#section-15'>#</a>
       </div>
       
     </div>
@@ -313,10 +363,10 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-15'>
+  <div class='section' id='section-16'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-15'>#</a>
+        <a class='octothorpe' href='#section-16'>#</a>
       </div>
       
     </div>
@@ -326,10 +376,10 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-16'>
+  <div class='section' id='section-17'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-16'>#</a>
+        <a class='octothorpe' href='#section-17'>#</a>
       </div>
       
     </div>
@@ -340,10 +390,10 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-17'>
+  <div class='section' id='section-18'>
     <div class='docs'>
       <div class='octowrap'>
-        <a class='octothorpe' href='#section-17'>#</a>
+        <a class='octothorpe' href='#section-18'>#</a>
       </div>
       
     </div>
@@ -369,18 +419,6 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
     </div>
   </div>
   <div class='clearall'></div>
-  <div class='section' id='section-18'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-18'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerRolesProyectoView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
   <div class='section' id='section-19'>
     <div class='docs'>
       <div class='octowrap'>
@@ -389,9 +427,21 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
       
     </div>
     <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerRolesProyectoView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-20'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-20'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
         <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
-        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span> <span class="ow">or</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_scrum_master</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span> <span class="ow">or</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_scrum_master</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">):</span>
             <span class="n">roles</span> <span class="o">=</span> <span class="n">RolProyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
             <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;crear_rol&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
@@ -402,7 +452,582 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
                 <span class="s1">&#39;crear_rol&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
                 <span class="s2">&quot;roles&quot;</span><span class="p">:</span> <span class="p">[]</span>
             <span class="p">}</span>
-        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/ver_roles.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/ver_roles.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-21'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-21'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerTiposdeUSView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-22'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-22'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">handle_no_permission</span><span class="p">()</span>
+
+        <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span> <span class="ow">or</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_scrum_master</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">):</span>
+            <span class="n">tipos</span> <span class="o">=</span> <span class="n">TipoUserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;crear_tipoUS&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="s1">&#39;tipos&#39;</span><span class="p">:</span> <span class="n">tipos</span><span class="p">,</span>
+                <span class="s2">&quot;id_proyecto&quot;</span><span class="p">:</span> <span class="n">id_proyecto</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;crear_tipoUS&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="s2">&quot;tipos&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;id_proyecto&quot;</span><span class="p">:</span> <span class="n">id_proyecto</span>
+            <span class="p">}</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;tipoUS/ver_tiposUS.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-23'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-23'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearTiposUSView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormTiposUS</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-24'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-24'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;tipoUS/creartipous.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-25'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-25'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">tipo_del_post</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
+            <span class="n">array_de_tipos</span> <span class="o">=</span> <span class="n">TipoUserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">tipo_del_post</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">],</span> <span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span> <span class="o">|</span> <span class="n">TipoUserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span>\
+                <span class="nb">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">tipo_del_post</span><span class="p">[</span><span class="s1">&#39;prefijo&#39;</span><span class="p">],</span> <span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_de_tipos</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">TipoUserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">tipo_del_post</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">],</span> <span class="n">prefijo</span><span class="o">=</span><span class="n">tipo_del_post</span><span class="p">[</span><span class="s1">&#39;prefijo&#39;</span><span class="p">]</span>
+                                                 <span class="p">,</span> <span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Creado exitosamente!&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;tipoUS/creartipous.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;ver_tipoUS&#39;</span><span class="p">,</span> <span class="n">messages</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;tipoUS/creartipous.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-26'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-26'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">DetalleTiposUSView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-27'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-27'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_tipous</span><span class="p">):</span>
+        <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span> <span class="ow">or</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_scrum_master</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">):</span>
+            <span class="n">tipo</span> <span class="o">=</span> <span class="n">TipoUserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span> <span class="n">id_tipous</span><span class="p">)</span>
+            <span class="n">estados</span> <span class="o">=</span> <span class="n">EstadoUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tipoUserStory_id</span><span class="o">=</span><span class="n">id_tipous</span><span class="p">)</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;tipo&#39;</span><span class="p">:</span> <span class="n">tipo</span><span class="p">,</span>
+                <span class="s1">&#39;estados&#39;</span><span class="p">:</span> <span class="n">estados</span><span class="p">,</span>
+                <span class="s1">&#39;id_proyecto&#39;</span><span class="p">:</span> <span class="n">id_proyecto</span><span class="p">,</span>
+                <span class="s1">&#39;id_tipous&#39;</span><span class="p">:</span> <span class="n">id_tipous</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;tipoUS/detalle_tipoUS.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-28'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-28'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearEstadosUSView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormEstadoUS</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-29'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-29'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_tipous</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+        <span class="n">default</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">default</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">:</span>
+            <span class="n">tipo</span> <span class="o">=</span> <span class="n">TipoUserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_tipous</span><span class="p">)</span>
+            <span class="n">EstadoUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;TO DO&quot;</span><span class="p">,</span> <span class="n">tipoUserStory</span><span class="o">=</span><span class="n">tipo</span><span class="p">)</span>
+            <span class="n">EstadoUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;DOING&quot;</span><span class="p">,</span> <span class="n">tipoUserStory</span><span class="o">=</span><span class="n">tipo</span><span class="p">)</span>
+            <span class="n">EstadoUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;DONE&quot;</span><span class="p">,</span> <span class="n">tipoUserStory</span><span class="o">=</span><span class="n">tipo</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/proyecto/</span><span class="si">{}</span><span class="s1">/tipoUS/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_tipous</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">default</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;tipoUS/crearestadous.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-30'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-30'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_tipous</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">estado_del_post</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
+            <span class="n">array_de_estados</span> <span class="o">=</span> <span class="n">EstadoUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">estado_del_post</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">],</span> <span class="n">tipoUserStory_id</span><span class="o">=</span><span class="n">id_tipous</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_de_estados</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">tipo</span> <span class="o">=</span> <span class="n">TipoUserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_tipous</span><span class="p">)</span>
+                <span class="n">EstadoUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">estado_del_post</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">],</span> <span class="n">tipoUserStory</span><span class="o">=</span><span class="n">tipo</span><span class="p">)</span>
+
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Creado exitosamente!&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;tipoUS/crearestadous.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/proyecto/</span><span class="si">{}</span><span class="s1">/tipoUS/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_tipous</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;tipoUS/crearestadous.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-31'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-31'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearUSView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormUS</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-32'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-32'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;tipo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">queryset</span> <span class="o">=</span> <span class="n">TipoUserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/crearus.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-33'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-33'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">us</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
+            <span class="n">array_de_us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">us</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">],</span> <span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_de_us</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+                <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">us</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">],</span> <span class="n">descripcion</span><span class="o">=</span><span class="n">us</span><span class="p">[</span><span class="s1">&#39;descripcion&#39;</span><span class="p">],</span> <span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">,</span>
+                                         <span class="n">tipo</span><span class="o">=</span><span class="n">us</span><span class="p">[</span><span class="s1">&#39;tipo&#39;</span><span class="p">])</span>
+
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Creado exitosamente!&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/crearus.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/proyecto/</span><span class="si">{}</span><span class="s1">/US&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/crearus.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-34'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-34'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerUSView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-35'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-35'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
+        <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span> <span class="ow">or</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_scrum_master</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">):</span>
+            <span class="n">uss</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;uss&#39;</span><span class="p">:</span> <span class="n">uss</span><span class="p">,</span>
+                <span class="s1">&#39;id_proyecto&#39;</span> <span class="p">:</span> <span class="n">id_proyecto</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;uss&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s1">&#39;id_proyecto&#39;</span><span class="p">:</span> <span class="n">id_proyecto</span>
+            <span class="p">}</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/ver_US.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-36'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-36'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">ActualizarUSView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormUS</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-37'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-37'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
+        <span class="n">us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_us</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">FormUS</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">us</span><span class="p">)</span>
+        <span class="n">form</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;tipo&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">queryset</span> <span class="o">=</span> <span class="n">TipoUserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/editarus.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-38'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-38'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
+        <span class="n">us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_us</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">FormUS</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">us</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">us</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
+            <span class="n">array_de_us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="n">us</span><span class="p">[</span><span class="s1">&#39;nombre&#39;</span><span class="p">],</span> <span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_de_us</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+                <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Creado exitosamente!&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/editarus.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/proyecto/</span><span class="si">{}</span><span class="s1">/US&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/editarus.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-39'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-39'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">BorrarUSView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormUS</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-40'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-40'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
+        <span class="n">us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_us</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">FormUS</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">us</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/borrarus.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-41'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-41'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
+        <span class="n">us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_us</span><span class="p">)</span>
+
+        <span class="n">us</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/proyecto/</span><span class="si">{}</span><span class="s1">/US&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">))</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-42'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-42'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">DetalleEquipoView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-43'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-43'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_equipo</span><span class="p">):</span>
+        <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span> <span class="ow">or</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_scrum_master</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">):</span>
+            <span class="n">equipo</span> <span class="o">=</span> <span class="n">Equipo</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_equipo</span><span class="p">)</span>
+
+            <span class="n">miembros</span> <span class="o">=</span> <span class="n">equipo</span><span class="o">.</span><span class="n">miembros</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+
+            <span class="n">miembrosroles</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">miembro</span> <span class="ow">in</span> <span class="n">miembros</span><span class="p">:</span>
+                <span class="n">rol</span> <span class="o">=</span> <span class="n">miembro</span><span class="o">.</span><span class="n">rolProyecto</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+                <span class="n">dicc</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;miembro&quot;</span><span class="p">:</span> <span class="n">miembro</span><span class="p">,</span> <span class="s2">&quot;rol&quot;</span><span class="p">:</span> <span class="n">rol</span><span class="p">}</span>
+                <span class="n">miembrosroles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dicc</span><span class="p">)</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;equipo&#39;</span><span class="p">:</span> <span class="n">equipo</span><span class="p">,</span>
+                <span class="s1">&#39;miembrosroles&#39;</span><span class="p">:</span> <span class="n">miembrosroles</span><span class="p">,</span>
+                <span class="s1">&#39;id_proyecto&#39;</span><span class="p">:</span> <span class="n">id_proyecto</span><span class="p">,</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;equipo/detalle_equipo.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-44'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-44'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">ActualizarEquipoView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-45'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-45'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_equipo</span><span class="p">):</span>
+        <span class="n">equipo</span> <span class="o">=</span> <span class="n">Equipo</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_equipo</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">FormCrearEquipo</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">equipo</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;equipo/editarequipo.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-46'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-46'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_equipo</span><span class="p">):</span>
+        <span class="n">equipo</span> <span class="o">=</span> <span class="n">Equipo</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_equipo</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="n">FormCrearEquipo</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">equipo</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/proyecto/</span><span class="si">{}</span><span class="s1">/equipo/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_equipo</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/editarus.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-47'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-47'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearSprint</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormSprint</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-48'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-48'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
+        <span class="n">sprints</span> <span class="o">=</span> <span class="n">Sprint</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">,</span> <span class="n">estado</span><span class="o">=</span><span class="n">EstadoProyecto</span><span class="o">.</span><span class="n">EN_PROCESO</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sprints</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s1">&#39;product_backlog&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">queryset</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">,</span> <span class="n">sprint_id__isnull</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;sprint/crearsprint.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;sprint/warning.html&#39;</span><span class="p">,)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-49'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-49'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">sprintform</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
+            <span class="n">array_de_sprint</span> <span class="o">=</span> <span class="n">Sprint</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">numero</span><span class="o">=</span><span class="n">sprintform</span><span class="p">[</span><span class="s1">&#39;numero&#39;</span><span class="p">],</span> <span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_de_sprint</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+                <span class="n">sprint</span> <span class="o">=</span> <span class="n">Sprint</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">numero</span><span class="o">=</span><span class="n">sprintform</span><span class="p">[</span><span class="s1">&#39;numero&#39;</span><span class="p">],</span> <span class="n">descripcion</span><span class="o">=</span><span class="n">sprintform</span><span class="p">[</span><span class="s1">&#39;descripcion&#39;</span><span class="p">],</span>
+                                             <span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">,</span> <span class="n">fecha_fin</span><span class="o">=</span><span class="n">sprintform</span><span class="p">[</span><span class="s2">&quot;fecha_fin&quot;</span><span class="p">],</span>
+                                             <span class="n">fecha_inicio</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span> <span class="n">estado</span><span class="o">=</span><span class="n">EstadoProyecto</span><span class="o">.</span><span class="n">EN_PROCESO</span><span class="p">)</span>
+
+                <span class="n">user_stories</span> <span class="o">=</span> <span class="n">sprintform</span><span class="p">[</span><span class="s2">&quot;product_backlog&quot;</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">us</span> <span class="ow">in</span> <span class="n">user_stories</span><span class="p">:</span>
+                    <span class="n">us</span><span class="o">.</span><span class="n">sprint_id</span> <span class="o">=</span> <span class="n">sprint</span><span class="o">.</span><span class="n">id</span>
+                    <span class="n">us</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;sprint/crearsprint.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;/proyecto/</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;sprint/crearsprint.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-50'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-50'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">DetalleSprintView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-51'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-51'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_sprint</span><span class="p">):</span>
+        <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span> <span class="ow">or</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_scrum_master</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">):</span>
+            <span class="n">user_stories</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">,</span> <span class="n">sprint_id</span><span class="o">=</span><span class="n">id_sprint</span><span class="p">)</span>
+            <span class="n">sprint</span> <span class="o">=</span> <span class="n">Sprint</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span> <span class="o">=</span> <span class="n">id_sprint</span><span class="p">)</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;user_stories&#39;</span><span class="p">:</span> <span class="n">user_stories</span><span class="p">,</span>
+                <span class="s1">&#39;id_proyecto&#39;</span><span class="p">:</span> <span class="n">id_proyecto</span><span class="p">,</span>
+                <span class="s2">&quot;sprint&quot;</span> <span class="p">:</span> <span class="n">sprint</span>
+            <span class="p">}</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;sprint/detalle_sprint.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
 
 </pre></div>
     </div>

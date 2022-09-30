@@ -21,6 +21,18 @@ Actualmente contamos con los siguientes views en Proyecto:
 5. **IniciarProyecto** - Vista para iniciar proyecto (salta a la seccion [[views.py#IniciarProyectoView]])
 6. **CrearRolProyectoView** - Vista para crear los roles del proyecto (salta a la seccion [[views.py#CrearRolProyectoView]])
 7. **VerRolesProyectoView** - Se podra visualizar los roles asignados al proyecto (salta a la seccion [[views.py#VerRolesProyectoView]])
+8. **CrearSprint** Vista para crear los Sprints (salta a la seccion [[views.py#CrearSprint]])
+9. **DetalleSprintView** - Se podran visualizar los Sprints del proyecto (salta a la seccion [[views.py#DetalleSprintView]])
+10. **ActualizarEquipoView** - Vista para actualizar/modificar los datos del Equipo (salta a la seccion [[views.py#ActualizarEquipoView]])
+11. **DetalleEquipoView** - Se podra visualizar los detalles del equipo (salta a la seccion [[views.py#DetalleEquipoView]])
+12. **CrearTiposUSView** - Vista para crear los Tipos de US (salta a la seccion [[views.py#CrearTipoUSView]])
+13. **VerTiposdeUSView** - Se visualiza los tipos de US (salta a la seccion [[views.py#VerTiposUSView]])
+14. **DetalleTiposUSView** - Se podra visualizar los detalles del Tipo de US (salta a la seccion [[views.py#DetalleTiposUSView]])
+15. **CrearEstadosUSView** - Vista para crear los estados del US (salta a la seccion [[views.py#CrearEstadoUSView]])
+16. **CrearUSView** - Vista para crear un US (salta a la seccion [[views.py#CrearUSView]])
+17. **VerUSView** - Vista para visualizar los US existentes (salta a la seccion [[views.py#VerUSView]])
+18. **BorrarUSView** - Vista para eliminar un US (salta a la seccion [[views.py#BorrarUSView]])
+19. **ActualizarUSView** - Vista para actualizar/modificar los datos del Equipo (salta a la seccion [[views.py#ActualizarUSView]])
 """
 
 
