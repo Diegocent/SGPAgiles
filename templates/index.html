@@ -72,14 +72,19 @@
         <a href="{% provider_login_url 'google' %}" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Iniciar Sesión</a>
          </p>
       {% else %}
+          <h1>Sistema Gerenciador de Proyectos</h1>
           <div class="botones">
-          <div class="centrar">
+
+
+              <a href="config/"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">CONFIGURACIONES</button>
+          </a>
+
+              <br><br><br>
             <a href="proyecto/">
-           <button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">VER PROYECTOS</button>
+           <button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">PROYECTOS</button>
             </a>
-          <br><br><br>
-          <a href="config/"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">CONFIGURACIONES</button>
-          </a></div></div>
+
+          </div>
       {% endif %}
   </main>
 </div>

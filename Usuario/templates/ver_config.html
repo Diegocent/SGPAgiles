@@ -5,18 +5,22 @@
 
 
 {% block content %}
-
-
-
 <span style = "color : white"> <h4>CONFIGURACIONES DEL SISTEMA</h4> </span>
-    <div class="botones">
-          <div class="centrarConf">
-<ul class="navbar-nav mx-auto">
-    <li> <a href="crear_permiso"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear Permiso</button></a> </li>
-    <br><li> <a href="crear_roles"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear Rol</button></a> </li>
-    <br><li> <a href="asignar_rol"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Asignar Rol</button></a> </li>
-    <br><li> <a href="ver_roles"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Roles</button></a> </li>
-    <br><li> <a href="ver_permisos"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Permisos</button></a> </li>
-    <br><li> <a href="usuarios_con_roles"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Usuarios y sus Roles</button></a> </li>
-</ul></div></div>
+    <div class="list-group">
+        <div class="botones">
+            <ul class="navbar-nav mx-auto">
+                <a href="crear_permiso" class="list-group-item list-group-item-action active"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear Permiso</button></a>
+
+                <a href="ver_permisos" class="list-group-item list-group-item-action active"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Permisos</button></a>
+
+                <a href="crear_roles" class="list-group-item list-group-item-action active"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear Rol</button></a>
+
+                <a href="ver_roles" class="list-group-item list-group-item-action active"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Roles</button></a>
+
+                <a href="asignar_rol"class="list-group-item list-group-item-action active"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Asignar Rol</button></a>
+
+                <a href="usuarios_con_roles"class="list-group-item list-group-item-action active"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Usuarios y sus Roles</button></a>
+            </ul>
+        </div>
+    </div>
 {% endblock %}

@@ -106,12 +106,18 @@
 <div>
 <header>
       <nav class="navbar navbar-expand-sm bg-light">
+          <div style="color: #1a1e21">
+          usuario: {{request.user.email}}
+          </div>
         <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/">Home</a>
+            </li>
             <li class="nav-item">
                 <a class="nav-link" href="http://127.0.0.1:8000/docs/">Documentación</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="accounts/logout">Salir</a>
+                <a class="nav-link" href="http://127.0.0.1:8000/accounts/logout">Salir</a>
             </li>
         </ul>
       </nav>
