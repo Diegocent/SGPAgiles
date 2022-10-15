@@ -1,29 +1,49 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
+
 <div class="verProyecto">
 <body>
+
+<div class="row">
+<div class="col-xl-6 col-md-6">
+{% if admin %}
+    <br><br>
+    <a href="crear"> <button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black"><b>Crear Proyecto</b></button> </a>
+{% endif %}
+</div>
+
+<div class="col-xl-6 col-md-6">
 {% if proyectos %}
-    <span style = "color : white"><h3> Proyectos Actuales: </h3> </span><br>
+    <h1 class="mt-4">Proyectos Actuales: </h1>
+
 
      {% for proyecto in proyectos %}
-         <ul style="list-style: none;">
-         <li><a style="color: #117a8b" href="{% url 'detalle_proyecto' id_proyecto=proyecto.id %}">
-              {{ proyecto.nombre }} ({{ proyecto.estado }})
-         </a></li>
-         </ul>
+
+
+         <div class="row">
+                            <div class="col-xl-10 col-md-9">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body">{{ proyecto.nombre }} ({{ proyecto.estado }})</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="{% url 'detalle_proyecto' id_proyecto=proyecto.id %}">Iniciar</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
      {% endfor %}
 
 {% else %}
     <br>
     <span style = "color : white"> <h3>No hay proyectos actualmente.</h3> </span>
+</div>
 {% endif %}
 
-{% if admin %}
-    <br><br>
-    <a href="crear"> <button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black"><b>Crear Proyecto</b></button> </a>
-{% endif %}
-
-
+    </div>
 </body></div>
+
+
 {% endblock %}

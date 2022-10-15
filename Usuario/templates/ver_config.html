@@ -7,16 +7,72 @@
 {% block content %}
 
 
+    <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">CONFIGURACIONES DEL SISTEMA.</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item active">Que es lo que desea realizar?</li>
+                        </ol>
+                        <div class="row">
+                            <div class="col-xl-2 col-md-8">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body">Creacion de Permisos</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="crear_permiso">Crear Permiso</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-8">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body">Lista de Permisos</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="ver_permisos">Ver Permisos</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-8">
+                                <div class="card bg-success text-white mb-4">
+                                    <div class="card-body">Creacion de Roles</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="crear_roles">Crear Rol</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-8">
+                                <div class="card bg-danger text-white mb-4">
+                                    <div class="card-body">Lista de Roles</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="ver_roles">Ver Roles</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-8">
+                                <div class="card bg-success text-white mb-4">
+                                    <div class="card-body">Asignacion de Roles</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="asignar_rol">Asignar Rol</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-md-8">
+                                <div class="card bg-dark text-white mb-4">
+                                    <div class="card-body">Lista de Usuarios con su Rol</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="usuarios_con_roles">Ver Usuario/Rol</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
 
-<span style = "color : white"> <h4>CONFIGURACIONES DEL SISTEMA</h4> </span>
-    <div class="botones">
-          <div class="centrarConf">
-<ul class="navbar-nav mx-auto">
-    <li> <a href="crear_permiso"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear Permiso</button></a> </li>
-    <br><li> <a href="crear_roles"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear Rol</button></a> </li>
-    <br><li> <a href="asignar_rol"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Asignar Rol</button></a> </li>
-    <br><li> <a href="ver_roles"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Roles</button></a> </li>
-    <br><li> <a href="ver_permisos"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Permisos</button></a> </li>
-    <br><li> <a href="usuarios_con_roles"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Usuarios y sus Roles</button></a> </li>
-</ul></div></div>
+                    </div>
+                </main>
+
+            </div>
+
+
 {% endblock %}

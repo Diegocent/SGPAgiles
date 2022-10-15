@@ -72,14 +72,48 @@
         <a href="{% provider_login_url 'google' %}" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Iniciar Sesión</a>
          </p>
       {% else %}
-          <div class="botones">
-          <div class="centrar">
-            <a href="proyecto/">
-           <button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">VER PROYECTOS</button>
-            </a>
-          <br><br><br>
-          <a href="config/"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">CONFIGURACIONES</button>
-          </a></div></div>
+
+           <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid px-2">
+                        <h1 class="mt-4">Sistema Gerenciador de Proyectos</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item active">Bienvenido</li>
+                        </ol>
+                        <div class="row">
+                            <div class="col-xl-6 col-md-6">
+                                <div class="card bg-primary text-white mb-4">
+                                    <div class="card-body">Configuraciones</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="config/">Configuraciones del Sistema</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-md-6">
+                                <div class="card bg-warning text-white mb-4">
+                                    <div class="card-body">Proyectos</div>
+                                    <div class="card-footer d-flex align-items-center justify-content-between">
+                                        <a class="small text-white stretched-link" href="proyecto/">Configuraciones de Proyectos</a>
+                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                </main>
+
+            </div>
+
+
+
+
+
+
+
+
+
       {% endif %}
   </main>
 </div>

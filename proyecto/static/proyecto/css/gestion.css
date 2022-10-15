@@ -1,9 +1,8 @@
 body {
   font-family: 'Lora';
-  background-attachment: fixed;
-  background-position: center;
-  background-size: cover;
-  background-color: #1e2125;
+  background: #2c3e50;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #3498db, #2c3e50);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #3498d);
 }
 
 h1,

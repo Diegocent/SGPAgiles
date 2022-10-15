@@ -4,6 +4,10 @@
     <div>
         <span><h1><b>CREAR NUEVO PROYECTO</b></h1>
             <h2 style="color: tomato; text-align:left"><b>* Todos los campos son requeridos *</b></h2></span>
+
+
+    <div class="row">
+       <div class="col-xl-6 col-md-6">
 <form method="post">
     {% csrf_token %}
     {% for field in form.visible_fields %}
@@ -32,5 +36,15 @@
      </div>
     {% endfor %}
     <input type="submit" value="Crear">
-</form></div>
+</form>
+       </div>
+
+     <div class="col-xl-6 col-md-6">
+
+         <img src="static/proyecto/img/proyecto.jpeg" class="img-responsive"  >
+
+     </div>
+       </div>
+    </div>
+
 {% endblock %}

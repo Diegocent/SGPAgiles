@@ -2,35 +2,64 @@
 {% load static %}
 {% block content %}
 {% load widget_tweaks %}
-    <span style = "color : white"> <h4>Crear Roles</h4> </span>
-<form method="post">
-    {% csrf_token %}
-     {% for field in form.visible_fields %}
-    <div class="form-group class pb-2">
-        {% if field.name == 'nombre'%}
-         Nombre del Rol
-        {{field.errors}}
-            {% render_field field class="form-control" %}
-            {% if field.help_text %}
-                <small class="form-text text-muted">{{ field.help_text }}</small>
-            {% endif %}
-        {% endif %}
-         {% if field.name == 'descripcion'%}
-             Descripción del Rol
-             {{field.errors}}
-             {% render_field field class="form-control" %}
-             {% if field.help_text %}
-                 <small class="form-text text-muted">{{ field.help_text }}</small>
-             {% endif %}
-         {% endif %}
-     {% if field.name == 'permisos'%}
-             Seleccione los Permisos
-             {{field.errors}}
-             {% render_field field class="form-control" %}
-         {% endif %}
-     </div>
-    {% endfor %}
-    <input type="submit" value="Guardar">
-</form>
+   <h1 class="mt-4">Crear Roles.</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Desea crear un Rol?</li>
+</ol>
+
+   <div class="row">
+       <div class="col-xl-6 col-md-6">
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form.visible_fields %}
+
+
+                        {% if field.name == 'nombre'%}
+                            Nombre del Rol
+                            {{field.errors}}
+                            {% render_field field class="form-control" %}
+                                {% if field.help_text %}
+                                    <small class="form-text text-muted">{{ field.help_text }}</small>
+                                {% endif %}
+                        {% endif %}
+                        {% if field.name == 'descripcion'%}
+                            Descripción del Rol
+                            {{field.errors}}
+                            {% render_field field class="form-control" %}
+                            {% if field.help_text %}
+                                <small class="form-text text-muted">{{ field.help_text }}</small>
+                            {% endif %}
+                        {% endif %}
+
+
+
+                        {% if field.name == 'permisos'%}
+                            Seleccione los Permisos
+                            {{field.errors}}
+
+                            {% render_field field class="form-control" %}
+                        {% endif %}
+
+
+
+        {% endfor %}
+
+
+            <input type="submit" value="Guardar">
+
+    </form>
+    </div>
+   <div class="col-xl-6 col-md-6 ">
+<div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+  <div class="card-header">Rol creado correctamente.</div>
+  <div class="card-body">
+    <h5 class="card-title">Rol creado.</h5>
+    <p class="card-text">Puede crear mas roles o, ver los roles creados aqui: <a href="ver_roles" ><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Roles</button></a>
+</p>
+
+  </div>
+    </div>
+        </div>
+    </div>
 
 {% endblock %}

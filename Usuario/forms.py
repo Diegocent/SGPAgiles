@@ -15,6 +15,7 @@ class FormCrearPermisos(forms.Form):
     descripcion = forms.CharField(label='Descripcion del permiso', empty_value="Describa el permiso.")
 
 
+
 class FormAsignarRol(forms.Form):
     usuario = forms.ModelChoiceField(queryset=Usuario.objects.all(), required=True, label="Usuario")
     rol = forms.ModelMultipleChoiceField(queryset=RolSistema.objects.all(), required=True, label="Rol")
