@@ -311,6 +311,10 @@ class CrearEstadosUSView(View, LoginRequiredMixin):
     form_class = FormEstadoUS
 
     def get(self, request, id_proyecto, id_tipous):
+        tipo = TipoUserStory.objects.get(id=id_tipous)
+        array_us = UserStory.objects.all().filter(tipo=tipo)
+        if len(array_us) != 0:
+            return render(request, 'error/error_tipoUs.html')
         form = self.form_class()
         default = request.GET["default"]
         if default == 'true':
@@ -327,11 +331,10 @@ class CrearEstadosUSView(View, LoginRequiredMixin):
         if form.is_valid():
             estado_del_post = form.cleaned_data
             array_de_estados = EstadoUS.objects.all().filter(nombre=estado_del_post['nombre'], tipoUserStory_id=id_tipous)
-
-            if len(array_de_estados) == 0:
-                tipo = TipoUserStory.objects.get(id=id_tipous)
+            tipo = TipoUserStory.objects.get(id=id_tipous)
+            array_us = UserStory.objects.all().filter(tipo=tipo)
+            if len(array_de_estados) == 0 and len(array_us) == 0:
                 EstadoUS.objects.create(nombre=estado_del_post['nombre'], tipoUserStory=tipo)
-
                 messages.success(request, 'Creado exitosamente!')
             else:
                 return render(request, 'tipoUS/crearestadous.html', {'form': form})
@@ -352,12 +355,11 @@ class CrearUSView(View, LoginRequiredMixin):
         if form.is_valid():
             us = form.cleaned_data
             array_de_us = UserStory.objects.all().filter(nombre=us['nombre'], proyecto_id=id_proyecto)
-
-            if len(array_de_us) == 0:
+            array_estado = EstadoUS.objects.all().filter(tipoUserStory=us['tipo'])
+            if len(array_de_us) == 0 and len(array_estado)!=0 :
                 p = Proyecto.objects.get(id=id_proyecto)
                 UserStory.objects.create(nombre=us['nombre'], descripcion=us['descripcion'], proyecto_id=id_proyecto,
                                          tipo=us['tipo'])
-
                 messages.success(request, 'Creado exitosamente!')
             else:
                 return render(request, 'US/crearus.html', {'form': form})
