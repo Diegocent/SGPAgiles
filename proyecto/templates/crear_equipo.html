@@ -1,26 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
     {% load widget_tweaks %}
-    <style>
-    div{
-        color: white;
-    }
-    h1{
-        text-align: center;
-    }
-    .form-group class pb-2{
-        font-size: 25px;
-        overflow: scroll;
-    }
 
-
-    </style>
     <div>
-        <h1><b>Crear Equipo</b></h1>
+        <h1 class="mt-4">Establecer Equipo de Proyecto.</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">De la lista de usuarios, selecciona a los miembros de tu equipo, luego dale un nombre y crea tu Equipo.</li>
+</ol>
 <form method="post">
+<div class="row">
     {% csrf_token %}
+<div class="col-xl-6 col-md-6">
     {% for field in form.visible_fields %}
-    <div class="form-group class pb-2">
+
+
         {% if field.name == 'nombre'%}
          Nombre del Equipo
         {{field.errors}}
@@ -29,13 +22,22 @@
                 <small class="form-text text-muted">{{ field.help_text }}</small>
             {% endif %}
         {% endif %}
+
+
          {% if field.name == 'miembros'%}
              Seleccione miembros del Equipo:
              {{field.errors}}
+
              {% render_field field class="form-control" %}
          {% endif %}
-     </div>
+
+
     {% endfor %}
+</div>
+<div class="col-xl-6 col-md-6">
     <input type="submit" value="Crear">
+</div>
+</div>
+
 </form></div>
 {% endblock %}

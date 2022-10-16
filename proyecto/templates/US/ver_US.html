@@ -1,23 +1,61 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 style="text-align: center; color: white">User Stories del Proyecto</h1>
 
+<h1 class="mt-4">User Storys del Proyecto.</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Vizualiza la lista de U.S del proyecto, puedes editarlas, borrarlas o, crear una nueva.</li>
+</ol>
 
-<a href="US/crear_US"> Crear User Story</a>
+<div class="row">
 
-
+<div class="col-xl-6 col-md-6">
 {% if uss %}
-    <h3 style="text-align: center; color: white">User Stories disponibles: </h3>
-     <ol style="color: white; text-align: center">
+    <h3 style="text-align: left; color: white">User Stories disponibles: </h3>
+  <table class="table table-dark">
+  <thead>
+    <tr>
+
+      <th scope="col">Nombre U.S</th>
+      <th scope="col">Tipo U.S</th>
+      <th scope="col">Editar</th>
+        <th scope="col">Borrar</th>
+
+    </tr>
+  </thead>
      {% for us in uss %}
-         <li>
-              {{ us.nombre }} - Tipo: {{ us.tipo.nombre }}
-            </li>
-         <a href="{% url 'editar_US' id_proyecto=id_proyecto id_us=us.id%}">Editar</a>
-        <a href="{% url 'borrar_US' id_proyecto=id_proyecto id_us=us.id%}">Borrar</a>
+
+
+  <tbody>
+    <tr>
+
+      <td>{{ us.nombre }}</td>
+      <td>{{ us.tipo.nombre }}</td>
+      <td> <a href="{% url 'editar_US' id_proyecto=id_proyecto id_us=us.id%}">Editar</a>
+</td>
+        <td><a href="{% url 'borrar_US' id_proyecto=id_proyecto id_us=us.id%}">Borrar</a>
+</td>
+    </tr>
+  </tbody>
+
+
      {% endfor %}
-    </ol>
+</table>
 {% else %}
     <h3 style="text-align: center; color:white;">No hay US actualmente.</h3>
 {% endif %}
+</div>
+
+<div class="col-xl-6 col-md-6">
+    <br><br>
+<div class="card">
+      <div class="card-body">
+        <h5 class="card-title"><p style="color:darkblue";>Tambien puedes crear un U.S nuevo!</p></h5>
+        <p class="card-text"><p style="color:darkblue";>Crea los U.S que necesites.</p></p>
+        <a href="US/crear_US" class="btn btn-primary"> Crear U.S </a>
+      </div>
+    </div>
+
+</div>
+
+</div>
 {% endblock %}

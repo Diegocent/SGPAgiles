@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
      {% load widget_tweaks %}
-<h1>Crear Tipo US</h1>
+
+<h1 class="mt-4">Creacion de Tipos de U.S.</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Crea nuevos Tipos de User Story.</li>
+</ol>
+<div class="row">
+<div class="col-xl-6 col-md-6">
 <form method="post">
     {% csrf_token %}
     {% for field in form.visible_fields %}
@@ -25,5 +31,9 @@
      </div>
     {% endfor %}
     <input type="submit" value="Guardar">
+
 </form>
+</div>
+
+</div>
 {% endblock %}

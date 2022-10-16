@@ -1,17 +1,65 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 style="text-align: center; color: white"> Tipo de US: {{ tipo.nombre }}</h1>
+
+    <h1 class="mt-4">Gestion de Estado de Tipo de U.S.</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Utiliza los Estados creados por Default o, crea nuevos Estados y vizualiza una lista de estos.</li>
+</ol>
+<h3 style="text-align: center; color: white"> Nombre de Tipo U.S: {{ tipo.nombre }}</h3>
+<div class="row">
 
 {% if estados %}
+<div class="col-xl-6 col-md-6">
     <p style="text-align: center; color: white">Estados de US:</p>
+    <ul class="list-group">
     {% for estado in estados %}
-        <p>{{ estado.nombre }}</p>
+
+
+
+
+            <li class="list-group-item list-group-item-dark"><p>{{ estado.nombre }}</p></li>
+
+
     {% endfor %}
+    </ul>
+</div>
     <br>
-    <a href="{% url 'crear_estadoUS' id_proyecto=id_proyecto id_tipous=id_tipous%}?default=false">Crear Estados</a>
+    <div class="col-xl-6 col-md-6">
+<br><br>
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+  <div class="card-header">Quieres crear un estado?</div>
+  <div class="card-body">
+    <h5 class="card-title"><a href="{% url 'crear_estadoUS' id_proyecto=id_proyecto id_tipous=id_tipous%}?default=false">Crear Estados</a>
+</h5>
+    <p class="card-text">Agrega Estados al Tipo de U.S: {{ tipo.nombre }}.</p>
+  </div>
+</div>
+
+    </div>
 {% else %}
-    <a href="{% url 'crear_estadoUS' id_proyecto=id_proyecto id_tipous=id_tipous%}?default=true">Click aqui para utilizar los estados por default (TO DO, DOING, DONE)?</a>
+    <div class="col-xl-6 col-md-6">
+
+    <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+  <div class="card-header">Estados por Default</div>
+  <div class="card-body">
+    <h5 class="card-title"><a href="{% url 'crear_estadoUS' id_proyecto=id_proyecto id_tipous=id_tipous%}?default=true">Click aqui </a>
+</h5>
+    <p class="card-text">Para utilizar los estados por default (TO DO, DOING, DONE)</p>
+  </div>
+</div>
+
     <br>
-    <a href="{% url 'crear_estadoUS' id_proyecto=id_proyecto id_tipous=id_tipous%}?default=false">Crear Estados</a>
+    </div>
+    <div class="col-xl-6 col-md-6">
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+  <div class="card-header">Quieres crear un estado?</div>
+  <div class="card-body">
+    <h5 class="card-title"><a href="{% url 'crear_estadoUS' id_proyecto=id_proyecto id_tipous=id_tipous%}?default=false">Crear Estados</a>
+</h5>
+    <p class="card-text">Agrega Estados al Tipo de U.S: {{ tipo.nombre }}.</p>
+  </div>
+</div>
+    </div>
 {% endif %}
+</div>
 {% endblock %}

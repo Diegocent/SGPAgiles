@@ -20,18 +20,21 @@
 
      {% for proyecto in proyectos %}
 
-
          <div class="row">
-                            <div class="col-xl-10 col-md-9">
-                                <div class="card bg-primary text-white mb-4">
-                                    <div class="card-body">{{ proyecto.nombre }} ({{ proyecto.estado }})</div>
-                                    <div class="card-footer d-flex align-items-center justify-content-between">
-                                        <a class="small text-white stretched-link" href="{% url 'detalle_proyecto' id_proyecto=proyecto.id %}">Iniciar</a>
-                                        <div class="small text-white"><i class="fas fa-angle-right"></i></div>
-                                    </div>
-                                </div>
-                            </div>
 
+
+<div class="card text-white bg-success mb-3" style="max-width: 18rem;">
+  <div class="card-header">Estado: ({{ proyecto.estado }}).</div>
+  <div class="card-body">
+      <h1 class="card-title"><strong> <p style="color: wheat;">{{ proyecto.nombre }}.</p></strong></h1>
+    <p class="card-text">Puede editar el Proyecto aqui: <a href="{% url 'detalle_proyecto' id_proyecto=proyecto.id %}" ><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Editar</button></a>
+</p>
+
+  </div>
+    </div>
+
+
+</div>
 
 
      {% endfor %}

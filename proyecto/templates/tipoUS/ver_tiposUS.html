@@ -1,21 +1,46 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 style="text-align: center; color: white">Tipos de US del proyecto</h1>
+<h1 class="mt-4">Lista de Tipos de U.S del Proyecto.</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Vizualiza la lista de Tipos de U.S de Proyecto disponibles, o haz click en ellos para gestionar sus Estados.</li>
+</ol>
 
-{% if crear_tipoUS %}
-    <a href="crear_tipoUS"> Crear Tipo de US </a>
-{% endif %}
+  <div class="row">
 
+  <div class="col-xl-6 col-md-6">
 {% if tipos %}
-    <h3 style="text-align: center; color: white">Tipos de US disponibles: </h3>
-     <ol style="text-align: center; color: white">
+    <h3 style="text-align: left; color: white">Tipos de US disponibles: </h3>
+     <ol style="text-align: left; color: white">
      {% for tipo in tipos %}
-         <li style="text-align: center"><a href="{% url 'detalle_tipoUS' id_proyecto=id_proyecto id_tipous=tipo.id%}">
+         <H1>
+         <li style="text-align: left "><a href="{% url 'detalle_tipoUS' id_proyecto=id_proyecto id_tipous=tipo.id%}">
               {{ tipo.nombre }}
             </a></li>
+         </H1>
      {% endfor %}
     </ol>
 {% else %}
     <h3>No hay tipos de US actualmente.</h3>
 {% endif %}
+  </div>
+
+
+  <div class="col-xl-6 col-md-6">
+
+{% if crear_tipoUS %}
+
+
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title"><p style="color:darkblue";>Tambien puedes crear un Tipo de U.S nuevo!</p></h5>
+        <p class="card-text"><p style="color:darkblue";>Si los Tipos de U.S disponibles no se ajustan a tus necesidades puedes crear uno nuevo.</p></p>
+        <a href="crear_tipoUS" class="btn btn-primary">> Crear Tipo de US </a>
+      </div>
+    </div>
+
+
+{% endif %}
+</div>
+
+</div>
 {% endblock %}

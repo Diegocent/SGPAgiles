@@ -3,6 +3,9 @@
     {% load widget_tweaks %}
     <div>
 <h1>Crear Rol de Proyecto</h1>
+ <div class="row">
+
+  <div class="col-xl-6 col-md-6">
 <form method="post">
     {% csrf_token %}
     {% for field in form.visible_fields %}
@@ -32,4 +35,6 @@
     {% endfor %}
     <input type="submit" value="Guardar">
 </form></div>
+ </div>
+    </div>
 {% endblock %}

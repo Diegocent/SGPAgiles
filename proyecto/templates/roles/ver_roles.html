@@ -2,24 +2,38 @@
 {% block content %}
     <div class="verRoles">
   <body>
-<h1>Roles</h1>
+<h1 class="mt-4">Gestion de Roles de Proyecto.</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Vizualiza la lista de roles de proyecto desponibles, o crea nuevos roles.</li>
+</ol>
+
+<div class="row">
+<div class="col-xl-6 col-md-6">
+
+    {% if roles %}
+        <h3>Roles Disponibles: </h3>
+        <ul class="list-group-item list-group-item-dark">
+            {% for rol in roles %}
+                <li class="list-group-item"> {{ rol.nombre }}</li>
+
+            {% endfor %}
+        </ul>
+
+    {% else %}
+    <h3>No hay roles actualmente.</h3>
+    {% endif %}
+
+</div>
+<div class="col-xl-6 col-md-6">
 
 {% if crear_rol %}
-    <a href="crear_rol_proyecto"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black"> Crear Rol </button></a>
+    <a href="crear_rol_proyecto"><button type="button" class="btn btn-secondary btn-lg btn-block">Crear Nuevo Rol de Proyecto </button></a>
+
+
 {% endif %}
 
-{% if roles %}
-    <br><br>
-    <h3>Roles Disponibles: </h3>
-     <ul style="list-style: none;">
-     {% for rol in roles %}
-         <li><a>
-              {{ rol.nombre }}
-            </a></li>
-     {% endfor %}
-     </ul>
-{% else %}
-    <h3>No hay roles actualmente.</h3>
-{% endif %}
+
+</div>
+</div>
     </body></div>
 {% endblock %}
