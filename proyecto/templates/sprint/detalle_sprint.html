@@ -1,11 +1,53 @@
 {% extends 'base.html' %}
 {% block content %}
+<h1 class="mt-4">Gestion del Sprint: {{ sprint.numero }}</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Vizualiza los detalles del Sprint.</li>
+</ol>
+
+<div class="row">
+<div class="col-xl-6 col-md-6">
+<div class="card text-white bg-primary mb-3" style="max-width: 18rem;">
+  <div class="card-header">ESTADO</div>
+  <div class="card-body">
+    <h5 class="card-title"><h2>{{ sprint.estado }}</h2></h5>
+    <p class="card-text"></p>
+  </div>
+</div>
+</div>
+<div class="col-xl-6 col-md-6">
+
+<div class="card text-white bg-info mb-3" style="max-width: 18rem;">
+  <div class="card-header"><h3>Product Backlog</h3></div>
+  <div class="card-body">
+
+    <p class="card-text">
+    <table class="table table-striped table-dark">
+        {% for us in user_stories %}
+            <thead>
+    <tr>
+      <th scope="col">NOMBRE US:</th>
+      <th scope="col">TIPO U.S:</th>
+
+        </tr>
+  </thead>
+<tbody>
+    <tr>
+      <td>{{ us.nombre }}</td>
+      <td>{{ us.tipo.nombre }}</td>
 
 
-<h1>Sprint {{ sprint.numero }}</h1>
-<h2>{{ sprint.estado }}</h2>
-<h3>Producto Backlog</h3>
-{% for us in user_stories %}
-    <li> {{ us.nombre }} - tipo: {{ us.tipo.nombre }}</li>
+    </tr>
+
+
+</tbody>
+
+            </table>
 {% endfor %}
+    </p>
+  </div>
+</div>
+
+</div>
+</div>
 {% endblock %}
