@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+    <style>
+    div{
+        color: white;
+        text-align: center;
+    }
+    h1{
+        text-align: left;
+        font-size: 25px;
+    }
+   .sidebar {
+  height: 100%;
+  width: 300px;
+  position: fixed;
+  z-index: 1;
+  top: 56px;
+  left: 0;
+  background-color: whitesmoke;
+  overflow-x: hidden;
+  padding-top: 100px;
+}
+
+/* Style sidebar links */
+.sidebar a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 20px;
+  color: black;
+  display: block;
+}
+
+/* Style links on mouse-over */
+.sidebar a:hover {
+  color: black;
+}
+
+/* Style the main content */
+.main {
+  margin-left: 160px; /* Same as the width of the sidenav */
+  padding: 0px 10px;
+}
+    </style>
+    <div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <br>
+    {% if not tipos %}
+        <a href="crear_tipoUS"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear Tipos de US</button></a>
+    {% else %}
+        {% if not todos_con_estados %}
+            <p>Hay Tipos de US sin estados!</p>
+        {% endif %}
+        <a href="{% url 'ver_tipoUS' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver Tipos de US</button></a>
+    {% endif %}
+    <br>
+    {% if not us %}
+        <a href="{% url 'crear_US' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear User Stories</button></a>
+    {% else %}
+        <a href="{% url 'ver_US' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver User Stories</button></a>
+    {% endif %}
+    <br>
+    <p style="color: black; font-size: 20px">User stories:</p>
+    {% for u in us %}
+        <li style="color: black">{{ u.nombre}} {% if u.sprint %}en sprint {{ u.sprint.numero }}{% endif %}</li>
+        <a href="{% url 'editar_US' id_proyecto=id_proyecto id_us=u.id%}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Editar</button></a>
+        <a href="{% url 'borrar_US' id_proyecto=id_proyecto id_us=u.id%}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Borrar</button></a>
+    {% endfor %}
+
+
+    </div>
+{% endblock %}

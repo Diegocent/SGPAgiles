@@ -140,7 +140,8 @@ class VerProyectoView(View, LoginRequiredMixin):
                     "equipo": equipo,
                     "tipos": tipos,
                     "todos_con_estados": todos_con_estados,
-                    "us": us
+                    "us": us,
+                    "id_proyecto":id_proyecto
                 }
             return render(request, 'detalle_proyecto.html', context)
 
@@ -514,3 +515,21 @@ class DetalleSprintView(View, LoginRequiredMixin):
             return render(request, 'sprint/detalle_sprint.html', context)
         else:
             return render(request, '/')
+
+
+class  verProductBacklog(View, LoginRequiredMixin):
+
+    def get(self, request, id_proyecto):
+        usuario: Usuario = request.user
+        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
+            uss = UserStory.objects.all().filter(proyecto=id_proyecto)
+            context = {
+                'uss': uss,
+                'id_proyecto': id_proyecto
+            }
+        else:
+            context = {
+                "uss": [],
+                'id_proyecto': id_proyecto
+            }
+        return render(request, 'backlog/ver_product_backlog.html', context)
