@@ -129,7 +129,8 @@ class VerProyectoView(View, LoginRequiredMixin):
                     "miembros": miembros,
                     "tipos": tipos,
                     "todos_con_estados": todos_con_estados,
-                    "us":us
+                    "us":us,
+                    "id_proyecto": id_proyecto
                 }
             else:
                 if not usuario.es_admin():

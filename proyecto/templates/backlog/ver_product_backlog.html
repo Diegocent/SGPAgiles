@@ -60,7 +60,7 @@
     {% endif %}
     <br>
     <p style="color: black; font-size: 20px">User stories:</p>
-    {% for u in us %}
+    {% for u in uss %}
         <li style="color: black">{{ u.nombre}} {% if u.sprint %}en sprint {{ u.sprint.numero }}{% endif %}</li>
         <a href="{% url 'editar_US' id_proyecto=id_proyecto id_us=u.id%}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Editar</button></a>
         <a href="{% url 'borrar_US' id_proyecto=id_proyecto id_us=u.id%}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Borrar</button></a>
