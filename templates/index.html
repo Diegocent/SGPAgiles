@@ -81,6 +81,7 @@
                             <li class="breadcrumb-item active">Bienvenido</li>
                         </ol>
                         <div class="row">
+                            {% if admin %}
                             <div class="col-xl-6 col-md-6">
                                 <div class="card bg-primary text-white mb-4">
                                     <div class="card-body">Configuraciones</div>
@@ -90,6 +91,7 @@
                                     </div>
                                 </div>
                             </div>
+                            {% endif %}
                             <div class="col-xl-6 col-md-6">
                                 <div class="card bg-warning text-white mb-4">
                                     <div class="card-body">Proyectos</div>
