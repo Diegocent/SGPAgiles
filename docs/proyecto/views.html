@@ -62,6 +62,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 <li><strong>VerUSView</strong> - Vista para visualizar los US existentes (salta a la seccion  <a href="views.html#VerUSView">views.py</a>)</li>
 <li><strong>BorrarUSView</strong> - Vista para eliminar un US (salta a la seccion  <a href="views.html#BorrarUSView">views.py</a>)</li>
 <li><strong>ActualizarUSView</strong> - Vista para actualizar/modificar los datos del Equipo (salta a la seccion  <a href="views.html#ActualizarUSView">views.py</a>)</li>
+<li><strong> verProductBacklog</strong> - Vista para el Product Backlog (salta a la seccion  <a href="views.html# verProductBacklog">views.py</a>)</li>
 </ol>
     </div>
     <div class='code'>
@@ -238,7 +239,8 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
                     <span class="s2">&quot;miembros&quot;</span><span class="p">:</span> <span class="n">miembros</span><span class="p">,</span>
                     <span class="s2">&quot;tipos&quot;</span><span class="p">:</span> <span class="n">tipos</span><span class="p">,</span>
                     <span class="s2">&quot;todos_con_estados&quot;</span><span class="p">:</span> <span class="n">todos_con_estados</span><span class="p">,</span>
-                    <span class="s2">&quot;us&quot;</span><span class="p">:</span><span class="n">us</span>
+                    <span class="s2">&quot;us&quot;</span><span class="p">:</span><span class="n">us</span><span class="p">,</span>
+                    <span class="s2">&quot;id_proyecto&quot;</span><span class="p">:</span> <span class="n">id_proyecto</span>
                 <span class="p">}</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
@@ -249,7 +251,8 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
                     <span class="s2">&quot;equipo&quot;</span><span class="p">:</span> <span class="n">equipo</span><span class="p">,</span>
                     <span class="s2">&quot;tipos&quot;</span><span class="p">:</span> <span class="n">tipos</span><span class="p">,</span>
                     <span class="s2">&quot;todos_con_estados&quot;</span><span class="p">:</span> <span class="n">todos_con_estados</span><span class="p">,</span>
-                    <span class="s2">&quot;us&quot;</span><span class="p">:</span> <span class="n">us</span>
+                    <span class="s2">&quot;us&quot;</span><span class="p">:</span> <span class="n">us</span><span class="p">,</span>
+                    <span class="s2">&quot;id_proyecto&quot;</span><span class="p">:</span><span class="n">id_proyecto</span>
                 <span class="p">}</span>
             <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;detalle_proyecto.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
     </div>
@@ -1027,7 +1030,44 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
             <span class="p">}</span>
             <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;sprint/detalle_sprint.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-52'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-52'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span>  <span class="nc">verProductBacklog</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-53'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-53'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
+        <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span> <span class="ow">or</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_scrum_master</span><span class="p">(</span><span class="n">id_proyecto</span><span class="p">):</span>
+            <span class="n">uss</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;uss&#39;</span><span class="p">:</span> <span class="n">uss</span><span class="p">,</span>
+                <span class="s1">&#39;id_proyecto&#39;</span><span class="p">:</span> <span class="n">id_proyecto</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;uss&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s1">&#39;id_proyecto&#39;</span><span class="p">:</span> <span class="n">id_proyecto</span>
+            <span class="p">}</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;backlog/ver_product_backlog.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
 
 </pre></div>
     </div>

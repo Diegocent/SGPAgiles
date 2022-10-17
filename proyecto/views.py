@@ -33,6 +33,7 @@ Actualmente contamos con los siguientes views en Proyecto:
 17. **VerUSView** - Vista para visualizar los US existentes (salta a la seccion [[views.py#VerUSView]])
 18. **BorrarUSView** - Vista para eliminar un US (salta a la seccion [[views.py#BorrarUSView]])
 19. **ActualizarUSView** - Vista para actualizar/modificar los datos del Equipo (salta a la seccion [[views.py#ActualizarUSView]])
+20. ** verProductBacklog** - Vista para el Product Backlog (salta a la seccion [[views.py# verProductBacklog]])
 """
 
 
