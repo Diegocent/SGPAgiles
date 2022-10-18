@@ -46,11 +46,12 @@ class FormEstadoUS(forms.Form):
 class FormUS(ModelForm):
     class Meta:
         model = UserStory
-        fields = ["nombre", "descripcion", "tipo"]
+        fields = ["nombre", "descripcion", "tipo", "prioridad_de_negocio", "prioridad_tecnica", "duracion"]
 
 
 class FormSprint(ModelForm):
     product_backlog = forms.ModelMultipleChoiceField(queryset=UserStory.objects.all())
+
     class Meta:
         model = Sprint
         fields = ["numero", "descripcion", "fecha_fin", ]

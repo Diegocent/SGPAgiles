@@ -5,7 +5,7 @@ from django.views import View
 from django.http import HttpResponseRedirect, HttpResponse
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
     FormUS, FormSprint
-from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint
+from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado
 from Usuario.models import Usuario, RolProyecto
 from django.contrib import messages
 from datetime import date
@@ -282,9 +282,14 @@ class CrearTiposUSView(View, LoginRequiredMixin):
                 all().filter(nombre=tipo_del_post['prefijo'], proyecto_id=id_proyecto)
 
             if len(array_de_tipos) == 0:
-                TipoUserStory.objects.create(nombre=tipo_del_post['nombre'], prefijo=tipo_del_post['prefijo']
+                tipo = TipoUserStory.objects.create(nombre=tipo_del_post['nombre'], prefijo=tipo_del_post['prefijo']
                                                  , proyecto_id=id_proyecto)
-
+                orden = OrdenEstado.objects.create(orden=1)
+                EstadoUS.objects.create(nombre="TO DO", tipoUserStory=tipo, orden=orden)
+                orden = OrdenEstado.objects.create(orden=2)
+                EstadoUS.objects.create(nombre="DOING", tipoUserStory=tipo, orden=orden)
+                orden = OrdenEstado.objects.create(orden=3)
+                EstadoUS.objects.create(nombre="DONE", tipoUserStory=tipo, orden=orden)
                 messages.success(request, 'Creado exitosamente!')
             else:
                 return render(request, 'tipoUS/creartipous.html', {'form': form})
@@ -315,27 +320,23 @@ class CrearEstadosUSView(View, LoginRequiredMixin):
 
     def get(self, request, id_proyecto, id_tipous):
         form = self.form_class()
-        default = request.GET["default"]
-        if default == 'true':
-            tipo = TipoUserStory.objects.get(id=id_tipous)
-            EstadoUS.objects.create(nombre="TO DO", tipoUserStory=tipo)
-            EstadoUS.objects.create(nombre="DOING", tipoUserStory=tipo)
-            EstadoUS.objects.create(nombre="DONE", tipoUserStory=tipo)
-            return HttpResponseRedirect('/proyecto/{}/tipoUS/{}'.format(id_proyecto, id_tipous))
-        elif default == 'false':
-            return render(request, 'tipoUS/crearestadous.html', {'form': form})
+        return render(request, 'tipoUS/crearestadous.html', {'form': form})
 
     def post(self, request, id_proyecto, id_tipous):
         form = self.form_class(request.POST)
         if form.is_valid():
             estado_del_post = form.cleaned_data
-            array_de_estados = EstadoUS.objects.all().filter(nombre=estado_del_post['nombre'], tipoUserStory_id=id_tipous)
+            array_de_estados = EstadoUS.objects.all().filter(nombre=estado_del_post['nombre'],
+                                                             tipoUserStory_id=id_tipous)
 
             if len(array_de_estados) == 0:
                 tipo = TipoUserStory.objects.get(id=id_tipous)
-                EstadoUS.objects.create(nombre=estado_del_post['nombre'], tipoUserStory=tipo)
-
-                messages.success(request, 'Creado exitosamente!')
+                if not tipo.userstory_set.exists():
+                    EstadoUS.objects.create(nombre=estado_del_post['nombre'], tipoUserStory=tipo,
+                                            orden=OrdenEstado.objects.create(orden=OrdenEstado.obtener_ultimo_valor_de_orden(tipo_id=id_tipous)))
+                    messages.success(request, 'Creado exitosamente!')
+                else:
+                    return HttpResponseRedirect('/proyecto/{}/tipoUS/{}'.format(id_proyecto, id_tipous))
             else:
                 return render(request, 'tipoUS/crearestadous.html', {'form': form})
             return HttpResponseRedirect('/proyecto/{}/tipoUS/{}'.format(id_proyecto, id_tipous))
@@ -358,8 +359,12 @@ class CrearUSView(View, LoginRequiredMixin):
 
             if len(array_de_us) == 0:
                 p = Proyecto.objects.get(id=id_proyecto)
-                UserStory.objects.create(nombre=us['nombre'], descripcion=us['descripcion'], proyecto_id=id_proyecto,
-                                         tipo=us['tipo'])
+                estado_inicial = EstadoUS.objects.get(nombre="TO DO")
+                prioridad = round(0.6 * us["prioridad_de_negocio"] + 0.5 * us["prioridad_tecnica"])
+                UserStory.objects.create(nombre=us['nombre'], descripcion=us['descripcion'], proyecto=p,
+                                         tipo=us['tipo'], estado=estado_inicial, prioridad=prioridad,
+                                         duracion=us['duracion'], prioridad_de_negocio=us['prioridad_de_negocio'],
+                                         prioridad_tecnica=us['prioridad_tecnica'])
 
                 messages.success(request, 'Creado exitosamente!')
             else:

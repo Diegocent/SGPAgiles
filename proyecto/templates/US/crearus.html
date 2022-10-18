@@ -19,17 +19,15 @@
             {% if field.help_text %}
                 <small class="form-text text-muted">{{ field.help_text }}</small>
             {% endif %}
-        {% endif %}
-         {% if field.name == 'descripcion'%}
+         {% elif field.name == 'descripcion'%}
              Descripción
              {{field.errors}}
              {% render_field field class="form-control" %}
              {% if field.help_text %}
                  <small class="form-text text-muted">{{ field.help_text }}</small>
              {% endif %}
-         {% endif %}
-    {% if field.name == 'tipo'%}
-             Tipo
+    {% else %}
+             {{ field.name }}
              {{field.errors}}
              {% render_field field class="form-control" %}
              {% if field.help_text %}

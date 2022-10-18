@@ -4,7 +4,7 @@ from Usuario.models import Usuario
 
 
 class Equipo(models.Model):
-    nombre = models.CharField(max_length=32)
+    nombre = models.CharField(max_length=32, null=True)
     miembros = models.ManyToManyField(Usuario)
 
     def __str__(self):
@@ -58,8 +58,20 @@ class TipoUserStory(models.Model):
         return '{}'.format(self.nombre)
 
 
+class OrdenEstado(models.Model):
+    orden = models.PositiveIntegerField(unique=True)
+
+    def obtener_ultimo_valor_de_orden(tipo_id):
+        ultimo_valor = OrdenEstado.objects.all().filter(orden_del_estado__tipoUserStory_id=tipo_id).first()
+        return ultimo_valor.orden + 1
+
+    class Meta:
+        ordering = ["-orden"]
+
+
 class EstadoUS(models.Model):
     nombre = models.CharField(max_length=100)
+    orden = models.ForeignKey(OrdenEstado, on_delete=models.CASCADE, related_name="orden_del_estado")
     tipoUserStory = models.ForeignKey(TipoUserStory, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -79,7 +91,10 @@ class UserStory(models.Model):
     descripcion = models.CharField(max_length=500)
     tipo = models.ForeignKey(TipoUserStory, on_delete=models.CASCADE)
     estado = models.ForeignKey(EstadoUS, on_delete=models.CASCADE, null=True)
-    prioridad = models.CharField(choices=Prioridad.choices, max_length=100, default=Prioridad.BAJA)
+    prioridad = models.PositiveIntegerField()
+    prioridad_de_negocio = models.PositiveIntegerField()
+    prioridad_tecnica = models.PositiveIntegerField()
+    duracion = models.PositiveIntegerField()
 
     def __str__(self):
         return '{}'.format(self.nombre)
