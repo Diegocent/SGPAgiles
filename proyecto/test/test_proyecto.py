@@ -12,8 +12,7 @@ def test_crear_proyecto():
                                        fecha_inicio=datetime(year=2022, month=9, day=12, hour=12, minute=12, tzinfo=pytz.timezone("America/Asuncion")),
                                        )
     proyectos = Proyecto.objects.all()
-    assert len(proyectos) == 1
-
+    assert len(proyectos) == 1, "ERROR: Proyecto no fue creado."
 #test creado el dia 5/09/2022 por Marcelo Molas
 @pytest.mark.django_db
 def test_crear_tipouserstory():
@@ -28,7 +27,7 @@ def test_crear_tipouserstory():
 
     tipo = TipoUserStory.objects.create(nombre="test1", prefijo="TEST", proyecto=proyecto)
     tipos = TipoUserStory.objects.all()
-    assert len(tipos) == 1
+    assert len(tipos) == 1, "ERROR: Tipo de usuario no fue creado."
 
 #test creado el dia 5/09/2022 por Marcelo Molas
 @pytest.mark.django_db
@@ -47,7 +46,7 @@ def test_crear_userstory():
     us=UserStory.objects.create(nombre="TEST-1",descripcion="TEST", tipo=tipo, proyecto=proyecto)
 
     userstories = UserStory.objects.all()
-    assert len(userstories) == 1
+    assert len(userstories) == 1, "ERROR: User Story no fue creado."
 
 
 #test creado el dia 5/09/2022 por Marcelo Molas
@@ -67,7 +66,7 @@ def test_crear_estados_y_agregar_a_tipo():
     estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo)
 
     estados = EstadoUS.objects.all()
-    assert len(estados) == 1
+    assert len(estados) == 1, "ERROR: Estado de US no fue creado."
     
 #test creado el dia 5/09/2022 por Marcelo Molas
 @pytest.mark.django_db
@@ -86,7 +85,7 @@ def test_crear_sprint():
     estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo)
 
     estados = EstadoUS.objects.all()
-    assert len(estados) == 1
+    assert len(estados) == 1, "ERROR: Sprint no fue creado."
     
 @pytest.mark.django_db
 def test_modificar_estado_US():
@@ -104,7 +103,7 @@ def test_modificar_estado_US():
     estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo)
 
     estados = EstadoUS.objects.all()
-    assert len(estados) == 1
+    assert len(estados) == 1, "ERROR al modificar el estado del US"
     
 @pytest.mark.django_db
 def test_cancelar_sprint():
@@ -122,7 +121,7 @@ def test_cancelar_sprint():
     estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo)
 
     estados = EstadoUS.objects.all()
-    assert len(estados) == 1
+    assert len(estados) == 1, "ERROR al cancelar un sprint."
     
 @pytest.mark.django_db
 def test_estimar_US():
@@ -140,4 +139,4 @@ def test_estimar_US():
     estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo)
 
     estados = EstadoUS.objects.all()
-    assert len(estados) == 1
+    assert len(estados) == 1, "ERROR: US no pudo estimarse correctamente."
