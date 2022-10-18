@@ -1,3 +1,5 @@
+{% load SGPA_extras %}
+
 <head>
 <style>
 
@@ -74,7 +76,9 @@
         </nav>
 
 </header>
-
+    {% block breadcrumb %}
+          {% breadcrumb %}
+    {% endblock %}
     {% load static %}
     <!-- Bootstrap -->
     <link href="{% static 'proyecto/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
