@@ -1,5 +1,6 @@
+
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.http import HttpResponseRedirect, HttpResponse
@@ -90,7 +91,7 @@ class CrearProyectoView(View, LoginRequiredMixin):
             usuario.rolProyecto.add(scrum)
             usuario.save()
             messages.success(request, 'Creado exitosamente!')
-            return HttpResponseRedirect('/proyecto')
+            return redirect('ver_proyectos')
         return render(request, 'crear_proyecto.html', {'form': form})
 
 
@@ -121,7 +122,7 @@ class VerProyectoView(View, LoginRequiredMixin):
 
                 if usuario not in miembros and not usuario.es_admin() and not usuario.es_scrum_master(id_proyecto):
                     messages.warning(request, "No puedes ver este proyecto.")
-                    return HttpResponseRedirect('ver_proyectos')
+                    return redirect('ver_proyectos')
 
                 context = {
                     "proyecto": p,
@@ -136,7 +137,7 @@ class VerProyectoView(View, LoginRequiredMixin):
             else:
                 if not usuario.es_admin():
                     messages.warning(request, "No puedes ver este proyecto.")
-                    return HttpResponseRedirect('ver_proyectos')
+                    return redirect('ver_proyectos')
                 context = {
                     "proyecto": p,
                     "equipo": equipo,
@@ -171,7 +172,7 @@ class CrearEquipoView(View, LoginRequiredMixin):
             proyecto.equipo = equipo
             proyecto.save()
             messages.success(request, 'Creado exitosamente!')
-            return HttpResponseRedirect('.')
+            return redirect('detalle_proyecto', id_proyecto)
         return render(request, 'crear_proyecto.html', {'form': form})
 
 
@@ -194,7 +195,7 @@ class IniciarProyectoView(View, LoginRequiredMixin):
             proyecto.estado = EstadoProyecto.EN_PROCESO
             proyecto.save()
             messages.success(request, 'Creado exitosamente!')
-            return HttpResponseRedirect('.')
+            return redirect('detalle_proyecto', id_proyecto)
         return render(request, 'iniciar_proyecto.html', {'form': form})
 
 
@@ -221,7 +222,7 @@ class CrearRolProyectoView(View, LoginRequiredMixin):
             else:
                 messages.error(request="Ya existe un rol con ese nombre")
 
-            return HttpResponseRedirect('ver_roles')
+            return redirect('ver_roles', id_proyecto)
         return render(request, 'roles/crear_rol_proyecto.html', {'form': form})
 
 
@@ -233,12 +234,14 @@ class VerRolesProyectoView(View, LoginRequiredMixin):
             roles = RolProyecto.objects.all().filter(proyecto=id_proyecto)
             context = {
                 'crear_rol': True,
-                'roles': roles
+                'roles': roles,
+                'id_proyecto' : id_proyecto
             }
         else:
             context = {
                 'crear_rol': False,
-                "roles": []
+                "roles": [],
+                'id_proyecto': id_proyecto
             }
         return render(request, 'roles/ver_roles.html', context)
 
@@ -293,7 +296,7 @@ class CrearTiposUSView(View, LoginRequiredMixin):
                 messages.success(request, 'Creado exitosamente!')
             else:
                 return render(request, 'tipoUS/creartipous.html', {'form': form})
-            return HttpResponseRedirect('ver_tipoUS', messages)
+            return redirect('tiposUS', id_proyecto)
         return render(request, 'tipoUS/creartipous.html', {'form': form})
 
 
@@ -336,10 +339,10 @@ class CrearEstadosUSView(View, LoginRequiredMixin):
                                             orden=OrdenEstado.objects.create(orden=OrdenEstado.obtener_ultimo_valor_de_orden(tipo_id=id_tipous)))
                     messages.success(request, 'Creado exitosamente!')
                 else:
-                    return HttpResponseRedirect('/proyecto/{}/tipoUS/{}'.format(id_proyecto, id_tipous))
+                    return redirect('detalle_tipoUS', id_proyecto, id_tipous)
             else:
                 return render(request, 'tipoUS/crearestadous.html', {'form': form})
-            return HttpResponseRedirect('/proyecto/{}/tipoUS/{}'.format(id_proyecto, id_tipous))
+            return redirect('detalle_tipoUS', id_proyecto, id_tipous)
         return render(request, 'tipoUS/crearestadous.html', {'form': form})
 
 
@@ -359,7 +362,7 @@ class CrearUSView(View, LoginRequiredMixin):
 
             if len(array_de_us) == 0:
                 p = Proyecto.objects.get(id=id_proyecto)
-                estado_inicial = EstadoUS.objects.get(nombre="TO DO")
+                estado_inicial = EstadoUS.objects.get(nombre="TO DO", tipoUserStory=us['tipo'])
                 prioridad = round(0.6 * us["prioridad_de_negocio"] + 0.5 * us["prioridad_tecnica"])
                 UserStory.objects.create(nombre=us['nombre'], descripcion=us['descripcion'], proyecto=p,
                                          tipo=us['tipo'], estado=estado_inicial, prioridad=prioridad,
@@ -369,7 +372,7 @@ class CrearUSView(View, LoginRequiredMixin):
                 messages.success(request, 'Creado exitosamente!')
             else:
                 return render(request, 'US/crearus.html', {'form': form})
-            return HttpResponseRedirect('/proyecto/{}/US'.format(id_proyecto))
+            return redirect('ver_US', id_proyecto)
         return render(request, 'US/crearus.html', {'form': form})
 
 
@@ -413,7 +416,7 @@ class ActualizarUSView(View, LoginRequiredMixin):
                 messages.success(request, 'Creado exitosamente!')
             else:
                 return render(request, 'US/editarus.html', {'form': form})
-            return HttpResponseRedirect('/proyecto/{}/US'.format(id_proyecto))
+            return redirect('ver_US', id_proyecto)
         return render(request, 'US/editarus.html', {'form': form})
 
 
@@ -430,7 +433,7 @@ class BorrarUSView(View, LoginRequiredMixin):
 
         us.delete()
 
-        return HttpResponseRedirect('/proyecto/{}/US'.format(id_proyecto))
+        return redirect('ver_US', id_proyecto)
 
 
 class DetalleEquipoView(View, LoginRequiredMixin):
@@ -470,7 +473,7 @@ class ActualizarEquipoView(View, LoginRequiredMixin):
         if form.is_valid():
             form.save()
 
-            return HttpResponseRedirect('/proyecto/{}/equipo/{}'.format(id_proyecto, id_equipo))
+            return redirect('ver_equipo', id_proyecto, id_equipo)
         return render(request, 'US/editarus.html', {'form': form})
 
 
@@ -504,7 +507,7 @@ class CrearSprint(View, LoginRequiredMixin):
                     us.save()
             else:
                 return render(request, 'sprint/crearsprint.html', {'form': form})
-            return HttpResponseRedirect('/proyecto/{}'.format(id_proyecto))
+            return redirect('detalle_proyecto', id_proyecto)
         return render(request, 'sprint/crearsprint.html', {'form': form})
 
 class DetalleSprintView(View, LoginRequiredMixin):

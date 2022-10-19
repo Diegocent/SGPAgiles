@@ -59,7 +59,7 @@ class TipoUserStory(models.Model):
 
 
 class OrdenEstado(models.Model):
-    orden = models.PositiveIntegerField(unique=True)
+    orden = models.PositiveIntegerField()
 
     def obtener_ultimo_valor_de_orden(tipo_id):
         ultimo_valor = OrdenEstado.objects.all().filter(orden_del_estado__tipoUserStory_id=tipo_id).first()

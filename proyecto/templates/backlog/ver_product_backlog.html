@@ -45,7 +45,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <br>
     {% if not tipos %}
-        <a href="crear_tipoUS"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear Tipos de US</button></a>
+        <a href="{% url "crear_tipoUS" id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear Tipos de US</button></a>
     {% else %}
         {% if not todos_con_estados %}
             <p>Hay Tipos de US sin estados!</p>

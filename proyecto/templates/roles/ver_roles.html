@@ -27,7 +27,7 @@
 <div class="col-xl-6 col-md-6">
 
 {% if crear_rol %}
-    <a href="crear_rol_proyecto"><button type="button" class="btn btn-secondary btn-lg btn-block">Crear Nuevo Rol de Proyecto </button></a>
+    <a href="{% url "crear_rol_proyecto" id_proyecto=id_proyecto %}"><button type="button" class="btn btn-secondary btn-lg btn-block">Crear Nuevo Rol de Proyecto </button></a>
 
 
 {% endif %}

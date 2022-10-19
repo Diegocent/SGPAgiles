@@ -13,54 +13,57 @@ def breadcrumb(context):
 
     """
     request = context['request']
-    path = request.path
+    path:str = request.path
 
     names = {
-        'proyectos': 'Proyecto',
-        'tipo_user_story': 'Tipo de Historia de Usuario',
+        'proyecto': 'Proyectos',
+        'tipoUS': 'Tipos de User Story',
         'user-story': 'Historia de Usuario',
         'sprint': 'Sprint',
         'rol': 'Rol',
     }
     get_name = {
-        'proyectos': lambda x: Proyecto.objects.get(pk=x).nombre,
-        'tipo_user_story': lambda x: TipoUserStory.objects.get(pk=x).nombre,
+        'proyecto': lambda x: Proyecto.objects.get(pk=x).nombre,
+        'tipoUS': lambda x: TipoUserStory.objects.get(pk=x).nombre,
         'user_story': lambda x: UserStory.objects.get(pk=x).nombre,
         'sprint': lambda x: Sprint.objects.get(pk=x).nombre,
         'rol': lambda x: RolProyecto.objects.get(pk=x).nombre,
     }
     breadcrumb = []
-    while path:
+    path_separado = path.split(sep="/")
 
-        match = re.search(r'(?P<model_name>[\w-]+)/(?P<model_id>[\w-]+)/?', path)
-        if not match:
-            break
-        path = path[match.end():]
+    anterior = ""
+    id_encontrado = False
+    for pedazo in path_separado:
+        if pedazo == "":
+            continue
+        print(pedazo)
+        if re.match(r'[0-9]', pedazo):
+            id_encontrado = True
 
-        model_name = match.group('model_name')
-        model_id = match.group('model_id')
 
-        name = names[model_name] if model_name in names else model_name
-        if model_id in ['create', 'edit', 'import', 'board']:
-            model_name_id = names[model_id]
+        previous_path = breadcrumb[-1][1] if breadcrumb else ''
+
+        if id_encontrado:
+            name = names[anterior] if anterior in names else anterior
+            model_name_id = get_name[anterior](pedazo) if anterior in get_name else pedazo
+            id_encontrado = False
+
+
+            model_url = f'{previous_path}/{pedazo}'
+
+
+            breadcrumb.append((model_name_id, model_url, exists_path(model_url)))
         else:
-            model_name_id = get_name[model_name](model_id) if model_name in get_name else model_id
-
-        model_url = f'{model_name}/{model_id}'
-        previous_path = breadcrumb[-1][1] if breadcrumb else ''
-
-        model_list_url = f"{previous_path}/{model_name}"
-        model_id_url = f"{previous_path}/{model_url}"
-        breadcrumb.append((name, model_list_url, exists_path(model_list_url)))
-        breadcrumb.append((model_name_id, model_id_url, exists_path(model_id_url)))
-    if(path):
-        path = path.replace('/', '')
-        previous_path = breadcrumb[-1][1] if breadcrumb else ''
-        name = names[path] if path in names else path
-        breadcrumb.append((name, f'{previous_path}/{path}', True))
+            name = names[pedazo] if pedazo in names else pedazo
+            model_list_url = f"{previous_path}/{pedazo}"
+            breadcrumb.append((name, model_list_url, exists_path(model_list_url)))
+        anterior = pedazo
+    breadcrumb.insert(0, ('Home', '/', True))
     return {
         'breadcrumb': breadcrumb,
     }
+
 
 def exists_path(path):
     """
