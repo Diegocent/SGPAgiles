@@ -36,6 +36,7 @@ class EstadoSprint(models.TextChoices):
     NO_INICIADO = 'NO_INICIADO', 'No iniciado'
     EN_PROCESO = 'EN_PROCESO', 'En progreso'
     TERMINADO = 'TERMINADO', 'Terminado'
+    CANCELADO = 'CANCELADO', 'Cancelado'
 
 
 class Sprint(models.Model):
@@ -45,9 +46,21 @@ class Sprint(models.Model):
     fecha_inicio = models.DateTimeField(null=True)
     fecha_fin = models.DateTimeField(null=True)
     estado = models.CharField(choices=EstadoProyecto.choices, max_length=100)
+    capacidad = models.IntegerField(null=True, verbose_name='Capacidad en horas')
+    duracion = models.IntegerField(null=True, verbose_name='Duración en días')
 
     def __str__(self):
-        return '{}'.format(self.numero)
+        return 'Sprint {}'.format(self.numero)
+
+
+class MiembrosSprint(models.Model):
+    sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
+    miembro = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    carga_horaria = models.PositiveIntegerField()
+    capacidad = models.PositiveIntegerField()
+
+    def __str__(self):
+        return 'Miembro del Sprint {} - {}'.format(self.sprint.numero, self.miembro.username)
 
 
 class TipoUserStory(models.Model):
@@ -95,6 +108,7 @@ class UserStory(models.Model):
     prioridad = models.PositiveIntegerField()
     prioridad_de_negocio = models.PositiveIntegerField()
     prioridad_tecnica = models.PositiveIntegerField()
+    esfuerzo_anterior = models.PositiveIntegerField(default=0)
     duracion = models.PositiveIntegerField()
 
     def __str__(self):
