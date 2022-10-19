@@ -38,7 +38,7 @@ Actualmente contamos con los siguientes views en Proyecto:
 """
 
 
-class VerProyectosView(View, LoginRequiredMixin):
+class VerProyectosView(View):
 
     def get(self, request):
         usuario: Usuario = request.user
@@ -63,14 +63,21 @@ class VerProyectosView(View, LoginRequiredMixin):
             return render(request, 'account/login.html')
 
 
-class CrearProyectoView(View, LoginRequiredMixin):
+class CrearProyectoView(View):
+    permisos = ["Crear Proyecto"]
     form_class = FormCrearProyecto
 
     def get(self, request):
-        if not request.user.es_admin():
-           return HttpResponseRedirect('/')
-        form = self.form_class()
-        return render(request, 'crear_proyecto.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                form = self.form_class()
+                return render(request, 'crear_proyecto.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -102,68 +109,83 @@ class CrearProyectoView(View, LoginRequiredMixin):
         return render(request, 'crear_proyecto.html', {'form': form})
 
 
-class VerProyectoView(View, LoginRequiredMixin):
+class VerProyectoView(View):
+    permisos = ["Ver Proyecto"]
+    def verificar_estados(self, tipos):
+        ok = True
+        for tipo in tipos:
+            estado = EstadoUS.objects.all().filter(tipoUserStory=tipo)
+            if len(estado) == 0:
+                ok = False
+        return ok
 
-        def verificar_estados(self, tipos):
-            ok = True
-            for tipo in tipos:
-                estado = EstadoUS.objects.all().filter(tipoUserStory=tipo)
-                if len(estado) == 0:
-                    ok = False
-            return ok
-
-        def get(self, request, id_proyecto):
-            usuario: Usuario = request.user
-            p = Proyecto.objects.get(id=id_proyecto)
-            tipos = TipoUserStory.objects.all().filter(proyecto=p)
-
-
-            sprint = Sprint.objects.all().filter(proyecto_id=id_proyecto, estado=EstadoProyecto.EN_PROCESO)
-
-
-            us = UserStory.objects.all().filter(proyecto=p)
-            equipo = p.equipo
-            todos_con_estados = self.verificar_estados(tipos)
-            if equipo:
-                miembros = equipo.miembros.all()
-
-                if usuario not in miembros and not usuario.es_admin() and not usuario.es_scrum_master(id_proyecto):
-                    messages.warning(request, "No puedes ver este proyecto.")
-                    return redirect('ver_proyectos')
-
-                context = {
-                    "proyecto": p,
-                    "sprint": sprint,
-                    "equipo": equipo,
-                    "miembros": miembros,
-                    "tipos": tipos,
-                    "todos_con_estados": todos_con_estados,
-                    "us":us,
-                    "id_proyecto": id_proyecto
-                }
-            else:
-                if not usuario.es_admin():
-                    messages.warning(request, "No puedes ver este proyecto.")
-                    return redirect('ver_proyectos')
-                context = {
-                    "proyecto": p,
-                    "equipo": equipo,
-                    "tipos": tipos,
-                    "todos_con_estados": todos_con_estados,
-                    "us": us,
-                    "id_proyecto":id_proyecto
-                }
-            return render(request, 'detalle_proyecto.html', context)
+    def get(self, request, id_proyecto):
+        usuario: Usuario = request.user
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                p = Proyecto.objects.get(id=id_proyecto)
+                tipos = TipoUserStory.objects.all().filter(proyecto=p)
 
 
-class CrearEquipoView(View, LoginRequiredMixin):
+                sprint = Sprint.objects.all().filter(proyecto_id=id_proyecto, estado=EstadoProyecto.EN_PROCESO)
+
+
+                us = UserStory.objects.all().filter(proyecto=p)
+                equipo = p.equipo
+                todos_con_estados = self.verificar_estados(tipos)
+                if equipo:
+                    miembros = equipo.miembros.all()
+
+                    if usuario not in miembros and not usuario.es_admin() and not usuario.es_scrum_master(id_proyecto):
+                        messages.warning(request, "No puedes ver este proyecto.")
+                        return redirect('ver_proyectos')
+
+                    context = {
+                        "proyecto": p,
+                        "sprint": sprint,
+                        "equipo": equipo,
+                        "miembros": miembros,
+                        "tipos": tipos,
+                        "todos_con_estados": todos_con_estados,
+                        "us":us,
+                        "id_proyecto": id_proyecto
+                    }
+                else:
+                    if not usuario.es_admin():
+                        messages.warning(request, "No puedes ver este proyecto.")
+                        return redirect('ver_proyectos')
+                    context = {
+                        "proyecto": p,
+                        "equipo": equipo,
+                        "tipos": tipos,
+                        "todos_con_estados": todos_con_estados,
+                        "us": us,
+                        "id_proyecto":id_proyecto
+                    }
+                return render(request, 'detalle_proyecto.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+
+class CrearEquipoView(View):
+    permisos = ["Crear Equipo"]
     form_class = FormCrearEquipo
 
     def get(self, request, id_proyecto):
-        if not request.user.es_admin():
-            return HttpResponseRedirect('/')
-        form = self.form_class()
-        return render(request, 'crear_equipo.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                form = self.form_class()
+                return render(request, 'crear_equipo.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request, id_proyecto):
         form = self.form_class(request.POST)
@@ -183,14 +205,21 @@ class CrearEquipoView(View, LoginRequiredMixin):
         return render(request, 'crear_proyecto.html', {'form': form})
 
 
-class IniciarProyectoView(View, LoginRequiredMixin):
+class IniciarProyectoView(View):
     form_class = FormIniciarProyecto
+    permisos = ["Iniciar Proyecto"]
 
     def get(self, request, id_proyecto):
-        if not request.user.es_admin():
-            return HttpResponseRedirect('/')
-        form = self.form_class()
-        return render(request, 'iniciar_proyecto.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                form = self.form_class()
+                return render(request, 'iniciar_proyecto.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request, id_proyecto):
         form = self.form_class(request.POST)
@@ -206,12 +235,21 @@ class IniciarProyectoView(View, LoginRequiredMixin):
         return render(request, 'iniciar_proyecto.html', {'form': form})
 
 
-class CrearRolProyectoView(View, LoginRequiredMixin):
+class CrearRolProyectoView(View):
     form_class = FormRolProyecto
+    permisos = ["Crear RolProyecto"]
 
     def get(self, request, id_proyecto):
-        form = self.form_class()
-        return render(request, 'roles/crear_rol_proyecto.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                form = self.form_class()
+                return render(request, 'roles/crear_rol_proyecto.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request, id_proyecto):
         form = self.form_class(request.POST)
@@ -233,56 +271,63 @@ class CrearRolProyectoView(View, LoginRequiredMixin):
         return render(request, 'roles/crear_rol_proyecto.html', {'form': form})
 
 
-class VerRolesProyectoView(View, LoginRequiredMixin):
+class VerRolesProyectoView(View):
+    permisos = ["Ver RolProyecto"]
 
     def get(self, request, id_proyecto):
-        usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
-            roles = RolProyecto.objects.all().filter(proyecto=id_proyecto)
-            context = {
-                'crear_rol': True,
-                'roles': roles,
-                'id_proyecto' : id_proyecto
-            }
-        else:
-            context = {
-                'crear_rol': False,
-                "roles": [],
-                'id_proyecto': id_proyecto
-            }
-        return render(request, 'roles/ver_roles.html', context)
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                roles = RolProyecto.objects.all().filter(proyecto=id_proyecto)
+                context = {
+                    'crear_rol': True,
+                    'roles': roles,
+                    'id_proyecto': id_proyecto
+                }
+                return render(request, 'roles/ver_roles.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
 
-class VerTiposdeUSView(View, LoginRequiredMixin):
+class VerTiposdeUSView(View):
+    permisos = ["Ver TipoUserStory"]
 
     def get(self, request, id_proyecto):
-
-        if not request.user.is_authenticated:
-            return self.handle_no_permission()
-
-        usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
-            tipos = TipoUserStory.objects.all().filter(proyecto=id_proyecto)
-            context = {
-                'crear_tipoUS': True,
-                'tipos': tipos,
-                "id_proyecto": id_proyecto
-            }
-        else:
-            context = {
-                'crear_tipoUS': False,
-                "tipos": [],
-                "id_proyecto": id_proyecto
-            }
-        return render(request, 'tipoUS/ver_tiposUS.html', context)
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                tipos = TipoUserStory.objects.all().filter(proyecto=id_proyecto)
+                context = {
+                    'crear_tipoUS': True,
+                    'tipos': tipos,
+                    "id_proyecto": id_proyecto
+                }
+                return render(request, 'tipoUS/ver_tiposUS.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
 
-class CrearTiposUSView(View, LoginRequiredMixin):
+class CrearTiposUSView(View):
     form_class = FormTiposUS
+    permisos = ["Crear TipoUserStory"]
 
     def get(self, request, id_proyecto):
-        form = self.form_class()
-        return render(request, 'tipoUS/creartipous.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                form = self.form_class()
+                return render(request, 'tipoUS/creartipous.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request, id_proyecto):
         form = self.form_class(request.POST)
@@ -307,30 +352,44 @@ class CrearTiposUSView(View, LoginRequiredMixin):
         return render(request, 'tipoUS/creartipous.html', {'form': form})
 
 
-class DetalleTiposUSView(View, LoginRequiredMixin):
+class DetalleTiposUSView(View):
+    permisos = ["Ver TipoUserStory"]
 
     def get(self, request, id_proyecto, id_tipous):
-        usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
-            tipo = TipoUserStory.objects.get(id= id_tipous)
-            estados = EstadoUS.objects.all().filter(tipoUserStory_id=id_tipous)
-            context = {
-                'tipo': tipo,
-                'estados': estados,
-                'id_proyecto': id_proyecto,
-                'id_tipous': id_tipous
-            }
-            return render(request, 'tipoUS/detalle_tipoUS.html', context)
-        else:
-            return render(request, '/')
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                tipo = TipoUserStory.objects.get(id=id_tipous)
+                estados = EstadoUS.objects.all().filter(tipoUserStory_id=id_tipous)
+                context = {
+                    'tipo': tipo,
+                    'estados': estados,
+                    'id_proyecto': id_proyecto,
+                    'id_tipous': id_tipous
+                }
+                return render(request, 'tipoUS/detalle_tipoUS.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
 
-class CrearEstadosUSView(View, LoginRequiredMixin):
+class CrearEstadosUSView(View):
     form_class = FormEstadoUS
+    permisos = ["Crear EstadoUS"]
 
     def get(self, request, id_proyecto, id_tipous):
-        form = self.form_class()
-        return render(request, 'tipoUS/crearestadous.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                form = self.form_class()
+                return render(request, 'tipoUS/crearestadous.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request, id_proyecto, id_tipous):
         form = self.form_class(request.POST)
@@ -353,13 +412,22 @@ class CrearEstadosUSView(View, LoginRequiredMixin):
         return render(request, 'tipoUS/crearestadous.html', {'form': form})
 
 
-class CrearUSView(View, LoginRequiredMixin):
+class CrearUSView(View):
     form_class = FormUS
+    permisos = ["Crear UserStory"]
 
     def get(self, request, id_proyecto):
-        form = self.form_class()
-        form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
-        return render(request, 'US/crearus.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                form = self.form_class()
+                form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
+                return render(request, 'US/crearus.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request, id_proyecto):
         form = self.form_class(request.POST)
@@ -383,32 +451,43 @@ class CrearUSView(View, LoginRequiredMixin):
         return render(request, 'US/crearus.html', {'form': form})
 
 
-class VerUSView(View, LoginRequiredMixin):
+class VerUSView(View):
+    permisos = ["Ver UserStory"]
 
     def get(self, request, id_proyecto):
-        usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
-            uss = UserStory.objects.all().filter(proyecto=id_proyecto)
-            context = {
-                'uss': uss,
-                'id_proyecto' : id_proyecto
-            }
-        else:
-            context = {
-                "uss": [],
-                'id_proyecto': id_proyecto
-            }
-        return render(request, 'US/ver_US.html', context)
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                uss = UserStory.objects.all().filter(proyecto=id_proyecto)
+                context = {
+                    'uss': uss,
+                    'id_proyecto': id_proyecto
+                }
+                return render(request, 'US/ver_US.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
 
-class ActualizarUSView(View, LoginRequiredMixin):
+class ActualizarUSView(View):
     form_class = FormUS
+    permisos = ["Editar UserStory"]
 
     def get(self, request, id_proyecto, id_us):
-        us = UserStory.objects.get(id=id_us)
-        form = FormUS(instance=us)
-        form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
-        return render(request, 'US/editarus.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                us = UserStory.objects.get(id=id_us)
+                form = FormUS(instance=us)
+                form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
+                return render(request, 'US/editarus.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request, id_proyecto, id_us):
         us = UserStory.objects.get(id=id_us)
@@ -427,13 +506,22 @@ class ActualizarUSView(View, LoginRequiredMixin):
         return render(request, 'US/editarus.html', {'form': form})
 
 
-class BorrarUSView(View, LoginRequiredMixin):
+class BorrarUSView(View):
     form_class = FormUS
+    permisos = ["Borrar UserStory"]
 
     def get(self, request, id_proyecto, id_us):
-        us = UserStory.objects.get(id=id_us)
-        form = FormUS(instance=us)
-        return render(request, 'US/borrarus.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                us = UserStory.objects.get(id=id_us)
+                form = FormUS(instance=us)
+                return render(request, 'US/borrarus.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request, id_proyecto, id_us):
         us = UserStory.objects.get(id=id_us)
@@ -443,36 +531,48 @@ class BorrarUSView(View, LoginRequiredMixin):
         return redirect('ver_US', id_proyecto)
 
 
-class DetalleEquipoView(View, LoginRequiredMixin):
+class DetalleEquipoView(View):
+    permisos = ["Ver Equipo"]
 
     def get(self, request, id_proyecto, id_equipo):
-        usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
-            equipo = Equipo.objects.get(id=id_equipo)
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                equipo = Equipo.objects.get(id=id_equipo)
+                miembros = equipo.miembros.all()
+                miembrosroles = []
+                for miembro in miembros:
+                    rol = miembro.rolProyecto.filter(proyecto_id=id_proyecto)
+                    dicc = {"miembro": miembro, "rol": rol}
+                    miembrosroles.append(dicc)
+                context = {
+                    'equipo': equipo,
+                    'miembrosroles': miembrosroles,
+                    'id_proyecto': id_proyecto,
+                }
+                return render(request, 'equipo/detalle_equipo.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
-            miembros = equipo.miembros.all()
 
-            miembrosroles = []
-            for miembro in miembros:
-                rol = miembro.rolProyecto.filter(proyecto_id=id_proyecto)
-                dicc = {"miembro": miembro, "rol": rol}
-                miembrosroles.append(dicc)
-            context = {
-                'equipo': equipo,
-                'miembrosroles': miembrosroles,
-                'id_proyecto': id_proyecto,
-            }
-            return render(request, 'equipo/detalle_equipo.html', context)
-        else:
-            return render(request, '/')
-
-
-class ActualizarEquipoView(View, LoginRequiredMixin):
+class ActualizarEquipoView(View):
+    permisos = ["Editar Equipo"]
 
     def get(self, request, id_proyecto, id_equipo):
-        equipo = Equipo.objects.get(id=id_equipo)
-        form = FormCrearEquipo(instance=equipo)
-        return render(request, 'equipo/editarequipo.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                equipo = Equipo.objects.get(id=id_equipo)
+                form = FormCrearEquipo(instance=equipo)
+                return render(request, 'equipo/editarequipo.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request, id_proyecto, id_equipo):
         equipo = Equipo.objects.get(id=id_equipo)
@@ -484,17 +584,26 @@ class ActualizarEquipoView(View, LoginRequiredMixin):
         return render(request, 'US/editarus.html', {'form': form})
 
 
-class CrearSprint(View, LoginRequiredMixin):
+class CrearSprint(View):
     form_class = FormSprint
+    permisos = ["Crear Sprint"]
 
     def get(self, request, id_proyecto):
-        sprints = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoProyecto.EN_PROCESO)
-        if len(sprints) == 0:
-            form = self.form_class()
-            form.fields['product_backlog'].queryset = UserStory.objects.filter(proyecto_id=id_proyecto, sprint_id__isnull=True)
-            return render(request, 'sprint/crearsprint.html', {'form': form})
-        else:
-            return render(request, 'sprint/warning.html',)
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                sprints = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoProyecto.EN_PROCESO)
+                if len(sprints) == 0:
+                    form = self.form_class()
+                    form.fields['product_backlog'].queryset = UserStory.objects.filter(proyecto_id=id_proyecto, sprint_id__isnull=True)
+                    return render(request, 'sprint/crearsprint.html', {'form': form})
+                else:
+                    return render(request, 'sprint/warning.html',)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request, id_proyecto):
         form = self.form_class(request.POST)
@@ -517,24 +626,31 @@ class CrearSprint(View, LoginRequiredMixin):
             return redirect('detalle_proyecto', id_proyecto)
         return render(request, 'sprint/crearsprint.html', {'form': form})
 
-class DetalleSprintView(View, LoginRequiredMixin):
+
+class DetalleSprintView(View):
+    permisos = ["Ver Sprint"]
 
     def get(self, request, id_proyecto, id_sprint):
-        usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
-            user_stories = UserStory.objects.filter(proyecto_id=id_proyecto, sprint_id=id_sprint)
-            sprint = Sprint.objects.get(id = id_sprint)
-            context = {
-                'user_stories': user_stories,
-                'id_proyecto': id_proyecto,
-                "sprint" : sprint
-            }
-            return render(request, 'sprint/detalle_sprint.html', context)
-        else:
-            return render(request, '/')
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                user_stories = UserStory.objects.filter(proyecto_id=id_proyecto, sprint_id=id_sprint)
+                sprint = Sprint.objects.get(id = id_sprint)
+                context = {
+                    'user_stories': user_stories,
+                    'id_proyecto':id_proyecto,
+                    "sprint" : sprint
+                }
+                return render(request, 'sprint/detalle_sprint.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
 
-class  verProductBacklog(View, LoginRequiredMixin):
+class  verProductBacklog(View):
+    permisos = ["Ver ProductBakclog"]
 
     def get(self, request, id_proyecto):
         usuario: Usuario = request.user

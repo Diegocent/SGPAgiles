@@ -36,8 +36,6 @@ class CrearPermisoView(View):
         elif not user.is_authenticated:
             return redirect("home")
 
-
-
     def post(self, request):
         form = self.form_class(request.POST)
         if form.is_valid():
@@ -51,7 +49,7 @@ class CrearPermisoView(View):
         return render(request, 'roles/crear_permisos.html', {'form': form})
 
 
-class CrearRolSistemaView(View, LoginRequiredMixin):
+class CrearRolSistemaView(View):
     form_class = FormRolSistema
     permisos = ["Crear RolSistema"]
     def get(self, request):
@@ -85,12 +83,20 @@ class CrearRolSistemaView(View, LoginRequiredMixin):
         return render(request, 'roles/crear_roles.html', {'form': form})
 
 
-class AsignarRolSistemaView(View, LoginRequiredMixin):
+class AsignarRolSistemaView(View):
     form_class = FormAsignarRol
-
+    permisos = ["Asignar RolSistema"]
     def get(self, request):
-        form = self.form_class()
-        return render(request, 'roles/asignar_rol.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                form = self.form_class()
+                return render(request, 'roles/asignar_rol.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request):
         form = self.form_class(request.POST)
@@ -107,70 +113,74 @@ class AsignarRolSistemaView(View, LoginRequiredMixin):
         return render(request, 'roles/asignar_rol.html', {'form': form})
 
 
-class VerConfigView(View, LoginRequiredMixin):
-
+class VerConfigView(View):
     def get(self, request):
         usuario: Usuario = request.user
-        if usuario.es_admin():
-            context = {
-                'admin': True,
-            }
+        if usuario.is_authenticated:
+            if usuario.es_admin():
+                context = {
+                    'admin': True,
+                }
+            else:
+                context = {
+                    "admin": False,
+                }
+            return render(request, 'ver_config.html', context)
         else:
-            context = {
-                "admin": False,
-            }
-        return render(request, 'ver_config.html', context)
+            return redirect("home")
 
 
-class VerRolesSistemaView(View, LoginRequiredMixin):
-
+class VerRolesSistemaView(View):
+    permisos = ["Ver RolSistema"]
     def get(self, request):
-        #usuario: Usuario = request.user
-        #if usuario.es_admin() or usuario.es_scrum_master():
-        roles = RolSistema.objects.all()
-        context = {
-                'crear_rol': True,
-                'roles': roles
-        }
-        #else:
-         #   context = {
-          #      'crear_rol': False,
-           #     "roles": []
-           # }
-        return render(request, 'roles/ver_roles_sistema.html', context)
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                roles = RolSistema.objects.all()
+                context = {
+                        'crear_rol': True,
+                        'roles': roles
+                }
+                return render(request, 'roles/ver_roles_sistema.html', context)
+            elif not tiene_permisos:
+                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
 
-class VerPermisosView(View, LoginRequiredMixin):
-
+class VerPermisosView(View):
+    permisos = ["Ver Permiso"]
     def get(self, request):
-        #usuario: Usuario = request.user
-        #if usuario.es_admin() or usuario.es_scrum_master():
-        permisos = Permisos.objects.all()
-        context = {
-                'crear_permiso': True,
-                'permisos': permisos
-        }
-        #else:
-         #   context = {
-          #      'crear_rol': False,
-           #     "roles": []
-           # }
-        return render(request, 'roles/ver_permisos.html', context)
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                permisos = Permisos.objects.all()
+                context = {
+                        'crear_permiso': True,
+                        'permisos': permisos
+                }
+                return render(request, 'roles/ver_permisos.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
 
-class VerUsuariosConRolesView(View, LoginRequiredMixin):
-
+class VerUsuariosConRolesView(View):
+    permisos = ["Ser Administrador"]
     def get(self, request):
-        #usuario: Usuario = request.user
-        #if usuario.es_admin() or usuario.es_scrum_master():
-        usuarios = Usuario.objects.all()
+        usuario: Usuario = request.user
+        if usuario.is_authenticated:
+            if usuario.es_admin():
+                usuarios = Usuario.objects.all()
 
-        context = {
-                'usuarios': usuarios
-        }
-        #else:
-         #   context = {
-          #      'crear_rol': False,
-           #     "roles": []
-           # }
-        return render(request, 'roles/ver_usuarios_con_roles.html', context)
+                context = {
+                        'usuarios': usuarios
+                }
+                return render(request, 'roles/ver_usuarios_con_roles.html', context)
+            else:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not usuario.is_authenticated:
+            return redirect("home")
