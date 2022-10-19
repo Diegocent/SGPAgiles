@@ -26,7 +26,7 @@ def breadcrumb(context):
         'proyecto': lambda x: Proyecto.objects.get(pk=x).nombre,
         'tipoUS': lambda x: TipoUserStory.objects.get(pk=x).nombre,
         'user_story': lambda x: UserStory.objects.get(pk=x).nombre,
-        'sprint': lambda x: Sprint.objects.get(pk=x).nombre,
+        'sprint': lambda x: Sprint.objects.get(pk=x).numero,
         'rol': lambda x: RolProyecto.objects.get(pk=x).nombre,
     }
     breadcrumb = []
