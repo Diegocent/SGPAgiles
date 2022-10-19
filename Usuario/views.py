@@ -133,21 +133,22 @@ class VerConfigView(View):
 
 
 class VerRolesSistemaView(View):
-
+    permisos = ["Ver RolSistema"]
     def get(self, request):
-        #usuario: Usuario = request.user
-        #if usuario.es_admin() or usuario.es_scrum_master():
-        roles = RolSistema.objects.all()
-        context = {
-                'crear_rol': True,
-                'roles': roles
-        }
-        #else:
-         #   context = {
-          #      'crear_rol': False,
-           #     "roles": []
-           # }
-        return render(request, 'roles/ver_roles_sistema.html', context)
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                roles = RolSistema.objects.all()
+                context = {
+                        'crear_rol': True,
+                        'roles': roles
+                }
+                return render(request, 'roles/ver_roles_sistema.html', context)
+            elif not tiene_permisos:
+                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
 
 class VerPermisosView(View, LoginRequiredMixin):
