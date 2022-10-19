@@ -90,6 +90,13 @@ class CrearProyectoView(View, LoginRequiredMixin):
             usuario: Usuario = cleaned_data["scrum_master"]
             usuario.rolProyecto.add(scrum)
             usuario.save()
+
+            equipo = Equipo.objects.create(nombre = "")
+            equipo.miembros.add(usuario)
+
+            proyecto.equipo = equipo
+            proyecto.save()
+
             messages.success(request, 'Creado exitosamente!')
             return redirect('ver_proyectos')
         return render(request, 'crear_proyecto.html', {'form': form})
