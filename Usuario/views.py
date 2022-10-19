@@ -173,16 +173,12 @@ class VerPermisosView(View):
 class VerUsuariosConRolesView(View):
 
     def get(self, request):
-        #usuario: Usuario = request.user
-        #if usuario.es_admin() or usuario.es_scrum_master():
-        usuarios = Usuario.objects.all()
+        usuario: Usuario = request.user
+        if usuario.is_authenticated:
+            if usuario.es_admin():
+                usuarios = Usuario.objects.all()
 
-        context = {
-                'usuarios': usuarios
-        }
-        #else:
-         #   context = {
-          #      'crear_rol': False,
-           #     "roles": []
-           # }
-        return render(request, 'roles/ver_usuarios_con_roles.html', context)
+                context = {
+                        'usuarios': usuarios
+                }
+                return render(request, 'roles/ver_usuarios_con_roles.html', context)
