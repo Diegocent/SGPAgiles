@@ -53,10 +53,18 @@ class CrearPermisoView(View):
 
 class CrearRolSistemaView(View, LoginRequiredMixin):
     form_class = FormRolSistema
-
+    permisos = ["Crear RolSistema"]
     def get(self, request):
-        form = self.form_class()
-        return render(request, 'roles/crear_roles.html', {'form': form})
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                form = self.form_class()
+                return render(request, 'roles/crear_roles.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
     def post(self, request):
         form = self.form_class(request.POST)
