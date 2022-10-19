@@ -51,7 +51,7 @@ class CrearPermisoView(View):
         return render(request, 'roles/crear_permisos.html', {'form': form})
 
 
-class CrearRolSistemaView(View, LoginRequiredMixin):
+class CrearRolSistemaView(View):
     form_class = FormRolSistema
     permisos = ["Crear RolSistema"]
     def get(self, request):
@@ -85,7 +85,7 @@ class CrearRolSistemaView(View, LoginRequiredMixin):
         return render(request, 'roles/crear_roles.html', {'form': form})
 
 
-class AsignarRolSistemaView(View, LoginRequiredMixin):
+class AsignarRolSistemaView(View):
     form_class = FormAsignarRol
     permisos = ["Asignar RolSistema"]
     def get(self, request):
@@ -151,25 +151,26 @@ class VerRolesSistemaView(View):
             return redirect("home")
 
 
-class VerPermisosView(View, LoginRequiredMixin):
-
+class VerPermisosView(View):
+    permisos = ["Ver Permiso"]
     def get(self, request):
-        #usuario: Usuario = request.user
-        #if usuario.es_admin() or usuario.es_scrum_master():
-        permisos = Permisos.objects.all()
-        context = {
-                'crear_permiso': True,
-                'permisos': permisos
-        }
-        #else:
-         #   context = {
-          #      'crear_rol': False,
-           #     "roles": []
-           # }
-        return render(request, 'roles/ver_permisos.html', context)
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                permisos = Permisos.objects.all()
+                context = {
+                        'crear_permiso': True,
+                        'permisos': permisos
+                }
+                return render(request, 'roles/ver_permisos.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
 
-class VerUsuariosConRolesView(View, LoginRequiredMixin):
+class VerUsuariosConRolesView(View):
 
     def get(self, request):
         #usuario: Usuario = request.user
