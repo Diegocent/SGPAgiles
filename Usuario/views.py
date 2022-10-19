@@ -171,7 +171,7 @@ class VerPermisosView(View):
 
 
 class VerUsuariosConRolesView(View):
-
+    permisos = ["Ser Administrador"]
     def get(self, request):
         usuario: Usuario = request.user
         if usuario.is_authenticated:
@@ -182,3 +182,7 @@ class VerUsuariosConRolesView(View):
                         'usuarios': usuarios
                 }
                 return render(request, 'roles/ver_usuarios_con_roles.html', context)
+            else:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not usuario.is_authenticated:
+            return redirect("home")
