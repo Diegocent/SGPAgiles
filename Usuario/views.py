@@ -115,22 +115,24 @@ class AsignarRolSistemaView(View, LoginRequiredMixin):
         return render(request, 'roles/asignar_rol.html', {'form': form})
 
 
-class VerConfigView(View, LoginRequiredMixin):
-
+class VerConfigView(View):
     def get(self, request):
         usuario: Usuario = request.user
-        if usuario.es_admin():
-            context = {
-                'admin': True,
-            }
+        if usuario.is_authenticated:
+            if usuario.es_admin():
+                context = {
+                    'admin': True,
+                }
+            else:
+                context = {
+                    "admin": False,
+                }
+            return render(request, 'ver_config.html', context)
         else:
-            context = {
-                "admin": False,
-            }
-        return render(request, 'ver_config.html', context)
+            return redirect("home")
 
 
-class VerRolesSistemaView(View, LoginRequiredMixin):
+class VerRolesSistemaView(View):
 
     def get(self, request):
         #usuario: Usuario = request.user
