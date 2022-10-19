@@ -26,14 +26,16 @@ class CrearPermisoView(View):
 
     def get(self, request):
         user: Usuario = request.user
-        tiene_permisos = user.tiene_permisos(permisos=self.permisos)
-        if user.is_authenticated and tiene_permisos:
-            form = self.form_class()
-            return render(request, 'roles/crear_permisos.html', {'form': form})
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                form = self.form_class()
+                return render(request, 'roles/crear_permisos.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
             return redirect("home")
-        elif not tiene_permisos:
-            return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+
 
 
     def post(self, request):
