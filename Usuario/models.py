@@ -62,3 +62,29 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
             return True
         except ObjectDoesNotExist:
             return False
+
+    def tiene_permisos(self, permisos: list, id_proyecto=0):
+        tiene_permisos = True
+        for permiso in permisos:
+            encontro_permiso = True
+            roles = self.rolSistema.all()
+            for rol in roles:
+                try:
+                    rol.permisos.get(nombre=permiso)
+                except ObjectDoesNotExist:
+                    rolesProyecto = self.rolProyecto.all().filter(proyecto_id=id_proyecto)
+                    for rolproyecto in rolesProyecto:
+                        try:
+                            rolproyecto.permisos.get(nombre=permiso)
+                        except ObjectDoesNotExist:
+                            encontro_permiso = False
+                            break
+                    if not encontro_permiso or len(rolesProyecto) == 0:
+                        encontro_permiso = False
+                        break
+            if not encontro_permiso or len(roles) == 0:
+                tiene_permisos = False
+                break
+        print("tiene permisos? {}".format(tiene_permisos))
+        return tiene_permisos
+

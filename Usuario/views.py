@@ -19,12 +19,22 @@ Actualmente contamos con los siguientes views:
     los respectivos roles que le fueron asignados (salta a la seccion [[views.py#VerUsuariosConRolesView]])
 """
 
-class CrearPermisoView(View, LoginRequiredMixin):
+
+class CrearPermisoView(View):
     form_class = FormCrearPermisos
+    permisos = ["Crear Permiso"]
 
     def get(self, request):
-        form = self.form_class()
-        return render(request, 'roles/crear_permisos.html', {'form': form})
+        user: Usuario = request.user
+        tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+        if user.is_authenticated and tiene_permisos:
+            form = self.form_class()
+            return render(request, 'roles/crear_permisos.html', {'form': form})
+        elif not user.is_authenticated:
+            return redirect("home")
+        elif not tiene_permisos:
+            return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+
 
     def post(self, request):
         form = self.form_class(request.POST)

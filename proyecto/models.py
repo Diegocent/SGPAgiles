@@ -10,6 +10,7 @@ class Equipo(models.Model):
     def __str__(self):
         return '{}'.format(self.nombre)
 
+
 class EstadoProyecto(models.TextChoices):
     NO_INICIADO = 'NO_INICIADO', 'No iniciado'
     EN_PROCESO = 'EN_PROCESO', 'En progreso'

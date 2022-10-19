@@ -1,0 +1,7 @@
+NO PUEDE ACCEDER A LA PAGINA!! Contacte con el administrador del sistema para que se le otorgen los siguientes permisos:
+
+{% for permiso in permisos %}
+    <li>{{ permiso }}</li>
+{% endfor %}
+
+<a href="{% url "home" %}">Volver a Home</a>
