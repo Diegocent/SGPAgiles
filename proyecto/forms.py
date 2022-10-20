@@ -44,6 +44,10 @@ class FormEstadoUS(forms.Form):
 
 
 class FormUS(ModelForm):
+
+    prioridad_de_negocio = forms.IntegerField(min_value=1, max_value=10, label="Prioridad de negocio")
+    prioridad_tecnica = forms.IntegerField(min_value=1, max_value=10, label="Prioridad tecnica")
+
     class Meta:
         model = UserStory
         fields = ["nombre", "descripcion", "tipo", "prioridad_de_negocio", "prioridad_tecnica", "duracion"]

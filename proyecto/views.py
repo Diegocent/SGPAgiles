@@ -498,9 +498,9 @@ class CrearUSView(View):
             if len(array_de_us) == 0:
                 p = Proyecto.objects.get(id=id_proyecto)
                 estado_inicial = EstadoUS.objects.get(nombre="TO DO", tipoUserStory=us['tipo'])
-                prioridad = round(0.6 * us["prioridad_de_negocio"] + 0.5 * us["prioridad_tecnica"])
+
                 UserStory.objects.create(nombre=us['nombre'], descripcion=us['descripcion'], proyecto=p,
-                                         tipo=us['tipo'], estado=estado_inicial, prioridad=prioridad,
+                                         tipo=us['tipo'], estado=estado_inicial,
                                          duracion=us['duracion'], prioridad_de_negocio=us['prioridad_de_negocio'],
                                          prioridad_tecnica=us['prioridad_tecnica'])
 
@@ -538,7 +538,7 @@ class ActualizarUSView(View):
     def get(self, request, id_proyecto, id_us):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permiso, id_proyecto=id_proyecto)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 us = UserStory.objects.get(id=id_us)
                 form = FormUS(instance=us)
@@ -550,11 +550,12 @@ class ActualizarUSView(View):
             return redirect("home")
 
     def post(self, request, id_proyecto, id_us):
-        us = UserStory.objects.get(id=id_us)
-        form = FormUS(request.POST, instance=us)
+        us_obj = UserStory.objects.get(id=id_us)
+        form = FormUS(request.POST, instance=us_obj)
         if form.is_valid():
-            us = form.cleaned_data
-            array_de_us = UserStory.objects.all().filter(nombre=us['nombre'], proyecto_id=id_proyecto)
+            us_form = form.cleaned_data
+            array_de_us = UserStory.objects.all().filter(nombre=us_form['nombre'],
+                                                         proyecto_id=id_proyecto).exclude(id=id_us)
 
             if len(array_de_us) == 0:
                 form.save()
