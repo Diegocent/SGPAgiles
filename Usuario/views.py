@@ -52,6 +52,7 @@ class CrearPermisoView(View):
 class CrearRolSistemaView(View):
     form_class = FormRolSistema
     permisos = ["Crear RolSistema"]
+
     def get(self, request):
         user: Usuario = request.user
         if user.is_authenticated:

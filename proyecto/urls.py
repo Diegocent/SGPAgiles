@@ -21,7 +21,11 @@ urlpatterns = [
     path('<int:id_proyecto>/equipo/<int:id_equipo>/editar/', views.ActualizarEquipoView.as_view(), name='editar_equipo'),
     path('<int:id_proyecto>/sprint/crear/', views.CrearSprint.as_view(), name='crear_sprint'),
     path('<int:id_proyecto>/sprint/<int:id_sprint>/', views.DetalleSprintView.as_view(), name='ver_sprint'),
-    path('<int:id_proyecto>/sprint/<int:id_sprint>/asignar_miembros', views.AsignarMiembroASprint.as_view(), name='asignar_miembros_sprint'),
+    path('<int:id_proyecto>/sprint/<int:id_sprint>/asignar_miembros/', views.AsignarMiembroASprint.as_view(), name='asignar_miembros_sprint'),
+    path('<int:id_proyecto>/sprint/<int:id_sprint>/editar_miembro/<int:id_miembrosprint>',
+         views.ActualizarMiembrosSprintView.as_view(), name='asignar_miembros_sprint'),
+    path('<int:id_proyecto>/sprint/<int:id_sprint>/asignar_us/', views.AsignarUSASprint.as_view(), name='asignar_us_sprint'),
+    path('<int:id_proyecto>/sprint/<int:id_sprint>/eliminar_us/<int:id_us>/', views.BorrarUSASprint.as_view(), name='eliminar_us_sprint'),
     path('<int:id_proyecto>/backlog/', views.verProductBacklog.as_view(), name='ver_product_backlog'),
 
 ]

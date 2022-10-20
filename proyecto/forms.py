@@ -70,3 +70,9 @@ class FormMiembroSprint(ModelForm):
     class Meta:
         model = MiembrosSprint
         fields = ["miembro", "carga_horaria"]
+
+
+class FormUSSprint(forms.Form):
+    user_stories = forms.ModelMultipleChoiceField(queryset=UserStory.objects.all(), label="US a ingresar al Sprint.",
+                                                  help_text="Seleccione al User Story que entrara al sprint.",)
+
