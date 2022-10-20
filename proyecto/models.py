@@ -46,11 +46,19 @@ class Sprint(models.Model):
     fecha_inicio = models.DateTimeField(null=True)
     fecha_fin = models.DateTimeField(null=True)
     estado = models.CharField(choices=EstadoProyecto.choices, max_length=100)
-    capacidad = models.IntegerField(null=True, verbose_name='Capacidad en horas')
+    capacidad = models.IntegerField(null=True, verbose_name='Capacidad en horas', default=0)
     duracion = models.IntegerField(null=True, verbose_name='Duración en días')
 
     def __str__(self):
         return 'Sprint {}'.format(self.numero)
+
+    @staticmethod
+    def obtener_ultimo_valor_de_sprint(id_proyecto):
+        ultimo_valor = Sprint.objects.all().filter(proyecto_id=id_proyecto).last()
+        if ultimo_valor is not None:
+            return ultimo_valor.numero + 1
+        else:
+            return 1
 
 
 class MiembrosSprint(models.Model):
@@ -75,7 +83,7 @@ class TipoUserStory(models.Model):
 class OrdenEstado(models.Model):
     orden = models.PositiveIntegerField()
 
-    def obtener_ultimo_valor_de_orden(tipo_id):
+    def obtener_ultimo_valor_de_orden(self, tipo_id):
         ultimo_valor = OrdenEstado.objects.all().filter(orden_del_estado__tipoUserStory_id=tipo_id).first()
         return ultimo_valor.orden + 1
 

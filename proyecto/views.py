@@ -601,7 +601,6 @@ class CrearSprint(View):
                 no_hay_otro_sprint_en_planificacion = self.verificar_cantidad_de_sprints(id_proyecto=id_proyecto)
                 if proyecto_en_proceso and no_hay_otro_sprint_en_planificacion:
                     form = self.form_class()
-                    form.fields['product_backlog'].queryset = UserStory.objects.filter(proyecto_id=id_proyecto, sprint_id__isnull=True)
                     return render(request, 'sprint/crearsprint.html', {'form': form})
                 elif not proyecto_en_proceso:
                     return render(request, 'sprint/warning.html', {"mensajeerror": "El proyecto no esta iniciado!"})
@@ -615,25 +614,26 @@ class CrearSprint(View):
     def post(self, request, id_proyecto):
         form = self.form_class(request.POST)
         if form.is_valid():
-            sprintform = form.cleaned_data
-            array_de_sprint = Sprint.objects.all().filter(numero=sprintform['numero'], proyecto_id=id_proyecto)
+            proyecto_en_proceso = self.verificar_estado_proyecto(id_proyecto=id_proyecto)
+            no_hay_otro_sprint_en_planificacion = self.verificar_cantidad_de_sprints(id_proyecto=id_proyecto)
+            if proyecto_en_proceso and no_hay_otro_sprint_en_planificacion:
+                sprintform = form.cleaned_data
 
-            if len(array_de_sprint) == 0:
                 p = Proyecto.objects.get(id=id_proyecto)
-                sprint = Sprint.objects.create(numero=sprintform['numero'], descripcion=sprintform['descripcion'],
-                                             proyecto_id=id_proyecto, fecha_fin=sprintform["fecha_fin"],
-                                             fecha_inicio=date.today(), estado=EstadoProyecto.EN_PROCESO)
+                numero = Sprint.obtener_ultimo_valor_de_sprint(id_proyecto=id_proyecto)
+                Sprint.objects.create(numero=numero, descripcion=sprintform['descripcion'],
+                                             proyecto=p, estado=EstadoSprint.NO_INICIADO)
+            elif not proyecto_en_proceso:
+                return render(request, 'sprint/warning.html', {"mensajeerror": "El proyecto no esta iniciado!"})
+            elif not no_hay_otro_sprint_en_planificacion:
+                return render(request, 'sprint/warning.html',
+                              {"mensajeerror": "Ya existe otro sprint en planificacion!"})
+        else:
+            return render(request, 'sprint/crearsprint.html', {'form': form})
+        return redirect('detalle_proyecto', id_proyecto)
 
-                user_stories = sprintform["product_backlog"]
-                for us in user_stories:
-                    us.sprint_id = sprint.id
-                    us.save()
-            else:
-                return render(request, 'sprint/crearsprint.html', {'form': form})
-            return redirect('detalle_proyecto', id_proyecto)
-        return render(request, 'sprint/crearsprint.html', {'form': form})
-
-    def verificar_estado_proyecto(self, id_proyecto):
+    @staticmethod
+    def verificar_estado_proyecto(id_proyecto):
         try:
             proyecto = Proyecto.objects.get(id=id_proyecto)
             if proyecto.estado == EstadoProyecto.EN_PROCESO:

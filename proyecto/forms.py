@@ -50,8 +50,9 @@ class FormUS(ModelForm):
 
 
 class FormSprint(ModelForm):
-    product_backlog = forms.ModelMultipleChoiceField(queryset=UserStory.objects.all())
+
+    duracion = forms.IntegerField(min_value=1, max_value=30, label="Duracion del sprint en dias habiles")
 
     class Meta:
         model = Sprint
-        fields = ["numero", "descripcion", "fecha_fin", ]
+        fields = ["descripcion", "duracion"]
