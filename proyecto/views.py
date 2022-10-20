@@ -110,7 +110,12 @@ class CrearProyectoView(View):
         scrum = RolProyecto.objects.create(nombre="Scrum Master",
                                            descripcion="Scrum Master del Proyecto.",
                                            proyecto=proyecto)
-        scrum.agregar_permisos(["Ver Equipo",
+        scrum.agregar_permisos([
+                                "Ver RolProyecto",
+                                "Crear RolProyecto",
+                                "Editar RolProyecto",
+                                "Borrar RolProyecto",
+                                "Ver Equipo",
                                 "Crear Equipo",
                                 "Editar Equipo",
                                 "Ver Proyecto",
@@ -143,7 +148,9 @@ class CrearProyectoView(View):
         dev = RolProyecto.objects.create(nombre="Developer",
                                          descripcion="Developer del Proyecto.",
                                          proyecto=proyecto)
-        dev.agregar_permisos(["Ver Permiso",
+        dev.agregar_permisos([
+                                "Ver RolProyecto",
+                                "Ver Permiso",
                                 "Ver Usuario",
                                 "Ver Equipo",
                                 "Ver Proyecto",
@@ -631,18 +638,32 @@ class ActualizarEquipoView(View):
         equipo = Equipo.objects.get(id=id_equipo)
         form = FormCrearEquipo(request.POST, instance=equipo)
         if form.is_valid():
+
+            self.eliminar_roles_de_miembros_eliminados(equipo_ant=equipo.miembros,
+                                                                             equipo_nuevo=form.cleaned_data["miembros"],
+                                                                             id_proyecto=id_proyecto)
+
             for miembro in form.cleaned_data["miembros"]:
                 if len(miembro.rolProyecto.all().filter(proyecto_id=id_proyecto)) == 0:
                     miembro.rolProyecto.add(RolProyecto.objects.get(nombre="Developer", proyecto_id=id_proyecto))
                     miembro.save()
                 equipo.miembros.add(miembro)
+
+
             form.save()
 
             return redirect('ver_equipo', id_proyecto, id_equipo)
         return render(request, 'US/editarus.html', {'form': form})
 
+    def eliminar_roles_de_miembros_eliminados(self, equipo_ant, equipo_nuevo, id_proyecto):
+        miembros_viejos = equipo_ant.all()
+        miembros_nuevos = equipo_nuevo.all()
+        miembros_eliminados = []
+        for miembro_viejo in miembros_viejos:
+            if miembro_viejo not in miembros_nuevos:
+                miembro_viejo.rolProyecto.remove(*miembro_viejo.rolProyecto.filter(proyecto_id=id_proyecto))
 
-
+        return miembros_eliminados
 
 
 class CrearSprint(View):
