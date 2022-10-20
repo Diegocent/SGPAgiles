@@ -114,7 +114,7 @@ class UserStory(models.Model):
     descripcion = models.CharField(max_length=500)
     tipo = models.ForeignKey(TipoUserStory, on_delete=models.CASCADE)
     estado = models.ForeignKey(EstadoUS, on_delete=models.CASCADE, null=True)
-
+    prioridad = models.PositiveIntegerField(default=0)
     prioridad_de_negocio = models.PositiveIntegerField()
     prioridad_tecnica = models.PositiveIntegerField()
     esfuerzo_anterior = models.PositiveIntegerField(default=0)
@@ -123,6 +123,6 @@ class UserStory(models.Model):
     def __str__(self):
         return '{}'.format(self.nombre)
 
-    @property
-    def prioridad(self):
-        return round(0.6 * self.prioridad_de_negocio + 0.5 * self.prioridad_tecnica + self.esfuerzo_anterior)
+    def calcular_prioridad(self):
+        self.prioridad = round(0.6 * self.prioridad_de_negocio + 0.5 * self.prioridad_tecnica + self.esfuerzo_anterior)
+        self.save()

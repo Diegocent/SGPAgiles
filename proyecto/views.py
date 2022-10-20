@@ -498,11 +498,11 @@ class CrearUSView(View):
                 p = Proyecto.objects.get(id=id_proyecto)
                 estado_inicial = EstadoUS.objects.get(nombre="TO DO", tipoUserStory=us['tipo'])
 
-                UserStory.objects.create(nombre=us['nombre'], descripcion=us['descripcion'], proyecto=p,
+                user_story = UserStory.objects.create(nombre=us['nombre'], descripcion=us['descripcion'], proyecto=p,
                                          tipo=us['tipo'], estado=estado_inicial,
                                          duracion=us['duracion'], prioridad_de_negocio=us['prioridad_de_negocio'],
                                          prioridad_tecnica=us['prioridad_tecnica'])
-
+                user_story.calcular_prioridad()
                 messages.success(request, 'Creado exitosamente!')
             else:
                 return render(request, 'US/crearus.html', {'form': form})
@@ -793,7 +793,8 @@ class AsignarMiembroASprint(View):
                                      help_text="Seleccione al developer que entrara al sprint.",
                                      queryset=Usuario.objects.filter(
                                          rolProyecto__proyecto_id=id_proyecto,
-                                         rolProyecto__nombre="Developer").exclude(miembrossprint__sprint_id=id_sprint))
+                                         rolProyecto__nombre="Developer").exclude(miembrossprint__sprint_id=id_sprint)
+                                     )
                 return render(request, 'sprint/asignarmiembrosprint.html', {'form': form})
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
@@ -846,7 +847,7 @@ class AsignarUSASprint(View):
                 form.fields["user_stories"].queryset = UserStory.objects.filter(
                                                  proyecto_id=id_proyecto,
                                                  sprint__isnull=True
-                                                 )
+                                                 ).order_by('-prioridad')
 
                 return render(request, 'sprint/asignarussprint.html', {'form': form})
             elif not tiene_permisos:
