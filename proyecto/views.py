@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django import forms
 from django.views import View
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
-    FormUS, FormSprint, FormMiembroSprint
+    FormUS, FormSprint, FormMiembroSprint, FormUSSprint
 from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado, \
     EstadoSprint, MiembrosSprint
 from Usuario.models import Usuario, RolProyecto
@@ -729,7 +729,6 @@ class CrearSprint(View):
             return False
 
 
-
 class DetalleSprintView(View):
     permisos = ["Ver Sprint"]
 
@@ -801,7 +800,6 @@ class AsignarMiembroASprint(View):
         elif not user.is_authenticated:
             return redirect("home")
 
-
     def post(self, request, id_proyecto, id_sprint):
         form = self.form_class(request.POST)
         if form.is_valid():
@@ -813,13 +811,195 @@ class AsignarMiembroASprint(View):
                 messages.error(request, message="No se encuentra al Sprint para este proyecto")
                 return redirect("detalle_proyecto", id_proyecto)
 
-            print("duracion")
-            print(sprint.duracion)
             MiembrosSprint.objects.create(sprint=sprint, carga_horaria=form["carga_horaria"],
                                           miembro=form["miembro"],
                                           capacidad=form["carga_horaria"] * sprint.duracion)
             messages.success(request, message="Miembro agregado exitosamente.")
             redirect("detalle_proyecto", id_proyecto)
         else:
-            return render(request, 'sprint/crearsprint.html', {'form': form})
+            return render(request, 'sprint/asignarmiembrosprint.html', {'form': form})
         return redirect('detalle_proyecto', id_proyecto)
+
+
+class AsignarUSASprint(View):
+    permisos = ["Editar Sprint"]
+
+    form_class = FormUSSprint
+
+    def get(self, request, id_proyecto, id_sprint):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+
+                try:
+                    sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al Sprint con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                if sprint.estado==EstadoSprint.EN_PROCESO:
+                    messages.error(request, message="No se puede agregar un US a un Sprint ya iniciado")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                form = self.form_class()
+                form.fields["user_stories"].queryset = UserStory.objects.filter(
+                                                 proyecto_id=id_proyecto,
+                                                 sprint__isnull=True
+                                                 )
+
+                return render(request, 'sprint/asignarussprint.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_sprint):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+
+            form = form.cleaned_data
+            try:
+                sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+            except ObjectDoesNotExist:
+                messages.error(request, message="No se encuentra al Sprint para este proyecto")
+                return redirect("detalle_proyecto", id_proyecto)
+
+            if sprint.estado == EstadoSprint.EN_PROCESO:
+                messages.error(request, message="No se puede agregar un US a un Sprint ya iniciado")
+                return redirect("detalle_proyecto", id_proyecto)
+
+
+
+            for us in form["user_stories"]:
+                us: UserStory
+                us.sprint = sprint
+                us.save()
+
+            messages.success(request, message="Miembro agregado exitosamente.")
+            redirect("detalle_proyecto", id_proyecto)
+        else:
+            return render(request, 'sprint/asignarussprint.html', {'form': form})
+        return redirect('detalle_proyecto', id_proyecto)
+
+
+class BorrarUSASprint(View):
+    permisos = ["Editar Sprint"]
+
+    def get(self, request, id_proyecto, id_sprint, id_us):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+
+                try:
+                    sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+                    us = UserStory.objects.get(sprint_id=id_sprint, proyecto_id=id_proyecto, id=id_us)
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al Sprint con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                if sprint.estado == EstadoSprint.EN_PROCESO:
+                    messages.error(request, message="No se puede borrar un US de un Sprint ya iniciado")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                return render(request, 'sprint/borrarussprint.html',)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_sprint, id_us):
+
+        try:
+            sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+        except ObjectDoesNotExist:
+            messages.error(request, message="No se encuentra al Sprint para este proyecto")
+            return redirect("detalle_proyecto", id_proyecto)
+
+        if sprint.estado == EstadoSprint.EN_PROCESO:
+            messages.error(request, message="No se puede borrar un US de un Sprint ya iniciado")
+            return redirect("detalle_proyecto", id_proyecto)
+
+        try:
+            us = UserStory.objects.get(sprint_id=id_sprint, proyecto_id=id_proyecto, id=id_us)
+        except ObjectDoesNotExist:
+            messages.error(request, message="No se encuentra al Sprint para este proyecto")
+            return redirect("detalle_proyecto", id_proyecto)
+
+        us.sprint = None
+        us.save()
+
+        messages.success(request, message="Miembro eliminado exitosamente.")
+        redirect("detalle_proyecto", id_proyecto)
+
+        return redirect('detalle_proyecto', id_proyecto)
+
+
+class ActualizarMiembrosSprintView(View):
+    permisos = ["Editar Sprint"]
+
+    def get(self, request, id_proyecto, id_sprint, id_miembrosprint):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    miembrosprint = MiembrosSprint.objects.get(id=id_miembrosprint, sprint_id=id_sprint)
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra el objeto requerido. Verifique parametros")
+                    return redirect("detalle_proyecto", id_proyecto)
+                form = FormMiembroSprint(instance=miembrosprint)
+                return render(request, 'sprint/editarmiembrosprint.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_sprint, id_miembrosprint):
+        miembrosprint = MiembrosSprint.objects.get(id=id_miembrosprint, sprint_id=id_sprint)
+        form = FormMiembroSprint(request.POST, instance=miembrosprint)
+
+        sprint = Sprint.objects.get(id=id_sprint)
+
+        if form.is_valid():
+            form = form.cleaned_data
+            miembrosprint.miembro = form["miembro"]
+            miembrosprint.carga_horaria = form["carga_horaria"]
+            miembrosprint.capacidad = form["carga_horaria"] * sprint.duracion
+            miembrosprint.save()
+
+            messages.success(request, "Miembro del sprint editado correctamente")
+            return redirect('detalle_proyecto', id_proyecto)
+        return render(request, 'sprint/editarmiembrosprint.html', {'form': form})
+
+
+class BorrarMiembrosSprintView(View):
+    permisos = ["Editar Sprint"]
+
+    def get(self, request, id_proyecto, id_sprint, id_miembrosprint):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    miembrosprint = MiembrosSprint.objects.get(id=id_miembrosprint, sprint_id=id_sprint)
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra el objeto requerido. Verifique parametros")
+                    return redirect("detalle_proyecto", id_proyecto)
+                form = FormMiembroSprint(instance=miembrosprint)
+                return render(request, 'sprint/eliminarmiembrosprint.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_sprint, id_miembrosprint):
+        miembrosprint = MiembrosSprint.objects.get(id=id_miembrosprint, sprint_id=id_sprint)
+
+        miembrosprint.delete()
+
+        messages.success(request, "Miembro del sprint editado correctamente")
+        return redirect('detalle_proyecto', id_proyecto)
+
