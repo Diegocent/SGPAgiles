@@ -21,6 +21,7 @@ urlpatterns = [
     path('<int:id_proyecto>/equipo/<int:id_equipo>/editar/', views.ActualizarEquipoView.as_view(), name='editar_equipo'),
     path('<int:id_proyecto>/sprint/crear/', views.CrearSprint.as_view(), name='crear_sprint'),
     path('<int:id_proyecto>/sprint/<int:id_sprint>/', views.DetalleSprintView.as_view(), name='ver_sprint'),
+    path('<int:id_proyecto>/sprint/<int:id_sprint>/asignar_miembros', views.AsignarMiembroASprint.as_view(), name='asignar_miembros_sprint'),
     path('<int:id_proyecto>/backlog/', views.verProductBacklog.as_view(), name='ver_product_backlog'),
 
 ]

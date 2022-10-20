@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from .models import Equipo, TipoUserStory, UserStory, Sprint
+from .models import Equipo, TipoUserStory, UserStory, Sprint, MiembrosSprint
 from Usuario.models import Permisos, Usuario
 from django import forms
 
@@ -55,8 +55,18 @@ class FormUS(ModelForm):
 
 class FormSprint(ModelForm):
 
-    duracion = forms.IntegerField(min_value=1, max_value=30, label="Duracion del sprint en dias habiles")
+    duracion = forms.IntegerField(min_value=1, max_value=30, label="Duracion del sprint en dias habiles", required=True)
 
     class Meta:
         model = Sprint
         fields = ["descripcion", "duracion"]
+
+
+class FormMiembroSprint(ModelForm):
+
+    carga_horaria = forms.IntegerField(min_value=1, max_value=12, label="Carga horaria",
+                                       help_text="Cantidad de horas que el miembro puede trabajar por dia")
+
+    class Meta:
+        model = MiembrosSprint
+        fields = ["miembro", "carga_horaria"]

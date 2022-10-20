@@ -64,8 +64,8 @@ class Sprint(models.Model):
 class MiembrosSprint(models.Model):
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
     miembro = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    carga_horaria = models.PositiveIntegerField()
-    capacidad = models.PositiveIntegerField()
+    carga_horaria = models.PositiveIntegerField() #cantidad de horas por dia que el miembro puede trabajar
+    capacidad = models.PositiveIntegerField() #carga horaria al miembro * duracion del sprint
 
     def __str__(self):
         return 'Miembro del Sprint {} - {}'.format(self.sprint.numero, self.miembro.username)

@@ -1,13 +1,12 @@
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django import forms
 from django.views import View
-from django.http import HttpResponseRedirect, HttpResponse
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
-    FormUS, FormSprint
+    FormUS, FormSprint, FormMiembroSprint
 from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado, \
-    EstadoSprint
+    EstadoSprint, MiembrosSprint
 from Usuario.models import Usuario, RolProyecto
 from django.contrib import messages
 from datetime import date
@@ -701,7 +700,7 @@ class CrearSprint(View):
                 p = Proyecto.objects.get(id=id_proyecto)
                 numero = Sprint.obtener_ultimo_valor_de_sprint(id_proyecto=id_proyecto)
                 Sprint.objects.create(numero=numero, descripcion=sprintform['descripcion'],
-                                             proyecto=p, estado=EstadoSprint.NO_INICIADO)
+                                             proyecto=p, estado=EstadoSprint.NO_INICIADO, duracion=sprintform["duracion"])
             elif not proyecto_en_proceso:
                 return render(request, 'sprint/warning.html', {"mensajeerror": "El proyecto no esta iniciado!"})
             elif not no_hay_otro_sprint_en_planificacion:
@@ -753,7 +752,7 @@ class DetalleSprintView(View):
             return redirect("home")
 
 
-class  verProductBacklog(View):
+class verProductBacklog(View):
     permisos = ["Ver ProductBakclog"]
 
     def get(self, request, id_proyecto):
@@ -770,3 +769,57 @@ class  verProductBacklog(View):
                 'id_proyecto': id_proyecto
             }
         return render(request, 'backlog/ver_product_backlog.html', context)
+
+
+class AsignarMiembroASprint(View):
+    permisos = ["Editar Sprint"]
+
+    form_class = FormMiembroSprint
+
+    def get(self, request, id_proyecto, id_sprint):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+
+                try:
+                    sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al Sprint con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                form = self.form_class()
+                form.fields["miembro"] = forms.\
+                    ModelChoiceField(label="Miembro a ingresar al Sprint.",
+                                     help_text="Seleccione al developer que entrara al sprint.",
+                                     queryset=Usuario.objects.filter(
+                                         rolProyecto__proyecto_id=id_proyecto,
+                                         rolProyecto__nombre="Developer").exclude(miembrossprint__sprint_id=id_sprint))
+                return render(request, 'sprint/asignarmiembrosprint.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+
+    def post(self, request, id_proyecto, id_sprint):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+
+            form = form.cleaned_data
+            try:
+                sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+            except ObjectDoesNotExist:
+                messages.error(request, message="No se encuentra al Sprint para este proyecto")
+                return redirect("detalle_proyecto", id_proyecto)
+
+            print("duracion")
+            print(sprint.duracion)
+            MiembrosSprint.objects.create(sprint=sprint, carga_horaria=form["carga_horaria"],
+                                          miembro=form["miembro"],
+                                          capacidad=form["carga_horaria"] * sprint.duracion)
+            messages.success(request, message="Miembro agregado exitosamente.")
+            redirect("detalle_proyecto", id_proyecto)
+        else:
+            return render(request, 'sprint/crearsprint.html', {'form': form})
+        return redirect('detalle_proyecto', id_proyecto)
