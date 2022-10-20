@@ -126,3 +126,6 @@ class UserStory(models.Model):
     def calcular_prioridad(self):
         self.prioridad = round(0.6 * self.prioridad_de_negocio + 0.5 * self.prioridad_tecnica + self.esfuerzo_anterior)
         self.save()
+
+    class Meta:
+        ordering = ["-prioridad"]
