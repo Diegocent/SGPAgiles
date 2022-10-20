@@ -72,10 +72,10 @@
 
         <div class="col-xl-6 col-md-6 float-right">
             <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
-            <div class="card-header">Sprints Creados.</div>
+            <div class="card-header">Sprint Creado.</div>
             <div class="card-body">
-                <h5 class="card-title"></h5>
-                 <p class="card-text">Visualiza una listade Sprints creados.</p>
+                <h5 class="card-title">Podras crea mas Sprints cunado finalice el actual!</h5>
+                 <p class="card-text"></p>
             </div>
             </div>
         </div>
@@ -126,9 +126,10 @@
     {% if not equipo %}
         <a href="crear_equipo"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Crear Equipo</button></a>
     {% else %}
+
+        <p style="color: black; font-size: 20px">Equipo: {{ equipo.nombre }}</p>
         <a href="{% url 'ver_equipo' id_proyecto=proyecto.id  id_equipo=equipo.id %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Miembros</button></a>
 
-        <p>Equipo: {{ equipo.nombre }}</p>
     {% endif %}
     <br>
 {% else %}
