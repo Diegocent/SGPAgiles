@@ -89,17 +89,13 @@ class CrearProyectoView(View):
                 descripcion=cleaned_data["descripcion"],
                 estado=EstadoProyecto.NO_INICIADO
             )
-            scrum = RolProyecto.objects.create(nombre="scrum master",
-                                       descripcion="Scrum Master del Proyecto.",
-                                       proyecto=proyecto)
-            RolProyecto.objects.create(nombre="Developer",
-                                       descripcion="Developer del Proyecto.",
-                                       proyecto=proyecto)
+            scrum = self.crearRoles(proyecto)
+
             usuario: Usuario = cleaned_data["scrum_master"]
             usuario.rolProyecto.add(scrum)
             usuario.save()
 
-            equipo = Equipo.objects.create(nombre = "")
+            equipo = Equipo.objects.create(nombre="")
             equipo.miembros.add(usuario)
 
             proyecto.equipo = equipo
@@ -108,6 +104,59 @@ class CrearProyectoView(View):
             messages.success(request, 'Creado exitosamente!')
             return redirect('ver_proyectos')
         return render(request, 'crear_proyecto.html', {'form': form})
+
+    @staticmethod
+    def crearRoles(proyecto):
+        scrum = RolProyecto.objects.create(nombre="Scrum Master",
+                                           descripcion="Scrum Master del Proyecto.",
+                                           proyecto=proyecto)
+        scrum.agregar_permisos(["Ver Equipo",
+                                "Crear Equipo",
+                                "Editar Equipo",
+                                "Ver Proyecto",
+                                "Editar Proyecto",
+                                "Iniciar Proyecto",
+                                "Cancelar Proyecto",
+                                "Ver Sprint",
+                                "Crear Sprint",
+                                "Editar Sprint",
+                                "Iniciar Sprint",
+                                "Cancelar Sprint",
+                                "Ver TipoUserStory",
+                                "Crear TipoUserStory",
+                                "Editar TipoUserStory",
+                                "Borrar TipoUserStory",
+                                "Ver EstadoUS",
+                                "Crear EstadoUS",
+                                "Editar EstadoUS",
+                                "Borrar EstadoUS",
+                                "Ver UserStory",
+                                "Crear UserStory",
+                                "Editar UserStory",
+                                "Borrar UserStory",
+                                "Ver ProductBacklog",
+                                "Crear ProductBacklog",
+                                "Editar ProductBacklog",
+                                "Borrar ProductBacklog",
+                                "Ver Kanban",
+                                ])
+        dev = RolProyecto.objects.create(nombre="Developer",
+                                         descripcion="Developer del Proyecto.",
+                                         proyecto=proyecto)
+        dev.agregar_permisos(["Ver Permiso",
+                                "Ver Usuario",
+                                "Ver Equipo",
+                                "Ver Proyecto",
+                                "Ver Sprint",
+                                "Ver TipoUserStory",
+                                "Ver EstadoUS",
+                                "Ver UserStory",
+                                "Ver ProductBacklog",
+                                "Ver Kanban",
+                                "Cambiar EstadoUS",
+                                "Editar Kanban",
+                                ])
+        return scrum
 
 
 class VerProyectoView(View):
@@ -124,7 +173,7 @@ class VerProyectoView(View):
         usuario: Usuario = request.user
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 p = Proyecto.objects.get(id=id_proyecto)
                 tipos = TipoUserStory.objects.all().filter(proyecto=p)
@@ -179,7 +228,7 @@ class CrearEquipoView(View):
     def get(self, request, id_proyecto):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 form = self.form_class()
                 return render(request, 'crear_equipo.html', {'form': form})
@@ -196,6 +245,9 @@ class CrearEquipoView(View):
                 nombre=cleaned_data["nombre"],
             )
             for miembro in cleaned_data["miembros"]:
+                if len(miembro.rolProyecto.all().filter(proyecto_id=id_proyecto))==0:
+                    miembro.rolProyecto.add(RolProyecto.objects.get(nombre="Developer", proyecto_id=id_proyecto))
+                    miembro.save()
                 equipo.miembros.add(miembro)
             proyecto = Proyecto.objects.get(id=id_proyecto)
             print(equipo)
@@ -213,7 +265,7 @@ class IniciarProyectoView(View):
     def get(self, request, id_proyecto):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 form = self.form_class()
                 return render(request, 'iniciar_proyecto.html', {'form': form})
@@ -243,7 +295,7 @@ class CrearRolProyectoView(View):
     def get(self, request, id_proyecto):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 form = self.form_class()
                 return render(request, 'roles/crear_rol_proyecto.html', {'form': form})
@@ -278,7 +330,7 @@ class VerRolesProyectoView(View):
     def get(self, request, id_proyecto):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 roles = RolProyecto.objects.all().filter(proyecto=id_proyecto)
                 context = {
@@ -299,7 +351,7 @@ class VerTiposdeUSView(View):
     def get(self, request, id_proyecto):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 tipos = TipoUserStory.objects.all().filter(proyecto=id_proyecto)
                 context = {
@@ -321,7 +373,7 @@ class CrearTiposUSView(View):
     def get(self, request, id_proyecto):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 form = self.form_class()
                 return render(request, 'tipoUS/creartipous.html', {'form': form})
@@ -359,7 +411,7 @@ class DetalleTiposUSView(View):
     def get(self, request, id_proyecto, id_tipous):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 tipo = TipoUserStory.objects.get(id=id_tipous)
                 estados = EstadoUS.objects.all().filter(tipoUserStory_id=id_tipous)
@@ -383,7 +435,7 @@ class CrearEstadosUSView(View):
     def get(self, request, id_proyecto, id_tipous):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 form = self.form_class()
                 return render(request, 'tipoUS/crearestadous.html', {'form': form})
@@ -420,7 +472,7 @@ class CrearUSView(View):
     def get(self, request, id_proyecto):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 form = self.form_class()
                 form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
@@ -458,7 +510,7 @@ class VerUSView(View):
     def get(self, request, id_proyecto):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 uss = UserStory.objects.all().filter(proyecto=id_proyecto)
                 context = {
@@ -479,7 +531,7 @@ class ActualizarUSView(View):
     def get(self, request, id_proyecto, id_us):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permiso, id_proyecto=id_proyecto)
             if tiene_permisos:
                 us = UserStory.objects.get(id=id_us)
                 form = FormUS(instance=us)
@@ -514,7 +566,7 @@ class BorrarUSView(View):
     def get(self, request, id_proyecto, id_us):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 us = UserStory.objects.get(id=id_us)
                 form = FormUS(instance=us)
@@ -538,7 +590,7 @@ class DetalleEquipoView(View):
     def get(self, request, id_proyecto, id_equipo):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 equipo = Equipo.objects.get(id=id_equipo)
                 miembros = equipo.miembros.all()
@@ -565,7 +617,7 @@ class ActualizarEquipoView(View):
     def get(self, request, id_proyecto, id_equipo):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 equipo = Equipo.objects.get(id=id_equipo)
                 form = FormCrearEquipo(instance=equipo)
@@ -579,6 +631,11 @@ class ActualizarEquipoView(View):
         equipo = Equipo.objects.get(id=id_equipo)
         form = FormCrearEquipo(request.POST, instance=equipo)
         if form.is_valid():
+            for miembro in form.cleaned_data["miembros"]:
+                if len(miembro.rolProyecto.all().filter(proyecto_id=id_proyecto)) == 0:
+                    miembro.rolProyecto.add(RolProyecto.objects.get(nombre="Developer", proyecto_id=id_proyecto))
+                    miembro.save()
+                equipo.miembros.add(miembro)
             form.save()
 
             return redirect('ver_equipo', id_proyecto, id_equipo)
@@ -595,7 +652,7 @@ class CrearSprint(View):
     def get(self, request, id_proyecto):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 proyecto_en_proceso = self.verificar_estado_proyecto(id_proyecto=id_proyecto)
                 no_hay_otro_sprint_en_planificacion = self.verificar_cantidad_de_sprints(id_proyecto=id_proyecto)
@@ -658,7 +715,7 @@ class DetalleSprintView(View):
     def get(self, request, id_proyecto, id_sprint):
         user: Usuario = request.user
         if user.is_authenticated:
-            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 user_stories = UserStory.objects.filter(proyecto_id=id_proyecto, sprint_id=id_sprint)
                 sprint = Sprint.objects.get(id = id_sprint)

@@ -30,6 +30,10 @@ class RolProyecto(models.Model):
     def __str__(self):
         return '{}'.format(self.nombre)
 
+    def agregar_permisos(self, permisos):
+        permisos_objects = Permisos.objects.all().filter(nombre__in=permisos)
+        self.permisos.add(*permisos_objects)
+
 
 # Create your models here.
 class Usuario(AbstractBaseUser, PermissionsMixin):
@@ -58,7 +62,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 
     def es_scrum_master(self, id_proyecto):
         try:
-            scrum = self.rolProyecto.get(nombre="scrum master", proyecto=id_proyecto)
+            scrum = self.rolProyecto.get(nombre="Scrum Master", proyecto=id_proyecto)
             return True
         except ObjectDoesNotExist:
             return False
@@ -85,6 +89,5 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
             if not encontro_permiso or len(roles) == 0:
                 tiene_permisos = False
                 break
-        print("tiene permisos? {}".format(tiene_permisos))
         return tiene_permisos
 

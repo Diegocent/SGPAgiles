@@ -17,8 +17,9 @@ def login(request):
         if not request.user.is_authenticated:
                 return render(request, 'index.html')
         else:
+                user:Usuario = request.user
                 cantidad_de_usuarios = Usuario.objects.count()
-                unico_usuario_es_admin = request.user.es_admin()
+                unico_usuario_es_admin = user.es_admin()
                 #si hay un solo usuario y el current usuario no es admin, se le asigna como admin
                 if(cantidad_de_usuarios == 1 and not unico_usuario_es_admin):
                         array_de_roles = RolSistema.objects.all().filter(nombre="admin")
@@ -101,10 +102,15 @@ def login(request):
                                 admin.permisos.add(permiso_de_admin)
                                 admin.permisos.add(*permisos)
 
-                                request.user.rolSistema.add(admin)
+                                user.rolSistema.add(admin)
                         else: #si existe el rol de admin, se le asigna directamente al usuario
                                 admin = RolSistema.objects.get(nombre="admin")
-                                request.user.rolSistema.add(admin)
+                                user.rolSistema.add(admin)
+                if len(user.rolSistema.all()) == 0:
+                    print("hola")
+                    usuario_simple = RolSistema.objects.create(nombre="Usuario simple", descripcion="Rol para usuarios simples")
+                    user.rolSistema.add(usuario_simple)
+                    user.save()
                 return render(request, 'index.html')
 
 
