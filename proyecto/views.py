@@ -6,7 +6,8 @@ from django.views import View
 from django.http import HttpResponseRedirect, HttpResponse
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
     FormUS, FormSprint
-from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado
+from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado, \
+    EstadoSprint
 from Usuario.models import Usuario, RolProyecto
 from django.contrib import messages
 from datetime import date
@@ -584,6 +585,9 @@ class ActualizarEquipoView(View):
         return render(request, 'US/editarus.html', {'form': form})
 
 
+
+
+
 class CrearSprint(View):
     form_class = FormSprint
     permisos = ["Crear Sprint"]
@@ -593,13 +597,16 @@ class CrearSprint(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos)
             if tiene_permisos:
-                sprints = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoProyecto.EN_PROCESO)
-                if len(sprints) == 0:
+                proyecto_en_proceso = self.verificar_estado_proyecto(id_proyecto=id_proyecto)
+                no_hay_otro_sprint_en_planificacion = self.verificar_cantidad_de_sprints(id_proyecto=id_proyecto)
+                if proyecto_en_proceso and no_hay_otro_sprint_en_planificacion:
                     form = self.form_class()
                     form.fields['product_backlog'].queryset = UserStory.objects.filter(proyecto_id=id_proyecto, sprint_id__isnull=True)
                     return render(request, 'sprint/crearsprint.html', {'form': form})
-                else:
-                    return render(request, 'sprint/warning.html',)
+                elif not proyecto_en_proceso:
+                    return render(request, 'sprint/warning.html', {"mensajeerror": "El proyecto no esta iniciado!"})
+                elif not no_hay_otro_sprint_en_planificacion:
+                    return render(request, 'sprint/warning.html', {"mensajeerror": "Ya existe otro sprint en planificacion!"})
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -625,6 +632,24 @@ class CrearSprint(View):
                 return render(request, 'sprint/crearsprint.html', {'form': form})
             return redirect('detalle_proyecto', id_proyecto)
         return render(request, 'sprint/crearsprint.html', {'form': form})
+
+    def verificar_estado_proyecto(self, id_proyecto):
+        try:
+            proyecto = Proyecto.objects.get(id=id_proyecto)
+            if proyecto.estado == EstadoProyecto.EN_PROCESO:
+                return True
+            else:
+                return False
+        except ObjectDoesNotExist:
+            return False
+
+    def verificar_cantidad_de_sprints(self, id_proyecto):
+        sprints = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoSprint.NO_INICIADO)
+        if len(sprints) == 0:
+            return True
+        else:
+            return False
+
 
 
 class DetalleSprintView(View):
