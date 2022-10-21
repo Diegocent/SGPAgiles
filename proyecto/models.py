@@ -23,9 +23,9 @@ class Proyecto(models.Model):
     nombre = models.CharField(max_length=32)
     descripcion = models.CharField(max_length=500)
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE, null=True)
-    fecha_inicio = models.DateTimeField(null=True)
-    fecha_fin_estimada = models.DateTimeField(null=True)
-    fecha_fin_real = models.DateTimeField(null=True)
+    fecha_inicio = models.DateField(null=True)
+    fecha_fin_estimada = models.DateField(null=True)
+    fecha_fin_real = models.DateField(null=True)
     estado = models.CharField(choices=EstadoProyecto.choices, max_length=100)
 
     def __str__(self):
@@ -43,8 +43,8 @@ class Sprint(models.Model):
     numero = models.IntegerField()
     descripcion = models.CharField(max_length=500)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
-    fecha_inicio = models.DateTimeField(null=True)
-    fecha_fin = models.DateTimeField(null=True)
+    fecha_inicio = models.DateField(null=True)
+    fecha_fin = models.DateField(null=True)
     estado = models.CharField(choices=EstadoProyecto.choices, max_length=100)
     capacidad = models.IntegerField(null=True, verbose_name='Capacidad en horas', default=0)
     duracion = models.IntegerField(null=True, verbose_name='Duración en días')
@@ -60,6 +60,33 @@ class Sprint(models.Model):
         else:
             return 1
 
+    @property
+    def tiene_miembros(self):
+        miembros = MiembrosSprint.objects.filter(sprint=self)
+        if len(miembros) == 0:
+            return False
+        return True
+
+    @property
+    def tiene_user_stories(self):
+        user_stories = UserStory.objects.filter(sprint=self)
+        if len(user_stories) == 0:
+            return False
+        return True
+
+    @property
+    def hay_otros_sprints_en_proceso(self):
+        sprints_en_proceso = Sprint.objects.filter(estado=EstadoSprint.EN_PROCESO, proyecto=self.proyecto)
+        if len(sprints_en_proceso) == 0:
+            return False
+        return True
+
+    @property
+    def hay_otros_sprints_en_planificacion(self):
+        sprints_en_planificacion = Sprint.objects.filter(estado=EstadoSprint.NO_INICIADO, proyecto=self.proyecto)
+        if len(sprints_en_planificacion) == 0:
+            return False
+        return True
 
 class MiembrosSprint(models.Model):
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
@@ -69,6 +96,7 @@ class MiembrosSprint(models.Model):
 
     def __str__(self):
         return 'Miembro del Sprint {} - {}'.format(self.sprint.numero, self.miembro.username)
+
 
 
 class TipoUserStory(models.Model):
