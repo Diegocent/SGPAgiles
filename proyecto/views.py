@@ -1011,6 +1011,7 @@ class BorrarMiembrosSprintView(View):
 
         sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
         sprint.capacidad -= miembrosprint.capacidad
+        sprint.save()
 
         miembrosprint.delete()
 
