@@ -4,7 +4,8 @@ from django.shortcuts import render, redirect
 from django import forms
 from django.views import View
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
-    FormUS, FormSprint, FormMiembroSprint, FormUSSprint
+    FormUS, FormSprint, FormMiembroSprint, FormUSSprint, FormImportarMainPage, FormImportarRolesProyecto, \
+    FormImportarTiposDeUS
 from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado, \
     EstadoSprint, MiembrosSprint
 from Usuario.models import Usuario, RolProyecto
@@ -1045,3 +1046,132 @@ class VerSprintsView(View):
         elif not user.is_authenticated:
             return redirect("home")
 
+
+class ImportarMainPageView(View):
+    permisos = ["Editar RolProyecto", "Editar TipoUserStory"]
+
+    form_class = FormImportarMainPage
+
+    def get(self, request, id_proyecto):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                form = self.form_class({'id_proyecto':id_proyecto})
+                form.fields["proyecto"].queryset = Proyecto.objects.all().exclude(id=id_proyecto)
+                return render(request, 'proyecto/importarMainPage.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto):
+
+        form = FormImportarMainPage(request.POST)
+
+        if form.is_valid():
+            form = form.cleaned_data
+            accion = form["acciones"]
+            proyecto = form["proyecto"]
+            if accion == '1':
+                return redirect("importar_roles", id_proyecto, proyecto.id)
+            elif accion == '2':
+                return redirect("importar_tipos", id_proyecto, proyecto.id)
+        return render(request, 'proyecto/importarMainPage.html', {'form': form})
+
+
+class ImportarRolesDeOtroProyectoView(View):
+
+    permisos = ["Editar RolProyecto", "Editar TipoUserStory"]
+
+    form_class = FormImportarRolesProyecto
+
+    def get(self, request, id_proyecto, id_proyecto_a_importar):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                form = self.form_class()
+                form.fields["roles"].queryset = RolProyecto.objects.filter(proyecto_id=id_proyecto_a_importar)
+                return render(request, 'proyecto/importarRoles.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_proyecto_a_importar):
+
+        form = FormImportarRolesProyecto(request.POST)
+
+        if form.is_valid():
+            form = form.cleaned_data
+            roles = form["roles"]
+
+            for rol in roles:
+                rol: RolProyecto
+                rol.pk = None
+                rol._state.adding = True
+                rol.nombre += " - copy"
+                rol.proyecto_id = id_proyecto
+                roles_array = RolProyecto.objects.filter(proyecto_id=id_proyecto, nombre=rol.nombre)
+                if len(roles_array) == 0:
+                    rol.save()
+            return redirect("ver_roles", id_proyecto)
+        return render(request, 'proyecto/importarRoles.html', {'form': form})
+
+
+class ImportarTiposUSDeOtroProyectoView(View):
+
+    permisos = ["Editar RolProyecto", "Editar TipoUserStory"]
+
+    form_class = FormImportarTiposDeUS
+
+    def get(self, request, id_proyecto, id_proyecto_a_importar):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                form = self.form_class()
+                form.fields["tipos"].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto_a_importar)
+                return render(request, 'proyecto/importarTipos.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def copiar_estados(self, id_tipo_anterior, tipo_nuevo):
+        estados_del_tipo_anterior = EstadoUS.objects.filter(tipoUserStory_id=id_tipo_anterior)
+        for estado in estados_del_tipo_anterior:
+            estado.pk = None
+            estado._state.adding = True
+            estado.tipoUserStory = tipo_nuevo
+
+            orden = estado.orden
+            orden.pk = None
+            orden._state.adding = True
+            orden.save()
+            estado.orden = orden
+
+            estado.save()
+
+    def post(self, request, id_proyecto, id_proyecto_a_importar):
+
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            form = form.cleaned_data
+            tipos = form["tipos"]
+
+            for tipo in tipos:
+                tipo: TipoUserStory
+                id_tipo_anterior = tipo.id
+                tipo.pk = None
+                tipo._state.adding = True
+                tipo.nombre += " - copy"
+                tipo.proyecto_id = id_proyecto
+                tipos_array = TipoUserStory.objects.filter(proyecto_id=id_proyecto, nombre=tipo.nombre)
+                if len(tipos_array) == 0:
+                    tipo.save()
+                self.copiar_estados(id_tipo_anterior=id_tipo_anterior, tipo_nuevo=tipo)
+            return redirect("tiposUS", id_proyecto)
+        return render(request, 'proyecto/importarRoles.html', {'form': form})
