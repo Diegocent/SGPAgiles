@@ -134,7 +134,7 @@
 {% else %}
     <p style="color: black; font-size: 20px" >Equipo: <a href="{% url 'ver_equipo' id_proyecto=proyecto.id id_equipo=equipo.id %}">{{ equipo.nombre }}</a></p>
 {% endif %}
-
+<p style="color: black; font-size: 20px" ><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SPRINTS</a></p>
 {% if proyecto.estado == "NO_INICIADO" and equipo %}
     <a href="iniciar_proyecto"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Iniciar proyecto</button></a>
 {% endif %}

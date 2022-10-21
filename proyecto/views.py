@@ -1004,3 +1004,30 @@ class BorrarMiembrosSprintView(View):
         messages.success(request, "Miembro del sprint editado correctamente")
         return redirect('detalle_proyecto', id_proyecto)
 
+
+class VerSprintsView(View):
+
+    permisos = ["Ver Sprint"]
+
+    def get(self, request, id_proyecto):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                sprint_planeados = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoSprint.NO_INICIADO)
+                sprint_iniciados = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoSprint.EN_PROCESO)
+                sprint_finalizados = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoSprint.TERMINADO)
+                sprint_cancelados = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoSprint.CANCELADO)
+                context = {
+                    'sprint_planeados': sprint_planeados,
+                    'sprint_iniciados': sprint_iniciados,
+                    'sprint_finalizados': sprint_finalizados,
+                    'sprint_cancelados': sprint_cancelados,
+                    'id_proyecto': id_proyecto
+                }
+                return render(request, 'sprint/versprints.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
