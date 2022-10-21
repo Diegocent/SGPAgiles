@@ -32,6 +32,7 @@ urlpatterns = [
          views.BorrarMiembrosSprintView.as_view(), name='eliminar_miembros_sprint'),
     path('<int:id_proyecto>/sprint/<int:id_sprint>/asignar_us/', views.AsignarUSASprint.as_view(), name='asignar_us_sprint'),
     path('<int:id_proyecto>/sprint/<int:id_sprint>/eliminar_us/<int:id_us>/', views.BorrarUSASprint.as_view(), name='eliminar_us_sprint'),
+    path('<int:id_proyecto>/sprint/<int:id_sprint>/iniciar/', views.IniciarSprint.as_view(), name='iniciar_sprint'),
     path('<int:id_proyecto>/backlog/', views.verProductBacklog.as_view(), name='ver_product_backlog'),
 
 ]

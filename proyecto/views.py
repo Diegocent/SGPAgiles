@@ -1,6 +1,6 @@
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django import forms
 from django.views import View
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
@@ -1175,3 +1175,46 @@ class ImportarTiposUSDeOtroProyectoView(View):
                 self.copiar_estados(id_tipo_anterior=id_tipo_anterior, tipo_nuevo=tipo)
             return redirect("tiposUS", id_proyecto)
         return render(request, 'proyecto/importarRoles.html', {'form': form})
+
+
+class IniciarSprint(View):
+
+    permisos = ["Iniciar Sprint"]
+
+    def get(self, request, id_proyecto, id_sprint):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al Sprint con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                tiene_miembros = sprint.tiene_miembros
+                tiene_user_stories = sprint.tiene_user_stories
+                hay_otros_sprints_en_proceso = sprint.hay_otros_sprints_en_proceso
+
+                if tiene_miembros and tiene_user_stories and not hay_otros_sprints_en_proceso:
+                    return render(request, 'sprint/iniciarsprint.html')
+                elif not tiene_miembros:
+                    messages.error(request, message="No se puede iniciar un sprint sin miembros!")
+                elif not tiene_user_stories:
+                    messages.error(request, message="No se puede iniciar un sprint sin User Stories!")
+                elif not hay_otros_sprints_en_proceso:
+                    messages.error(request, message="No se puede iniciar un sprint teniendo otro sprint en proceso!")
+                return redirect("ver_sprints", id_proyecto)
+
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_sprint):
+        sprint = Sprint.objects.get(proyecto_id=id_proyecto, id=id_sprint)
+        sprint.fecha_inicio = date.today()
+        sprint.estado = EstadoSprint.EN_PROCESO
+        sprint.save()
+        messages.success(request, 'Creado exitosamente!')
+        return redirect('detalle_proyecto', id_proyecto)
