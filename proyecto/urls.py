@@ -22,7 +22,7 @@ urlpatterns = [
     path('<int:id_proyecto>/sprint/', views.VerSprintsView.as_view(), name='ver_sprints'),
     path('<int:id_proyecto>/sprint/crear/', views.CrearSprint.as_view(), name='crear_sprint'),
     path('<int:id_proyecto>/sprint/<int:id_sprint>/', views.DetalleSprintView.as_view(), name='ver_sprint'),
-    path('<int:id_proyecto>/sprint/<int:id_sprint>/asignar_miembros/', views.AsignarMiembroASprint.as_view(), name='asignar_miembros_sprint'),
+    path('<int:id_proyecto>/sprint/<int:id_sprint>/asignar_miembro/', views.AsignarMiembroASprint.as_view(), name='asignar_miembros_sprint'),
     path('<int:id_proyecto>/sprint/<int:id_sprint>/editar_miembro/<int:id_miembrosprint>',
          views.ActualizarMiembrosSprintView.as_view(), name='asignar_miembros_sprint'),
     path('<int:id_proyecto>/sprint/<int:id_sprint>/eliminar_miembro/<int:id_miembrosprint>',
