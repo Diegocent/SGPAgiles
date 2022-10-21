@@ -88,6 +88,7 @@ class Sprint(models.Model):
             return False
         return True
 
+
 class MiembrosSprint(models.Model):
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
     miembro = models.ForeignKey(Usuario, on_delete=models.CASCADE)
@@ -96,7 +97,6 @@ class MiembrosSprint(models.Model):
 
     def __str__(self):
         return 'Miembro del Sprint {} - {}'.format(self.sprint.numero, self.miembro.username)
-
 
 
 class TipoUserStory(models.Model):
