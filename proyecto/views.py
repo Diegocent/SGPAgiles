@@ -812,9 +812,14 @@ class AsignarMiembroASprint(View):
                 messages.error(request, message="No se encuentra al Sprint para este proyecto")
                 return redirect("detalle_proyecto", id_proyecto)
 
+            capacidad = form["carga_horaria"] * sprint.duracion
+
             MiembrosSprint.objects.create(sprint=sprint, carga_horaria=form["carga_horaria"],
                                           miembro=form["miembro"],
-                                          capacidad=form["carga_horaria"] * sprint.duracion)
+                                          capacidad=capacidad)
+            sprint.capacidad += capacidad
+            sprint.save()
+
             messages.success(request, message="Miembro agregado exitosamente.")
             redirect("detalle_proyecto", id_proyecto)
         else:
@@ -965,11 +970,16 @@ class ActualizarMiembrosSprintView(View):
         sprint = Sprint.objects.get(id=id_sprint)
 
         if form.is_valid():
+            sprint.capacidad -= miembrosprint.capacidad
+
             form = form.cleaned_data
             miembrosprint.miembro = form["miembro"]
             miembrosprint.carga_horaria = form["carga_horaria"]
             miembrosprint.capacidad = form["carga_horaria"] * sprint.duracion
             miembrosprint.save()
+
+            sprint.capacidad += miembrosprint.capacidad
+            sprint.save()
 
             messages.success(request, "Miembro del sprint editado correctamente")
             return redirect('detalle_proyecto', id_proyecto)
@@ -998,6 +1008,9 @@ class BorrarMiembrosSprintView(View):
 
     def post(self, request, id_proyecto, id_sprint, id_miembrosprint):
         miembrosprint = MiembrosSprint.objects.get(id=id_miembrosprint, sprint_id=id_sprint)
+
+        sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+        sprint.capacidad -= miembrosprint.capacidad
 
         miembrosprint.delete()
 
