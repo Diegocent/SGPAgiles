@@ -117,12 +117,15 @@
         {% endif  %}
 
     {% endif %}
+
+
     <div class="sidebar">
 
         <a href="ver_roles"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Roles de Proyecto</button></a>
         <a href="{% url 'ver_product_backlog' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Product Backlog</button></a>
 <br>
 {% if proyecto.estado == "NO_INICIADO" %}
+
     {% if not equipo %}
         <a href="crear_equipo"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Crear Equipo</button></a>
     {% else %}
