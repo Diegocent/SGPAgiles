@@ -1,7 +1,7 @@
 from django.forms import ModelForm
 
-from .models import Equipo, TipoUserStory, UserStory, Sprint, MiembrosSprint
-from Usuario.models import Permisos, Usuario
+from .models import Equipo, TipoUserStory, UserStory, Sprint, MiembrosSprint, Proyecto
+from Usuario.models import Permisos, Usuario, RolProyecto
 from django import forms
 
 
@@ -76,3 +76,21 @@ class FormUSSprint(forms.Form):
     user_stories = forms.ModelMultipleChoiceField(queryset=UserStory.objects.all(), label="US a ingresar al Sprint.",
                                                   help_text="Seleccione al User Story que entrara al sprint.",)
 
+
+class FormImportarMainPage(forms.Form):
+    ACCIONES_CHOICES = (
+        ("1", "Importar Roles"),
+        ("2", "Importar Tipos de User Story"),
+    )
+
+    acciones = forms.ChoiceField(required=True, choices=ACCIONES_CHOICES, label="Accion a realizar:")
+    proyecto = forms.ModelChoiceField(queryset=Proyecto.objects.all(), label="Proyecto del cual importar:")
+
+
+class FormImportarRolesProyecto(forms.Form):
+    roles = forms.ModelMultipleChoiceField(queryset=RolProyecto.objects.all(), label="Roles a importar:")
+
+
+class FormImportarTiposDeUS(forms.Form):
+    tipos = forms.ModelMultipleChoiceField(queryset=TipoUserStory.objects.all(),
+                                           label="Tipos de User Story a importar:")
