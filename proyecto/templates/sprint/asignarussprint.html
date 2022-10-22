@@ -2,24 +2,49 @@
 {% block content %}
     {% load widget_tweaks %}
 <h1 style="text-align: left; color: white">Asignar User Stories al Sprint</h1>
-<div class="row">
 
-<div class="col-xl-6 col-md-6">
-<form method="post">
-    {% csrf_token %}
-      {% for field in form.visible_fields %}
-    <div class="form-group class pb-2">
-     {{ field.label }}
-    {{field.errors}}
-        {% render_field field class="form-control" %}
-        {% if field.help_text %}
-            <small class="form-text text-muted">{{ field.help_text }}</small>
-        {% endif %}
 
-     </div>
-    {% endfor %}
-    <input type="submit" value="Guardar">
-</form>
-</div>
-</div>
+  <p>Horas restastes: {{horas_restantes}} hs de un total de {{ total_horas }}</p>
+	<div class="form-check">
+    <form method="post" class="form row g-3">
+		{% csrf_token %}
+		<table class="table-custom">
+			<thead>
+				<tr>
+					<th scope="col">Check</th>
+					<th scope="col">Codigo</th>
+                    <th scope="col">Tipo</th>
+					<th scope="col">Titulo</th>
+                    <th scope="col">Prioridad</th>
+					<th scope="col">Prioridad de negocio</th>
+					<th scope="col">Prioridad Tecnica</th>
+					<th scope="col">Duracion</th>
+					<th scope="col">Ya estuvo en otro sprint?</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for us in user_stories %}
+				<tr height="60px">
+					<td>
+                        <input class="form-check-input" type="checkbox" name="us" value="{{us.id}}">
+                    </td>
+					<td>{{ us.codigo }}</td>
+                    <td>{{ us.tipo.nombre }}</td>
+					<td>{{ us.nombre }}</td>
+					<td>{{ us.prioridad }}</td>
+                    <td>{{ us.prioridad_de_negocio }}</td>
+					<td>{{ us.prioridad_tecnica }}</td>
+					<td>{{ us.duracion }}</td>
+                    {% if us.esfuerzo_anterior > 0 %}
+					    <td>SI</td>
+                    {% else %}
+                        <td>NO</td>
+                    {% endif %}
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<input type="submit" value="Guardar">
+	</form>
+    </div>
 {% endblock %}

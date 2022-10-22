@@ -848,14 +848,27 @@ class AsignarUSASprint(View):
                 if sprint.estado==EstadoSprint.EN_PROCESO:
                     messages.error(request, message="No se puede agregar un US a un Sprint ya iniciado")
                     return redirect("detalle_proyecto", id_proyecto)
-
+                '''
                 form = self.form_class()
                 form.fields["user_stories"].queryset = UserStory.objects.filter(
                                                  proyecto_id=id_proyecto,
                                                  sprint__isnull=True
                                                  ).order_by('-prioridad')
+                '''
+                user_stories = UserStory.objects.filter(
+                                                 proyecto_id=id_proyecto,
+                                                 sprint__isnull=True
+                                                 ).order_by('-prioridad')
+                total_horas = sprint.capacidad
+                horas_restantes = sprint.horas_restantes_del_sprint
 
-                return render(request, 'sprint/asignarussprint.html', {'form': form})
+                context = {
+                    "user_stories": user_stories,
+                    "total_horas": total_horas,
+                    "horas_restantes": horas_restantes
+                }
+
+                return render(request, 'sprint/asignarussprint.html', context)
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -863,31 +876,30 @@ class AsignarUSASprint(View):
 
     def post(self, request, id_proyecto, id_sprint):
         form = self.form_class(request.POST)
+        user_stories = request.POST.getlist("us")
 
-        if form.is_valid():
+       # if form.is_valid():
 
-            form = form.cleaned_data
-            try:
-                sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
-            except ObjectDoesNotExist:
-                messages.error(request, message="No se encuentra al Sprint para este proyecto")
-                return redirect("detalle_proyecto", id_proyecto)
+        #    form = form.cleaned_data
+        try:
+            sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+        except ObjectDoesNotExist:
+            messages.error(request, message="No se encuentra al Sprint para este proyecto")
+            return redirect("detalle_proyecto", id_proyecto)
 
-            if sprint.estado == EstadoSprint.EN_PROCESO:
-                messages.error(request, message="No se puede agregar un US a un Sprint ya iniciado")
-                return redirect("detalle_proyecto", id_proyecto)
+        if sprint.estado == EstadoSprint.EN_PROCESO:
+            messages.error(request, message="No se puede agregar un US a un Sprint ya iniciado")
+            return redirect("detalle_proyecto", id_proyecto)
+        for us in user_stories:
+       # for us in form["user_stories"]:
+            us = UserStory.objects.get(id=us)
+            us.sprint = sprint
+            us.save()
 
-
-
-            for us in form["user_stories"]:
-                us: UserStory
-                us.sprint = sprint
-                us.save()
-
-            messages.success(request, message="Miembro agregado exitosamente.")
-            redirect("detalle_proyecto", id_proyecto)
-        else:
-            return render(request, 'sprint/asignarussprint.html', {'form': form})
+        messages.success(request, message="Miembro agregado exitosamente.")
+        redirect("detalle_proyecto", id_proyecto)
+#    else:
+ #           return render(request, 'sprint/asignarussprint.html', {'form': form})
         return redirect('detalle_proyecto', id_proyecto)
 
 

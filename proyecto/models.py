@@ -61,6 +61,14 @@ class Sprint(models.Model):
             return 1
 
     @property
+    def horas_restantes_del_sprint(self):
+        user_stories = UserStory.objects.filter(sprint=self)
+        horas_restantes = self.capacidad
+        for us in user_stories:
+            horas_restantes -= us.duracion
+        return horas_restantes
+
+    @property
     def tiene_miembros(self):
         miembros = MiembrosSprint.objects.filter(sprint=self)
         if len(miembros) == 0:
@@ -136,6 +144,9 @@ class Prioridad(models.TextChoices):
 
 
 class UserStory(models.Model):
+    codigo = models.CharField(default="", max_length=100)
+    numero = models.PositiveIntegerField(default=0)
+    aprobado_por_scrum_master = models.BooleanField(default=False)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE, null=True)
     nombre = models.CharField(max_length=100)
@@ -154,6 +165,14 @@ class UserStory(models.Model):
     def calcular_prioridad(self):
         self.prioridad = round(0.6 * self.prioridad_de_negocio + 0.5 * self.prioridad_tecnica + self.esfuerzo_anterior)
         self.save()
+
+    @staticmethod
+    def obtener_ultimo_valor_de_us(id_proyecto):
+        ultimo_valor = UserStory.objects.all().filter(proyecto_id=id_proyecto).last()
+        if ultimo_valor is not None:
+            return ultimo_valor.numero + 1
+        else:
+            return 1
 
     class Meta:
         ordering = ["-prioridad"]
