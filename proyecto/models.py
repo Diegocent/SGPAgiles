@@ -136,6 +136,9 @@ class Prioridad(models.TextChoices):
 
 
 class UserStory(models.Model):
+    codigo = models.CharField(default="", max_length=100)
+    numero = models.PositiveIntegerField(default=0)
+    aprobado_por_scrum_master = models.BooleanField(default=False)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE, null=True)
     nombre = models.CharField(max_length=100)
@@ -155,8 +158,17 @@ class UserStory(models.Model):
         self.prioridad = round(0.6 * self.prioridad_de_negocio + 0.5 * self.prioridad_tecnica + self.esfuerzo_anterior)
         self.save()
 
+    @staticmethod
+    def obtener_ultimo_valor_de_us(id_proyecto):
+        ultimo_valor = UserStory.objects.all().filter(proyecto_id=id_proyecto).last()
+        if ultimo_valor is not None:
+            return ultimo_valor.numero + 1
+        else:
+            return 1
+
     class Meta:
         ordering = ["-prioridad"]
+
 
 
 class HistorialUS(models.Model):
