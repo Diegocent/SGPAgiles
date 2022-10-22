@@ -157,3 +157,19 @@ class UserStory(models.Model):
 
     class Meta:
         ordering = ["-prioridad"]
+
+
+class HistorialUS(models.Model):
+    user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
+    log = models.CharField(max_length=200)
+    horas_trabajadas = models.PositiveIntegerField(null=True)
+    fecha = models.DateField()
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+
+    @staticmethod
+    def total_horas_trabajadas(id_us):
+        historiales = HistorialUS.objects.filter(user_story_id=id_us)
+        total_horas = 0
+        for historia in historiales:
+            total_horas += historia.horas_trabajadas
+        return total_horas
