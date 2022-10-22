@@ -7,7 +7,7 @@ from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, Form
     FormUS, FormSprint, FormMiembroSprint, FormUSSprint, FormImportarMainPage, FormImportarRolesProyecto, \
     FormImportarTiposDeUS
 from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado, \
-    EstadoSprint, MiembrosSprint
+    EstadoSprint, MiembrosSprint, HistorialUS
 from Usuario.models import Usuario, RolProyecto
 from django.contrib import messages
 from datetime import date
@@ -1218,3 +1218,33 @@ class IniciarSprint(View):
         sprint.save()
         messages.success(request, 'Creado exitosamente!')
         return redirect('detalle_proyecto', id_proyecto)
+
+
+class DetalleUSView(View):
+    permisos = ["Ver UserStory"]
+
+    def get(self, request, id_proyecto, id_us):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    us = UserStory.objects.get(proyecto_id=id_proyecto, id=id_us)
+                except ObjectDoesNotExist:
+                    messages.error(request, "User Story no existe en este proyecto.")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                historiales = HistorialUS.objects.filter(user_story_id=id_us)
+                horas_trabajadas = HistorialUS.total_horas_trabajadas(id_us=id_us)
+
+                context = {
+                    'historiales': historiales,
+                    'horas_trabajadas': horas_trabajadas,
+                    'us' : us,
+                    'id_proyecto': id_proyecto,
+                }
+                return render(request, 'US/detalle_us.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")

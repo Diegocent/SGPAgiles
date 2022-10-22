@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="mt-4">Historial de US</h1>
+
+    <h3>{{ us. }}</h3>
+
+<div class="row">
+
+ <div class="col-xl-6 col-md-6">
+{% for miembrorol in miembrosroles %}
+
+
+
+    <table class="table table-dark">
+  <thead>
+    <tr>
+      <th scope="col">Miembro</th>
+      <th scope="col">Rol</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+
+
+        {% for key, value in miembrorol.items %}
+        {% if key == "rol" %}
+            {% for rol in value %}
+                <td>rol:{{ rol.nombre }}</td>
+            {% endfor %}
+        {% else %}
+            <td>{{ key}}:{{ value }}</td>
+        {% endif %}
+    {% endfor %}
+
+
+
+    </tr>
+  </tbody>
+</table>
+
+{% endfor %}
+ </div>
+ <div class="col-xl-6 col-md-6">
+
+
+     <div class="col-xl-6 col-md-6">
+    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+  <div class="card-header">Quieres editar los miembros de tu Equipo?</div>
+  <div class="card-body">
+    <h5 class="card-title"><a href="{% url 'editar_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Editar Miembros</a>
+</h5>
+    <p class="card-text">Modifica los miembros del equipo: {{ equipo.nombre }}.</p>
+  </div>
+</div>
+    </div>
+
+</div>
+{% endblock %}
