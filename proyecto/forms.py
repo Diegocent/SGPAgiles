@@ -7,8 +7,8 @@ from django import forms
 
 
 class FormCrearProyecto(forms.Form):
-    nombre = forms.CharField(label='Nombre del Proyecto', empty_value="Escriba el nombre del proyecto.")
-    descripcion = forms.CharField(label='Descripción del Proyecto', empty_value="Describa el proyecto.")
+    nombre = forms.CharField(label='Nombre del Proyecto', empty_value="Escriba el nombre del proyecto.", max_length=100)
+    descripcion = forms.CharField(label='Descripción del Proyecto', empty_value="Describa el proyecto.", max_length=100)
     scrum_master = forms.ModelChoiceField(
         queryset=Usuario.objects.all(), label="Scrum Master",
         help_text="Seleccione el Scrum Master del proyecto."
