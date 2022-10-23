@@ -28,7 +28,7 @@
 
 {% if crear_rol %}
     <a href="{% url "crear_rol_proyecto" id_proyecto=id_proyecto %}"><button type="button" class="btn btn-secondary btn-lg btn-block">Crear Nuevo Rol de Proyecto </button></a>
-
+<a href="{% url "importar" id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Importar Roles</button></a>
 
 {% endif %}
 
