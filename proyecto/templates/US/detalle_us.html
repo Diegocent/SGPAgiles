@@ -1,54 +1,67 @@
 {% extends 'base.html' %}
 {% block content %}
 
- <style>
+    <style>
 
-.table-custom{
-  width: 100%;
-  border-collapse: collapse;
-  text-align: center;
+        .table-custom{
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
 
-}
+        }
 
-.table-custom th{
-  border: none;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  color: white;
-}
+        .table-custom th{
+            border: none;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            color: white;
+        }
 
-.table-custom tr{
-  /* height: 20%; */
-  border-bottom: 1px solid rgb(212, 212, 212);
-}
+        .table-custom tr{
+            /* height: 20%; */
+            border-bottom: 1px solid rgb(212, 212, 212);
+            color: white;
+        }
 
- </style>
+    </style>
 
-<h1 class="mt-4">Historial de US</h1>
+    <h1 class="mt-4">Historial de US</h1>
     <h3>User story: {{ us.codigo }} - {{ us.nombre }}</h3>
     <h3>Horas trabajadas: {{ horas_trabajadas }} h</h3>
+    {% if us.sprint is not None and us.sprint.estado == "NO_INICIADO" %}
+        <a href="{% url "editar_US" id_proyecto=id_proyecto id_us=us.id %}"><button type="button" class="btn btn-lg btn-info fw-bold border-opacity-75 bg-black">Editar US</button></a>
+    {% endif %}
+    {% if us.sprint is not None and us.sprint.estado == "EN_PROCESO" %}
+        <a href="{% url "cargar_trabajo_US" id_proyecto=id_proyecto id_us=us.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Cargar trabajo</button></a>
+    {% endif %}
+
 
     <table class="table-custom">
-    <thead>
-      <tr>
-        <th scope="col">Fecha</th>
-        <th scope="col">Evento</th>
-        <th scope="col">Usuario</th>
-        <th scope="col">Horas Trabajadas</th>
-          <th scope="col"> - </th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for historial in historiales %}
-      <tr height="60px">
-        <td>{{ historial.fecha }}</td>
-        <td>{{ historial.log }}</td>
-        <td>{{ historial.usuario.nombre }}</td>
-        <td>{{ historial.horas_trabajadas }}</td>
-        <td></td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        <thead>
+        <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Evento</th>
+            <th scope="col">Usuario</th>
+            <th scope="col">Horas Trabajadas</th>
+            <th scope="col"> - </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for historial in historiales %}
+            <tr height="60px">
+                <td>{{ historial.fecha }}</td>
+                <td>{{ historial.log }}</td>
+                <td>{{ historial.usuario.email }}</td>
+                {% if historial.horas_trabajadas == 0 %}
+                    <td>-</td>
+                {% else %}
+                    <td>{{ historial.horas_trabajadas }}</td>
+                {% endif %}
+
+                <td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 
 {% endblock %}
