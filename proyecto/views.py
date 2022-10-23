@@ -5,7 +5,7 @@ from django import forms
 from django.views import View
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
     FormUS, FormSprint, FormMiembroSprint, FormUSSprint, FormImportarMainPage, FormImportarRolesProyecto, \
-    FormImportarTiposDeUS
+    FormImportarTiposDeUS, FormAsignarDevAUserStory, FormAgregarTrabajoUS
 from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado, \
     EstadoSprint, MiembrosSprint, HistorialUS
 from Usuario.models import Usuario, RolProyecto
@@ -162,7 +162,8 @@ class CrearProyectoView(View):
                                 "Ver Kanban",
                                 "Cambiar EstadoUS",
                                 "Editar Kanban",
-                                ])
+                                "Cargar trabajo UserStory",
+                            ])
         return scrum
 
 
@@ -325,7 +326,7 @@ class CrearRolProyectoView(View):
                 rol.save()
                 messages.success(request, 'Creado exitosamente!')
             else:
-                messages.error(request="Ya existe un rol con ese nombre")
+                messages.error(request, "Ya existe un rol con ese nombre")
 
             return redirect('ver_roles', id_proyecto)
         return render(request, 'roles/crear_rol_proyecto.html', {'form': form})
@@ -504,6 +505,8 @@ class CrearUSView(View):
                                          duracion=us['duracion'], prioridad_de_negocio=us['prioridad_de_negocio'],
                                          prioridad_tecnica=us['prioridad_tecnica'])
                 user_story.calcular_prioridad()
+                HistorialUS.objects.create(log="User Story creado.", fecha=date.today(),
+                                           user_story=user_story, usuario=request.user, horas_trabajadas=0)
                 messages.success(request, 'Creado exitosamente!')
             else:
                 return render(request, 'US/crearus.html', {'form': form})
@@ -541,9 +544,13 @@ class ActualizarUSView(View):
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 us = UserStory.objects.get(id=id_us)
-                form = FormUS(instance=us)
-                form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
-                return render(request, 'US/editarus.html', {'form': form})
+                if us.sprint is None:
+                    form = FormUS(instance=us)
+                    form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
+                    return render(request, 'US/editarus.html', {'form': form})
+                else:
+                    messages.error(request, 'No se puede editar un US asignado a un sprint!')
+                    return redirect("detalle_proyecto", id_proyecto=id_proyecto)
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -559,7 +566,8 @@ class ActualizarUSView(View):
 
             if len(array_de_us) == 0:
                 form.save()
-
+                HistorialUS.objects.create(log="User Story fue editado.", fecha=date.today(),
+                                           user_story_id=id_us, usuario=request.user, horas_trabajadas=0)
                 messages.success(request, 'Creado exitosamente!')
             else:
                 return render(request, 'US/editarus.html', {'form': form})
@@ -877,11 +885,12 @@ class AsignarUSASprint(View):
                 messages.error(request, message="No se puede agregar un US a un Sprint ya iniciado")
                 return redirect("detalle_proyecto", id_proyecto)
 
-
-
             for us in form["user_stories"]:
                 us: UserStory
                 us.sprint = sprint
+                HistorialUS.objects.create(log="User Story asignado al Sprint {}".format(sprint.numero),
+                                           fecha=date.today(),
+                                           user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
                 us.save()
 
             messages.success(request, message="Miembro agregado exitosamente.")
@@ -936,6 +945,9 @@ class BorrarUSASprint(View):
             return redirect("detalle_proyecto", id_proyecto)
 
         us.sprint = None
+        HistorialUS.objects.create(log="User Story removido del Sprint {}".format(sprint.numero),
+                                   fecha=date.today(),
+                                   user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
         us.save()
 
         messages.success(request, message="Miembro eliminado exitosamente.")
@@ -1216,8 +1228,17 @@ class IniciarSprint(View):
         sprint.fecha_inicio = date.today()
         sprint.estado = EstadoSprint.EN_PROCESO
         sprint.save()
+        self.guardar_eventos_en_historial(sprint=sprint, request=request)
         messages.success(request, 'Creado exitosamente!')
         return redirect('detalle_proyecto', id_proyecto)
+
+    @staticmethod
+    def guardar_eventos_en_historial(sprint, request):
+        user_stories = UserStory.objects.filter(sprint=sprint)
+        for us in user_stories:
+            HistorialUS.objects.create(log="Sprint {} iniciado.".format(sprint.numero),
+                                       fecha=date.today(),
+                                       user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
 
 
 class DetalleUSView(View):
@@ -1248,3 +1269,112 @@ class DetalleUSView(View):
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
             return redirect("home")
+
+
+class AgregarTrabajoAUserStory(View):
+    form_class = FormAgregarTrabajoUS
+    permisos = ["Cargar trabajo UserStory"]
+
+    def get(self, request, id_proyecto, id_us):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    us = UserStory.objects.get(id=id_us, proyecto_id=id_proyecto)
+                    sprint = us.sprint
+                    if sprint is None:
+                        raise ObjectDoesNotExist
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al User Story con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+                if sprint.estado == EstadoSprint.EN_PROCESO:
+                    usuario_es_su_desarrollador = False
+                    if us.desarrollador == user:
+                        usuario_es_su_desarrollador = True
+
+                    if usuario_es_su_desarrollador or user.es_admin():
+                        form = self.form_class()
+                        return render(request, 'HUS/cargartrabajo.html', {"form": form})
+                    elif not usuario_es_su_desarrollador:
+                        messages.error(request, message="No podes cargarle trabajo a un US sin ser su desarrolador!")
+                    return redirect("detalle_proyecto", id_proyecto)
+                else:
+                    messages.error(request, message="No podes cargarle trabajo a un US sin que el sprint este en proceso!")
+                    return redirect("detalle_proyecto", id_proyecto)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_us):
+
+        form = self.form_class(request.POST)
+        if form.is_valid():
+
+            cleaned_data = form.cleaned_data
+
+            HistorialUS.objects.create(log=cleaned_data["log"], user_story_id=id_us,
+                                       horas_trabajadas=cleaned_data["horas_trabajadas"],
+                                       fecha=date.today(), usuario_id=request.user.id
+                                       )
+
+        messages.success(request, 'Creado exitosamente!')
+        return redirect('detalle_proyecto', id_proyecto)
+
+
+class AsignarDevAUserStory(View):
+
+    form_class = FormAsignarDevAUserStory
+    permisos = ["Editar UserStory"]
+
+    def get(self, request, id_proyecto, id_us):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    us = UserStory.objects.get(id=id_us, proyecto_id=id_proyecto)
+                    if us.sprint is None:
+                        raise ObjectDoesNotExist
+                    sprint = us.sprint
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al User Story con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+                if sprint.estado == EstadoSprint.EN_PROCESO:
+                    form = self.form_class()
+                    form.fields["desarrollador"].queryset = Usuario.objects.filter(miembrossprint__sprint_id=us.sprint)
+
+                    return render(request, 'US/asignar_dev.html', {"form":form})
+                else:
+                    messages.error(request, message="El sprint no esta iniciado!")
+                    return redirect("detalle_proyecto", id_proyecto)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_us):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+
+            form = form.cleaned_data
+            try:
+                us = UserStory.objects.get( proyecto_id=id_proyecto, id=id_us)
+            except ObjectDoesNotExist:
+                messages.error(request, message="No se encuentra al Sprint para este proyecto")
+                return redirect("detalle_proyecto", id_proyecto)
+
+            dev: Usuario = form["desarrollador"]
+            us.desarrollador = dev
+
+            HistorialUS.objects.create(log="{} se encargara de desarrollar este US.".format(dev.email),
+                                       fecha=date.today(),
+                                       user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
+
+            messages.success(request, message="Miembro agregado exitosamente.")
+            redirect("detalle_proyecto", id_proyecto)
+        else:
+            return render(request, 'sprint/asignarussprint.html', {'form': form})
+        return redirect('detalle_proyecto', id_proyecto)

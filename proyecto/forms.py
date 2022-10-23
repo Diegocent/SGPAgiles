@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from .models import Equipo, TipoUserStory, UserStory, Sprint, MiembrosSprint, Proyecto
+from .models import Equipo, TipoUserStory, UserStory, Sprint, MiembrosSprint, Proyecto, HistorialUS
 from Usuario.models import Permisos, Usuario, RolProyecto
 from django import forms
 
@@ -94,3 +94,17 @@ class FormImportarRolesProyecto(forms.Form):
 class FormImportarTiposDeUS(forms.Form):
     tipos = forms.ModelMultipleChoiceField(queryset=TipoUserStory.objects.all(),
                                            label="Tipos de User Story a importar:")
+
+
+class FormAsignarDevAUserStory(forms.Form):
+    desarrollador = forms.ModelChoiceField(queryset=Usuario.objects.all(), label="Seleccione el desarrollador.")
+
+
+class FormAgregarTrabajoUS(ModelForm):
+
+    log = forms.CharField(max_length=1000, label="Describa su trabajo realizado")
+    horas_trabajadas = forms.IntegerField(min_value=1, label="Cantidad de horas usadas.")
+
+    class Meta:
+        model = HistorialUS
+        fields = ["log", "horas_trabajadas"]
