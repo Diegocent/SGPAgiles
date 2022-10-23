@@ -46,7 +46,6 @@ class Sprint(models.Model):
     fecha_inicio = models.DateField(null=True)
     fecha_fin = models.DateField(null=True)
     estado = models.CharField(choices=EstadoProyecto.choices, max_length=100)
-    capacidad = models.IntegerField(null=True, verbose_name='Capacidad en horas', default=0)
     duracion = models.IntegerField(null=True, verbose_name='Duración en días')
 
     def __str__(self):
@@ -68,22 +67,38 @@ class Sprint(models.Model):
         return True
 
     @property
+    def capacidad(self):
+        miembros = MiembrosSprint.objects.filter(sprint=self)
+        capacidad = 0
+        for miembro in miembros:
+            capacidad += miembro.capacidad
+        return capacidad
+
+    @property
+    def capacidad_usada(self):
+        user_stories = UserStory.objects.filter(sprint=self)
+        capacidad_usada = 0
+        for us in user_stories:
+            capacidad_usada += us.duracion
+        return capacidad_usada
+
+    @property
     def tiene_user_stories(self):
         user_stories = UserStory.objects.filter(sprint=self)
         if len(user_stories) == 0:
             return False
         return True
 
-    @property
-    def hay_otros_sprints_en_proceso(self):
-        sprints_en_proceso = Sprint.objects.filter(estado=EstadoSprint.EN_PROCESO, proyecto=self.proyecto)
+    @staticmethod
+    def hay_otros_sprints_en_proceso(id_proyecto):
+        sprints_en_proceso = Sprint.objects.filter(estado=EstadoSprint.EN_PROCESO, proyecto_id=id_proyecto)
         if len(sprints_en_proceso) == 0:
             return False
         return True
 
-    @property
-    def hay_otros_sprints_en_planificacion(self):
-        sprints_en_planificacion = Sprint.objects.filter(estado=EstadoSprint.NO_INICIADO, proyecto=self.proyecto)
+    @staticmethod
+    def hay_otros_sprints_en_planificacion(id_proyecto):
+        sprints_en_planificacion = Sprint.objects.filter(estado=EstadoSprint.NO_INICIADO, proyecto_id=id_proyecto)
         if len(sprints_en_planificacion) == 0:
             return False
         return True
@@ -136,7 +151,6 @@ class Prioridad(models.TextChoices):
 
 
 class UserStory(models.Model):
-    codigo = models.CharField(default="", max_length=100)
     numero = models.PositiveIntegerField(default=0)
     aprobado_por_scrum_master = models.BooleanField(default=False)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
@@ -158,6 +172,10 @@ class UserStory(models.Model):
     def calcular_prioridad(self):
         self.prioridad = round(0.6 * self.prioridad_de_negocio + 0.5 * self.prioridad_tecnica + self.esfuerzo_anterior)
         self.save()
+
+    @property
+    def codigo(self):
+        return self.tipo.prefijo + " - US" + "{}".format(self.numero)
 
     @staticmethod
     def obtener_ultimo_valor_de_us(id_proyecto):
