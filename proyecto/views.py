@@ -499,11 +499,13 @@ class CrearUSView(View):
             if len(array_de_us) == 0:
                 p = Proyecto.objects.get(id=id_proyecto)
                 estado_inicial = EstadoUS.objects.get(nombre="TO DO", tipoUserStory=us['tipo'])
-
-                user_story = UserStory.objects.create(nombre=us['nombre'], descripcion=us['descripcion'], proyecto=p,
+                numero = UserStory.obtener_ultimo_valor_de_us(id_proyecto=id_proyecto)
+                user_story = UserStory.objects.create(numero=numero,
+                                                      nombre=us['nombre'], descripcion=us['descripcion'], proyecto=p,
                                          tipo=us['tipo'], estado=estado_inicial,
                                          duracion=us['duracion'], prioridad_de_negocio=us['prioridad_de_negocio'],
                                          prioridad_tecnica=us['prioridad_tecnica'])
+
                 user_story.calcular_prioridad()
                 HistorialUS.objects.create(log="User Story creado.", fecha=date.today(),
                                            user_story=user_story, usuario=request.user, horas_trabajadas=0)
@@ -548,6 +550,10 @@ class ActualizarUSView(View):
                     form = FormUS(instance=us)
                     form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
                     return render(request, 'US/editarus.html', {'form': form})
+                elif us.sprint.estado == EstadoSprint.NO_INICIADO:
+                    form = FormUS(instance=us)
+                    form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
+                    return render(request, 'US/editarus.html', {'form': form})
                 else:
                     messages.error(request, 'No se puede editar un US asignado a un sprint!')
                     return redirect("detalle_proyecto", id_proyecto=id_proyecto)
@@ -569,6 +575,8 @@ class ActualizarUSView(View):
                 HistorialUS.objects.create(log="User Story fue editado.", fecha=date.today(),
                                            user_story_id=id_us, usuario=request.user, horas_trabajadas=0)
                 messages.success(request, 'Creado exitosamente!')
+                if us_obj.sprint is not None:
+                    return redirect("ver_sprint", id_proyecto, us_obj.sprint.id)
             else:
                 return render(request, 'US/editarus.html', {'form': form})
             return redirect('ver_US', id_proyecto)
@@ -708,8 +716,9 @@ class CrearSprint(View):
 
                 p = Proyecto.objects.get(id=id_proyecto)
                 numero = Sprint.obtener_ultimo_valor_de_sprint(id_proyecto=id_proyecto)
-                Sprint.objects.create(numero=numero, descripcion=sprintform['descripcion'],
+                sprint = Sprint.objects.create(numero=numero, descripcion=sprintform['descripcion'],
                                              proyecto=p, estado=EstadoSprint.NO_INICIADO, duracion=sprintform["duracion"])
+                return redirect('ver_sprint', id_proyecto, sprint.id)
             elif not proyecto_en_proceso:
                 return render(request, 'sprint/warning.html', {"mensajeerror": "El proyecto no esta iniciado!"})
             elif not no_hay_otro_sprint_en_planificacion:
@@ -748,16 +757,59 @@ class DetalleSprintView(View):
             if tiene_permisos:
                 user_stories = UserStory.objects.filter(proyecto_id=id_proyecto, sprint_id=id_sprint)
                 sprint = Sprint.objects.get(id = id_sprint)
+                devs = MiembrosSprint.objects.filter(sprint_id=id_sprint)
+                hay_otro_sprint_en_proceso = Sprint.hay_otros_sprints_en_proceso(id_proyecto=id_proyecto)
                 context = {
+                    'devs': devs,
                     'user_stories': user_stories,
                     'id_proyecto':id_proyecto,
-                    "sprint" : sprint
+                    "sprint" : sprint,
+                    "hay_otro_sprint_en_proceso" : hay_otro_sprint_en_proceso
                 }
                 return render(request, 'sprint/detalle_sprint.html', context)
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
             return redirect("home")
+
+
+class ActualizarSprintView(View):
+    form_class = FormSprint
+    permisos = ["Editar Sprint"]
+
+    def get(self, request, id_proyecto, id_sprint):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                sprint = Sprint.objects.get(id=id_sprint)
+                if sprint.estado == EstadoSprint.NO_INICIADO:
+                    form = self.form_class(instance=sprint)
+                    return render(request, 'sprint/editarsprint.html', {'form': form})
+                else:
+                    messages.error(request, 'No se puede editar un US asignado a un sprint!')
+                    return redirect("detalle_proyecto", id_proyecto=id_proyecto)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_sprint):
+        sprint_obj = Sprint.objects.get(id=id_sprint)
+        form = self.form_class(request.POST, instance=sprint_obj)
+        if form.is_valid():
+
+            form.save()
+            sprint = sprint_obj
+            miembros = MiembrosSprint.objects.filter(sprint_id=sprint.id)
+            for miembro in miembros:
+                miembro.capacidad = sprint.duracion * miembro.carga_horaria
+                miembro.save()
+
+            messages.success(request, 'Sprint fue editado exitosamente!')
+
+            return redirect('ver_sprint', id_proyecto, id_sprint)
+        return render(request, 'US/editarus.html', {'form': form})
 
 
 class verProductBacklog(View):
@@ -826,14 +878,12 @@ class AsignarMiembroASprint(View):
             MiembrosSprint.objects.create(sprint=sprint, carga_horaria=form["carga_horaria"],
                                           miembro=form["miembro"],
                                           capacidad=capacidad)
-            sprint.capacidad += capacidad
             sprint.save()
 
             messages.success(request, message="Miembro agregado exitosamente.")
-            redirect("detalle_proyecto", id_proyecto)
+            return redirect("ver_sprint", id_proyecto, id_sprint)
         else:
             return render(request, 'sprint/asignarmiembrosprint.html', {'form': form})
-        return redirect('detalle_proyecto', id_proyecto)
 
 
 class AsignarUSASprint(View):
@@ -894,10 +944,9 @@ class AsignarUSASprint(View):
                 us.save()
 
             messages.success(request, message="Miembro agregado exitosamente.")
-            redirect("detalle_proyecto", id_proyecto)
+            return redirect("ver_sprint", id_proyecto, id_sprint)
         else:
             return render(request, 'sprint/asignarussprint.html', {'form': form})
-        return redirect('detalle_proyecto', id_proyecto)
 
 
 class BorrarUSASprint(View):
@@ -936,7 +985,7 @@ class BorrarUSASprint(View):
 
         if sprint.estado == EstadoSprint.EN_PROCESO:
             messages.error(request, message="No se puede borrar un US de un Sprint ya iniciado")
-            return redirect("detalle_proyecto", id_proyecto)
+            return redirect("ver_sprint", id_proyecto, id_sprint)
 
         try:
             us = UserStory.objects.get(sprint_id=id_sprint, proyecto_id=id_proyecto, id=id_us)
@@ -951,9 +1000,7 @@ class BorrarUSASprint(View):
         us.save()
 
         messages.success(request, message="Miembro eliminado exitosamente.")
-        redirect("detalle_proyecto", id_proyecto)
-
-        return redirect('detalle_proyecto', id_proyecto)
+        return redirect("ver_sprint", id_proyecto, id_sprint)
 
 
 class ActualizarMiembrosSprintView(View):
@@ -983,7 +1030,7 @@ class ActualizarMiembrosSprintView(View):
         sprint = Sprint.objects.get(id=id_sprint)
 
         if form.is_valid():
-            sprint.capacidad -= miembrosprint.capacidad
+
 
             form = form.cleaned_data
             miembrosprint.miembro = form["miembro"]
@@ -991,11 +1038,10 @@ class ActualizarMiembrosSprintView(View):
             miembrosprint.capacidad = form["carga_horaria"] * sprint.duracion
             miembrosprint.save()
 
-            sprint.capacidad += miembrosprint.capacidad
             sprint.save()
 
             messages.success(request, "Miembro del sprint editado correctamente")
-            return redirect('detalle_proyecto', id_proyecto)
+            return redirect('ver_sprint', id_proyecto, id_sprint)
         return render(request, 'sprint/editarmiembrosprint.html', {'form': form})
 
 
@@ -1023,13 +1069,13 @@ class BorrarMiembrosSprintView(View):
         miembrosprint = MiembrosSprint.objects.get(id=id_miembrosprint, sprint_id=id_sprint)
 
         sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
-        sprint.capacidad -= miembrosprint.capacidad
+
         sprint.save()
 
         miembrosprint.delete()
 
-        messages.success(request, "Miembro del sprint editado correctamente")
-        return redirect('detalle_proyecto', id_proyecto)
+        messages.success(request, "Miembro del sprint eliminado correctamente")
+        return redirect('ver_sprint', id_proyecto, id_sprint)
 
 
 class VerSprintsView(View):
@@ -1041,6 +1087,8 @@ class VerSprintsView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
+                hay_otro_sprint_planificado = Sprint.hay_otros_sprints_en_planificacion(id_proyecto=id_proyecto)
+                hay_otro_sprint_iniciado = Sprint.hay_otros_sprints_en_proceso(id_proyecto=id_proyecto)
                 sprint_planeados = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoSprint.NO_INICIADO)
                 sprint_iniciados = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoSprint.EN_PROCESO)
                 sprint_finalizados = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoSprint.TERMINADO)
@@ -1050,7 +1098,9 @@ class VerSprintsView(View):
                     'sprint_iniciados': sprint_iniciados,
                     'sprint_finalizados': sprint_finalizados,
                     'sprint_cancelados': sprint_cancelados,
-                    'id_proyecto': id_proyecto
+                    'id_proyecto': id_proyecto,
+                    "hay_otro_sprint_iniciado" : hay_otro_sprint_iniciado,
+                    "hay_otro_sprint_planificado" : hay_otro_sprint_planificado
                 }
                 return render(request, 'sprint/versprints.html', context)
             elif not tiene_permisos:
@@ -1206,7 +1256,7 @@ class IniciarSprint(View):
 
                 tiene_miembros = sprint.tiene_miembros
                 tiene_user_stories = sprint.tiene_user_stories
-                hay_otros_sprints_en_proceso = sprint.hay_otros_sprints_en_proceso
+                hay_otros_sprints_en_proceso = sprint.hay_otros_sprints_en_proceso(id_proyecto=id_proyecto)
 
                 if tiene_miembros and tiene_user_stories and not hay_otros_sprints_en_proceso:
                     return render(request, 'sprint/iniciarsprint.html')
@@ -1273,7 +1323,7 @@ class DetalleUSView(View):
 
 class AgregarTrabajoAUserStory(View):
     form_class = FormAgregarTrabajoUS
-    permisos = ["Cargar trabajo UserStory"]
+    permisos = ["Editar UserStory"]
 
     def get(self, request, id_proyecto, id_us):
         user: Usuario = request.user
