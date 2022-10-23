@@ -1,0 +1,33 @@
+
+
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% load widget_tweaks %}
+
+<h1 class="mt-4">Crear Sprint.</h1>
+<ol class="breadcrumb mb-4">
+    <li class="breadcrumb-item active">Actualizar datos del sprint.</li>
+</ol>
+
+<div class="row">
+<div class="col-xl-6 col-md-6">
+<form method="post">
+    {% csrf_token %}
+     {% for field in form.visible_fields %}
+    <div class="form-group class pb-2">
+
+         {{ field.label }}
+         {{field.errors}}
+         {% render_field field class="form-control" %}
+         {% if field.help_text %}
+             <small class="form-text text-muted">{{ field.help_text }}</small>
+         {% endif %}
+
+     </div>
+    {% endfor %}
+    <input type="submit" value="Guardar">
+</form>
+</div>
+</div>
+{% endblock %}
