@@ -30,6 +30,9 @@
     {% else %}
         <a href="{% url 'ver_US' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Ver User Stories</button></a>
     {% endif %}
+    <br>
+    <br>
+        <a href="{% url "importar" id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Importar Tipos de US</button></a>
     </div>
     <div class="col-xl-6 col-md-6">
     <br>
