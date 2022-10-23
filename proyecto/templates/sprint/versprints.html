@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block content %}
+    sprint planificados
+    {% for sprint in sprint_planeados %}
+       <li><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}">sprint {{ sprint.numero }}</a> - capacidad: {{ sprint.capacidad }}</li>
+    {% endfor %}
+    sprint iniciados
+    {% for sprint in sprint_iniciados %}
+       <li><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}">sprint {{ sprint.numero }}</a> - capacidad: {{ sprint.capacidad }}</li>
+    {% endfor %}
+{% endblock %}
