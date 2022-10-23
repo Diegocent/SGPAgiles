@@ -1,61 +1,63 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<h1 class="mt-4">User Storys del Proyecto.</h1>
-<ol class="breadcrumb mb-4">
-    <li class="breadcrumb-item active">Vizualiza la lista de U.S del proyecto, puedes editarlas, borrarlas o, crear una nueva.</li>
-</ol>
+    <h1 class="mt-4">User Storys del Proyecto.</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Vizualiza la lista de U.S del proyecto, puedes editarlas, borrarlas o, crear una nueva.</li>
+    </ol>
 
-<div class="row">
+    <div class="row">
 
-<div class="col-xl-6 col-md-6">
-{% if uss %}
-    <h3 style="text-align: left; color: white">User Stories disponibles: </h3>
-  <table class="table table-dark">
-  <thead>
-    <tr>
+        <div class="col-xl-6 col-md-6">
+            {% if uss %}
+                <h3 style="text-align: left; color: white">User Stories disponibles: </h3>
+                <table class="table table-dark">
+                    <thead>
+                    <tr>
+                        <th scope="col">Codigo</th>
+                        <th scope="col">Nombre U.S</th>
+                        <th scope="col">Tipo U.S</th>
+                        <th scope="col">Prioridad</th>
+                        <th scope="col">Editar</th>
+                        <th scope="col">Borrar</th>
 
-      <th scope="col">Nombre U.S</th>
-      <th scope="col">Tipo U.S</th>
-      <th scope="col">Editar</th>
-        <th scope="col">Borrar</th>
-
-    </tr>
-  </thead>
-     {% for us in uss %}
-
-
-  <tbody>
-    <tr>
-
-      <td>{{ us.nombre }}</td>
-      <td>{{ us.tipo.nombre }}</td>
-      <td> <a href="{% url 'editar_US' id_proyecto=id_proyecto id_us=us.id%}">Editar</a>
-</td>
-        <td><a href="{% url 'borrar_US' id_proyecto=id_proyecto id_us=us.id%}">Borrar</a>
-</td>
-    </tr>
-  </tbody>
+                    </tr>
+                    </thead>
+                    {% for us in uss %}
 
 
-     {% endfor %}
-</table>
-{% else %}
-    <h3 style="text-align: center; color:white;">No hay US actualmente.</h3>
-{% endif %}
-</div>
+                        <tbody>
+                        <tr>
+                            <td>{{ us.codigo }}</td>
+                            <td><a href="{% url "detalle_US" id_proyecto=id_proyecto id_us=us.id %}">{{ us.nombre }}</a></td>
+                            <td><a href="{% url "detalle_tipoUS" id_proyecto=id_proyecto id_tipous=us.tipo.id %}">{{ us.tipo.nombre }}</a></td>
+                            <td>{{ us.prioridad}}</td>
+                            <td> <a href="{% url 'editar_US' id_proyecto=id_proyecto id_us=us.id%}">Editar</a>
+                            </td>
+                            <td><a href="{% url 'borrar_US' id_proyecto=id_proyecto id_us=us.id%}">Borrar</a>
+                            </td>
+                        </tr>
+                        </tbody>
 
-<div class="col-xl-6 col-md-6">
-    <br><br>
-<div class="card">
-      <div class="card-body">
-        <h5 class="card-title"><p style="color:darkblue";>Tambien puedes crear un U.S nuevo!</p></h5>
-        <p class="card-text"><p style="color:darkblue";>Crea los U.S que necesites.</p></p>
-        <a href="{% url "crear_US" id_proyecto=id_proyecto %}" class="btn btn-primary"> Crear U.S </a>
-      </div>
+
+                    {% endfor %}
+                </table>
+            {% else %}
+                <h3 style="text-align: center; color:white;">No hay US actualmente.</h3>
+            {% endif %}
+        </div>
+
+        <div class="col-xl-6 col-md-6">
+            <br><br>
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><p style="color:darkblue";>Tambien puedes crear un U.S nuevo!</p></h5>
+                    <p class="card-text"><p style="color:darkblue";>Crea los U.S que necesites.</p></p>
+                    <a href="{% url "crear_US" id_proyecto=id_proyecto %}" class="btn btn-primary"> Crear U.S </a>
+                </div>
+            </div>
+
+        </div>
+
     </div>
-
-</div>
-
-</div>
 {% endblock %}
