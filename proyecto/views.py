@@ -782,7 +782,7 @@ class ActualizarSprintView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                sprint = Sprint.objects.get(id=id_sprint)
+                sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
                 if sprint.estado == EstadoSprint.NO_INICIADO:
                     form = self.form_class(instance=sprint)
                     return render(request, 'sprint/editarsprint.html', {'form': form})
@@ -809,7 +809,7 @@ class ActualizarSprintView(View):
             messages.success(request, 'Sprint fue editado exitosamente!')
 
             return redirect('ver_sprint', id_proyecto, id_sprint)
-        return render(request, 'US/editarus.html', {'form': form})
+        return render(request, 'sprint/editarsprint.html', {'form': form})
 
 
 class verProductBacklog(View):
@@ -1428,3 +1428,44 @@ class AsignarDevAUserStory(View):
         else:
             return render(request, 'sprint/asignarussprint.html', {'form': form})
         return redirect('detalle_proyecto', id_proyecto)
+
+
+class ActualizarRolProyecto(View):
+    form_class = FormRolProyecto
+    permisos = ["Editar RolProyecto"]
+
+    def get(self, request, id_proyecto, id_rol):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    rol = RolProyecto.objects.get(id=id_rol, proyecto_id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, "No se encuentra el Rol de proyecto con esas caracteristicas")
+                    return redirect("detalle_proyecto", id_proyecto)
+                form = self.form_class(instance=rol)
+                return render(request, 'roles/editar_rol_proyecto.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_rol):
+        rol_obj = RolProyecto.objects.get(id=id_rol)
+        form = self.form_class(request.POST, instance=rol_obj)
+        if form.is_valid():
+            rol_del_post = form.cleaned_data
+            array_de_roles = RolProyecto.objects.all().filter(nombre=rol_del_post['nombre'], proyecto_id=id_proyecto).exclude(id=id_rol)
+            if len(array_de_roles) == 0:
+                form.save()
+                rol_obj.permisos.clear()
+                for permisos in rol_del_post['permisos']:
+                    rol_obj.permisos.add(permisos)
+                rol_obj.save()
+                messages.success(request, 'Editado exitosamente!')
+            else:
+                messages.error(request, "Ya existe un rol con ese nombre")
+
+            return redirect('ver_roles', id_proyecto)
+        return render(request, 'roles/editar_rol_proyecto.html', {'form': form})

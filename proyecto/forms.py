@@ -26,12 +26,16 @@ class FormIniciarProyecto(forms.Form):
                                              label="Fecha estimada de fin",)
 
 
-class FormRolProyecto(forms.Form):
-    nombre = forms.CharField(max_length=100)
-    descripcion = forms.CharField(max_length=100)
+class FormRolProyecto(ModelForm):
+    nombre = forms.CharField(max_length=100, label="Nombre")
+    descripcion = forms.CharField(max_length=100, label="Descripcion del rol")
     permisos = forms.ModelMultipleChoiceField(
         queryset=Permisos.objects.all(), label="Permisos",
         help_text="Seleccione los Permisos.")
+
+    class Meta:
+        model = RolProyecto
+        fields = ["nombre", "descripcion", "permisos"]
 
 
 class FormTiposUS(forms.Form):
