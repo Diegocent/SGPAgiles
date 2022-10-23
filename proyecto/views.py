@@ -1323,7 +1323,7 @@ class DetalleUSView(View):
 
 class AgregarTrabajoAUserStory(View):
     form_class = FormAgregarTrabajoUS
-    permisos = ["Editar UserStory"]
+    permisos = ["Cargar trabajo UserStory"]
 
     def get(self, request, id_proyecto, id_us):
         user: Usuario = request.user
