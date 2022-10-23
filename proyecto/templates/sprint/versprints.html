@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
+    {% if not hay_otro_sprint_planificado %}
+        <a href="{% url "crear_sprint" id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-info fw-bold border-opacity-75 bg-black">Planificar Sprint</button></a>
+    {% endif %}
+    <br>
+    <br>
     sprint planificados
     {% for sprint in sprint_planeados %}
        <li><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}">sprint {{ sprint.numero }}</a> - capacidad: {{ sprint.capacidad }}</li>
