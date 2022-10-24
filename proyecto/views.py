@@ -5,7 +5,7 @@ from django import forms
 from django.views import View
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
     FormUS, FormSprint, FormMiembroSprint, FormUSSprint, FormImportarMainPage, FormImportarRolesProyecto, \
-    FormImportarTiposDeUS, FormAsignarDevAUserStory, FormAgregarTrabajoUS
+    FormImportarTiposDeUS, FormAsignarDevAUserStory, FormAgregarTrabajoUS, FormAsignarRolAUsuario
 from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado, \
     EstadoSprint, MiembrosSprint, HistorialUS
 from Usuario.models import Usuario, RolProyecto
@@ -1470,3 +1470,48 @@ class ActualizarRolProyecto(View):
 
             return redirect('ver_roles', id_proyecto)
         return render(request, 'roles/editar_rol_proyecto.html', {'form': form})
+
+
+class AsignarRolProyectoAUsuario(View):
+    form_class = FormAsignarRolAUsuario
+    permisos = ["Editar RolProyecto"]
+
+    def get(self, request, id_proyecto, id_equipo, id_usuario):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    usuario_a_asignar = Usuario.objects.get(id=id_usuario, equipo__id=id_equipo, equipo__proyecto__id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, "No se encuentra el Rol de proyecto con esas caracteristicas")
+                    return redirect("detalle_proyecto", id_proyecto)
+                roles = usuario_a_asignar.rolProyecto.all().filter(proyecto_id=id_proyecto)
+                form = self.form_class()
+                form.fields["roles"].queryset = RolProyecto.objects.filter(proyecto_id=id_proyecto)
+                if len(roles) > 0:
+                    form.fields["roles"].initial = roles
+                return render(request, 'roles/asignar_rol_proyecto.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_equipo, id_usuario):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            form = form.cleaned_data
+            roles = form["roles"]
+
+            usuario_a_asignar = Usuario.objects.get(id=id_usuario, equipo__id=id_equipo, equipo__proyecto__id=id_proyecto)
+            usuario_a_asignar.rolProyecto.clear()
+
+            for rol in roles:
+                usuario_a_asignar.rolProyecto.add(rol)
+                usuario_a_asignar.save()
+            messages.success(request, 'Rol de usuario editado exitosamente!')
+
+
+            return redirect('ver_equipo', id_proyecto, id_equipo)
+        return render(request, 'roles/asignar_rol_proyecto.html', {'form': form})

@@ -112,3 +112,9 @@ class FormAgregarTrabajoUS(ModelForm):
     class Meta:
         model = HistorialUS
         fields = ["log", "horas_trabajadas"]
+
+
+class FormAsignarRolAUsuario(forms.Form):
+
+    roles = forms.ModelMultipleChoiceField(queryset=RolProyecto.objects.all(),
+                                           label="Seleccione los roles para el usuario")
