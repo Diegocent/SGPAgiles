@@ -1,146 +1,345 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
-    <style>
-    div{
-        color: white;
-        text-align: center;
+
+<style>
+    /*
+    DEMO STYLE
+*/
+
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+}
+
+p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 1.1em;
+    font-weight: 300;
+    line-height: 1.7em;
+    color: #999;
+}
+
+a,
+a:hover,
+a:focus {
+    color: inherit;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+    margin: 40px 0;
+}
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+#sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background: #7386D5;
+    color: #fff;
+    transition: all 0.3s;
+}
+
+#sidebar.active {
+    margin-left: -250px;
+}
+
+#sidebar .sidebar-header {
+    padding: 20px;
+    background: #6d7fcc;
+}
+
+#sidebar ul.components {
+    padding: 20px 0;
+    border-bottom: 1px solid #47748b;
+}
+
+#sidebar ul p {
+    color: #fff;
+    padding: 10px;
+}
+
+#sidebar ul li a {
+    padding: 10px;
+    font-size: 1.1em;
+    display: block;
+}
+
+#sidebar ul li a:hover {
+    color: #7386D5;
+    background: #fff;
+}
+
+#sidebar ul li.active>a,
+a[aria-expanded="true"] {
+    color: #fff;
+    background: #6d7fcc;
+}
+
+a[data-toggle="collapse"] {
+    position: relative;
+}
+
+.dropdown-toggle::after {
+    display: block;
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+}
+
+ul ul a {
+    font-size: 0.9em !important;
+    padding-left: 30px !important;
+    background: #6d7fcc;
+}
+
+ul.CTAs {
+    padding: 20px;
+}
+
+ul.CTAs a {
+    text-align: center;
+    font-size: 0.9em !important;
+    display: block;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+a.download {
+    background: #fff;
+    color: #7386D5;
+}
+
+a.article,
+a.article:hover {
+    background: #6d7fcc !important;
+    color: #fff !important;
+}
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+    width: 100%;
+    padding: 20px;
+    min-height: 100vh;
+    transition: all 0.3s;
+}
+
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -250px;
     }
-    h1{
-        text-align: left;
-        font-size: 25px;
+    #sidebar.active {
+        margin-left: 0;
     }
-   .sidebar {
-  height: 100%;
-  width: 300px;
-  position: fixed;
-  z-index: 1;
-  top: 56px;
-  left: 0;
-  background-color: whitesmoke;
-  overflow-x: hidden;
-  padding-top: 100px;
+    #sidebarCollapse span {
+        display: none;
+    }
 }
+</style>
 
-/* Style sidebar links */
-.sidebar a {
-  padding: 6px 8px 6px 16px;
-  text-decoration: none;
-  font-size: 20px;
-  color: black;
-  display: block;
-}
+<script>
+    $(document).ready(function () {
+            $('#sidebarCollapse').on('click', function () {
+                $('#sidebar').toggleClass('active');
+            });
+        });
+</script>
 
-/* Style links on mouse-over */
-.sidebar a:hover {
-  color: black;
-}
+<div class="wrapper">
+        <!-- Sidebar  -->
+        <nav id="sidebar">
+            <div class="sidebar-header">
+                <h3>{{ proyecto.nombre }}</h3>
+            </div>
 
-/* Style the main content */
-.main {
-  margin-left: 160px; /* Same as the width of the sidenav */
-  padding: 0px 10px;
-}
-    </style>
-    <div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<br>
+            <ul class="list-unstyled components">
+
+                <p>{{ proyecto.descripcion }}</p>
+
+                <li>
+                    <a href="ver_roles">Roles de Proyecto</a>
+                </li>
+                <li><a href="{% url 'ver_product_backlog' id_proyecto=id_proyecto %}">Product Backlog</a></li>
+
+                {% if proyecto.estado == "NO_INICIADO" %}
+
+            {% if not equipo %}
+
+                <li><a href="{% url 'crear_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Crear Equipo</a></li>
+            {% else %}
+
+                <li><a href="{% url 'ver_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Miembros</a></li>
+            {% endif %}
+        {% else %}
+            <li class="dropdown">
+            <a href="#" class="dropdown-toggle"  data-toggle="dropdown">Equipo<span class="caret"></span></a>
+            <ul class="dropdown-menu animated fadeInLeft" role="menu">
+             <div class="dropdown-header">{{ equipo.nombre }}</div>
+            <li><a href="{% url 'ver_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Miembros</a></li>
+             <li><a href="{% url 'editar_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Editar</a></li>
+             </ul>
+            </li>
+        {% endif %}
+
+        {% if proyecto.estado == "NO_INICIADO" and equipo %}
+            <li><a href="iniciar_proyecto">Iniciar Proyecto</a></li>
+        {% endif %}
+
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+
+                    <button type="button" id="sidebarCollapse" class="btn btn-info">
+                        <i class="fas fa-align-left"></i>
+                        <span>Menu</span>
+                    </button>
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button>
+
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+            </nav>
 
 
 
 
-    {% if sprint %}
-        <div class="row">
-            <div class="col-xl-6 col-md-6">
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2">
+                        {% if sprint %}
+        <div class="col-xl-6 col-md-6">
             <span class="float-right">
             <table class="table table-dark">
                 {% for s in sprint %}
 
-
-  <thead>
-    <tr>
-      <th scope="col">Sprint ID: {{s.numero}}</th>
-      <th scope="col">Para Detalles:<a href="{% url 'ver_sprint' id_proyecto=proyecto.id id_sprint=s.id %}">Click Aqui.</a>
-</th>
-    </tr>
-  </thead>
+                    <thead>
+                    <tr>
+                    <th scope="col">Sprint ID: {{s.numero}}</th>
+                    <th scope="col">Para Detalles:<a href="{% url 'ver_sprint' id_proyecto=proyecto.id id_sprint=s.id %}">Click Aqui.</a></th>
+                    </tr>
+                    </thead>
 
                  {% endfor %}
             </table>
             </span>
-            </div>
+        </div>
 
 
         <div class="col-xl-6 col-md-6 float-right">
             <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
-            <div class="card-header">Sprint Creado.</div>
+            <div class="card-header">Sprints Creados.</div>
             <div class="card-body">
-                <h5 class="card-title">Podras crea mas Sprints cunado finalice el actual!</h5>
-                 <p class="card-text"></p>
+            <h5 class="card-title"></h5>
+            <p class="card-text">Visualiza una listade Sprints creados.</p>
             </div>
             </div>
         </div>
-        </div>
-    {% else %}
-        {% if proyecto.estado == "EN_PROCESO" %}
 
-            <div class="col-xl-5 col-md-5 float-right">
-        <table class="table table-dark">
-  <thead>
-    <tr>
-      <th scope="col">Nombre del Proyecto</th>
-      <th scope="col">{{proyecto.nombre}}</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Fecha inicio:</td>
-      <td>{{ proyecto.fecha_inicio }}</td>
-    </tr>
-    <tr>
-        <td>Fecha fin estimada:</td>
-      <td>{{ proyecto.fecha_fin_estimada }}</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-            <div class="col-xl-6 col-md-6 float-right">
+{% else %}
+
+
+    {% if proyecto.estado == "EN_PROCESO" %}
+
+        <div class="col-xl-5 col-md-5 float-right">
+            <table class="table table-dark">
+
+            <thead>
+            <tr>
+            <th scope="col">Nombre del Proyecto</th>
+            <th scope="col">{{proyecto.nombre}}</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+            <td>Fecha inicio:</td>
+            <td>{{ proyecto.fecha_inicio }}</td>
+            </tr>
+            <tr>
+            <td>Fecha fin estimada:</td>
+            <td>{{ proyecto.fecha_fin_estimada }}</td>
+            </tr>
+            </tbody>
+
+            </table>
+        </div>
+
+        <div class="col-xl-6 col-md-6 float-right">
             <span class="float-right">
             <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
-  <div class="card-header">Enhorabuena!</div>
-  <div class="card-body">
-    <h5 class="card-title">Ya puedes crear un Sprint.</h5>
-    <p class="card-text">Crealo ahora.</p>
-  </div>
+            <div class="card-header">Enhorabuena!</div>
+            <div class="card-body">
+            <h5 class="card-title">Ya puedes crear un Sprint.</h5>
+            <p class="card-text text-white">Crealo ahora.</p>
+             <span class="float-right"><a href="{% url 'crear_sprint' id_proyecto=proyecto.id %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Crear Sprint</a></span>
+
+           </div>
+           </div>
            </span>
-            <span class="float-right"><a href="{% url 'crear_sprint' id_proyecto=proyecto.id %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Crear Sprint</a></span>
+        </div>
+    {% endif  %}
+
+{% endif %}
+                    </div>
             </div>
-        {% endif  %}
-
-    {% endif %}
+        </div>
 
 
-    <div class="sidebar">
+        </div>
+    </div>
 
-        <a href="ver_roles"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Roles de Proyecto</button></a>
-        <a href="{% url 'ver_product_backlog' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Product Backlog</button></a>
-<br>
-{% if proyecto.estado == "NO_INICIADO" %}
-
-    {% if not equipo %}
-        <a href="crear_equipo"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Crear Equipo</button></a>
-    {% else %}
-
-        <p style="color: black; font-size: 20px">Equipo: {{ equipo.nombre }}</p>
-        <a href="{% url 'ver_equipo' id_proyecto=proyecto.id  id_equipo=equipo.id %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Miembros</button></a>
-
-    {% endif %}
-    <br>
-{% else %}
-    <p style="color: black; font-size: 20px" >Equipo: <a href="{% url 'ver_equipo' id_proyecto=proyecto.id id_equipo=equipo.id %}">{{ equipo.nombre }}</a></p>
-{% endif %}
-<p style="color: black; font-size: 20px" ><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SPRINTS</a></p>
-{% if proyecto.estado == "NO_INICIADO" and equipo %}
-    <a href="iniciar_proyecto"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Iniciar proyecto</button></a>
-{% endif %}
-    </div></div>
 {% endblock %}

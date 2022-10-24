@@ -1,6 +1,6 @@
 {% load SGPA_extras %}
 
-<head>
+
 <style>
 
 
@@ -31,79 +31,71 @@
         }
 
 </style>
-</head>
+
 <div>
+
+
+
+
 <header>
-
-
-
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-        <meta name="description" content="" />
-        <meta name="author" content="" />
-        <title>Dashboard - SB Admin</title>
-        <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" />
-        <link href="css/styles.css" rel="stylesheet" />
-        <script src="https://use.fontawesome.com/releases/v6.1.0/js/all.js" crossorigin="anonymous"></script>
-    </head>
-
-    <body class="sb-nav-fixed">
-        <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
-            <!-- Navbar Brand-->
-            <button onclick="history.back()" >Back</button>
-            <
-            <a class="navbar-brand ps-3" href="/"> Gestion de Proyectos </a>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+    <!-- Navbar Brand-->
+        <button onclick="history.back()" >Back</button>
+        <a class="navbar-brand ps-3" href="/"> Gestion de Proyectos </a>
             <!-- Sidebar Toggle-->
 
-             <div style="color: whitesmoke">
+        <div style="color: whitesmoke">
+            <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                usuario: {{request.user.email}}
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    {% for usuario in usuarios %}
+                        <tr>
+                            {% for rol in usuario.rolSistema.all %}
 
-<div class="dropdown">
-  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    usuario: {{request.user.email}}
-  </button>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-    <a class="dropdown-item" href="#">Action</a>
-    <a class="dropdown-item" href="#">Another action</a>
-    <a class="dropdown-item" href="#">Something else here</a>
-  </div>
-</div>
+                                <h5> <td>{{ rol.nombre }} : {{ rol.descripcion }} </td> </h5>
 
+                            {% endfor %}
 
-    <!--Archivos de javascript -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-    <!--Archivos de javascript-->
+                    {% endfor %}
+                </div>
+            </div>
 
 
+        <!--Archivos de javascript -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+        <!--Archivos de javascript-->
 
-          </div>
-            <!-- Navbar-->
-            <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/">Home</a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="http://127.0.0.1:8000/accounts/logout">Salir</a>
-            </li>
-        </ul>
-        </nav>
+        </div>
+        <!-- Navbar-->
+    <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="http://127.0.0.1:8000/accounts/logout">Salir</a>
+    </li>
+    </ul>
+    </nav>
 
 </header>
-    {% block breadcrumb %}
-          {% breadcrumb %}
-    {% endblock %}
-    {% load static %}
+
+
+{% block breadcrumb %}
+    {% breadcrumb %}
+{% endblock %}
+
+{% load static %}
     <!-- Bootstrap -->
     <link href="{% static 'proyecto/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
      <!-- Fonts -->
 
      <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300&display=swap" rel="stylesheet">
-     <link href="https://fonts.googleapis.com/css?family=Lora:400,400i,700,700i" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{% static 'proyecto/css/gestion.css' %}" rel="stylesheet">
@@ -115,15 +107,9 @@
 
  {% endblock %}
 
-    <!-- Bootstrap -->
-
-
-        </div>
-
-    </body>
-</html>
 
 </div>
+
 </html>
 
 
