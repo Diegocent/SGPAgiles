@@ -34,6 +34,14 @@
     {% if us.sprint is not None and us.sprint.estado == "EN_PROCESO" %}
         <a href="{% url "cargar_trabajo_US" id_proyecto=id_proyecto id_us=us.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Cargar trabajo</button></a>
     {% endif %}
+    {% if us.sprint is not None and puede_asignar_dev %}
+        <a href="{% url "asignar_dev_US" id_proyecto=id_proyecto id_us=us.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Asignar Dev</button></a>
+    {% endif %}
+
+    {% if us.desarrollador is not None %}
+        <h3>Desarrollador: {{ us.desarrollador.email }}</h3>
+    {% endif %}
+
 
 
     <table class="table-custom">

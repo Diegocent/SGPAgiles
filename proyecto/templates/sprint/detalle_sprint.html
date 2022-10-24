@@ -58,7 +58,10 @@
                             <th scope="col">Codigo</th>
                             <th scope="col">Nombre</th>
                             <th scope="col">Duracion</th>
+                            <th scope="col">Horas trabajadas</th>
                             <th scope="col">Prioridad</th>
+                            <th scope="col">Desarrollador</th>
+
                             {% if sprint.estado == "NO_INICIADO" %}
                                 <th scope="col">Acciones</th>
                             {% endif %}
@@ -71,7 +74,14 @@
                                 <td>{{ us.codigo }}</td>
                                 <td><a href="{% url "detalle_US" id_proyecto=id_proyecto id_us=us.id %}">{{ us.nombre }}</a></td>
                                 <td>{{ us.duracion }} hr</td>
+                                <td>{{ us.total_horas_trabajadas }} hr</td>
                                 <td>{{ us.prioridad }}</td>
+                                {% if us.desarrollador is None %}
+                                    <td>-</td>
+                                {% else %}
+                                    <td>{{ us.desarrollador }}</td>
+                                {% endif %}
+
                                 {% if sprint.estado == "NO_INICIADO" %}
                                     <td><a href="{% url "eliminar_us_sprint" id_proyecto=id_proyecto id_sprint=sprint.id id_us=us.id %}">Remover</a></td>
                                 {% endif %}

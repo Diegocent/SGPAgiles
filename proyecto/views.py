@@ -1306,13 +1306,14 @@ class DetalleUSView(View):
                     return redirect("detalle_proyecto", id_proyecto)
 
                 historiales = HistorialUS.objects.filter(user_story_id=id_us)
-                horas_trabajadas = HistorialUS.total_horas_trabajadas(id_us=id_us)
-
+                horas_trabajadas = us.total_horas_trabajadas
+                puede_asignar_dev = user.tiene_permisos(permisos=["Editar UserStory"], id_proyecto=id_proyecto)
                 context = {
                     'historiales': historiales,
                     'horas_trabajadas': horas_trabajadas,
                     'us' : us,
                     'id_proyecto': id_proyecto,
+                    'puede_asignar_dev' : puede_asignar_dev
                 }
                 return render(request, 'US/detalle_us.html', context)
             elif not tiene_permisos:
@@ -1370,7 +1371,7 @@ class AgregarTrabajoAUserStory(View):
                                        )
 
         messages.success(request, 'Creado exitosamente!')
-        return redirect('detalle_proyecto', id_proyecto)
+        return redirect('detalle_US', id_proyecto, id_us)
 
 
 class AsignarDevAUserStory(View):
@@ -1418,16 +1419,16 @@ class AsignarDevAUserStory(View):
 
             dev: Usuario = form["desarrollador"]
             us.desarrollador = dev
+            us.save()
 
             HistorialUS.objects.create(log="{} se encargara de desarrollar este US.".format(dev.email),
                                        fecha=date.today(),
                                        user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
 
             messages.success(request, message="Miembro agregado exitosamente.")
-            redirect("detalle_proyecto", id_proyecto)
+            return redirect("detalle_US", id_proyecto, id_us)
         else:
             return render(request, 'sprint/asignarussprint.html', {'form': form})
-        return redirect('detalle_proyecto', id_proyecto)
 
 
 class ActualizarRolProyecto(View):

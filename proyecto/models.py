@@ -177,6 +177,14 @@ class UserStory(models.Model):
     def codigo(self):
         return self.tipo.prefijo + " - US" + "{}".format(self.numero)
 
+    @property
+    def total_horas_trabajadas(self):
+        historiales = HistorialUS.objects.filter(user_story_id=self.id)
+        total_horas = 0
+        for historia in historiales:
+            total_horas += historia.horas_trabajadas
+        return total_horas
+
     @staticmethod
     def obtener_ultimo_valor_de_us(id_proyecto):
         ultimo_valor = UserStory.objects.all().filter(proyecto_id=id_proyecto).last()
@@ -196,10 +204,3 @@ class HistorialUS(models.Model):
     fecha = models.DateField()
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
 
-    @staticmethod
-    def total_horas_trabajadas(id_us):
-        historiales = HistorialUS.objects.filter(user_story_id=id_us)
-        total_horas = 0
-        for historia in historiales:
-            total_horas += historia.horas_trabajadas
-        return total_horas
