@@ -111,59 +111,59 @@ class CrearProyectoView(View):
                                            descripcion="Scrum Master del Proyecto.",
                                            proyecto=proyecto)
         scrum.agregar_permisos([
-                                "Ver RolProyecto",
-                                "Crear RolProyecto",
-                                "Editar RolProyecto",
-                                "Borrar RolProyecto",
-                                "Ver Equipo",
-                                "Crear Equipo",
-                                "Editar Equipo",
-                                "Ver Proyecto",
-                                "Editar Proyecto",
-                                "Iniciar Proyecto",
-                                "Cancelar Proyecto",
-                                "Ver Sprint",
-                                "Crear Sprint",
-                                "Editar Sprint",
-                                "Iniciar Sprint",
-                                "Cancelar Sprint",
-                                "Ver TipoUserStory",
-                                "Crear TipoUserStory",
-                                "Editar TipoUserStory",
-                                "Borrar TipoUserStory",
-                                "Ver EstadoUS",
-                                "Crear EstadoUS",
-                                "Editar EstadoUS",
-                                "Borrar EstadoUS",
-                                "Ver UserStory",
-                                "Crear UserStory",
-                                "Editar UserStory",
-                                "Borrar UserStory",
-                                "Ver ProductBacklog",
-                                "Crear ProductBacklog",
-                                "Editar ProductBacklog",
-                                "Borrar ProductBacklog",
-                                "Ver Kanban",
-                                ])
+            "Ver RolProyecto",
+            "Crear RolProyecto",
+            "Editar RolProyecto",
+            "Borrar RolProyecto",
+            "Ver Equipo",
+            "Crear Equipo",
+            "Editar Equipo",
+            "Ver Proyecto",
+            "Editar Proyecto",
+            "Iniciar Proyecto",
+            "Cancelar Proyecto",
+            "Ver Sprint",
+            "Crear Sprint",
+            "Editar Sprint",
+            "Iniciar Sprint",
+            "Cancelar Sprint",
+            "Ver TipoUserStory",
+            "Crear TipoUserStory",
+            "Editar TipoUserStory",
+            "Borrar TipoUserStory",
+            "Ver EstadoUS",
+            "Crear EstadoUS",
+            "Editar EstadoUS",
+            "Borrar EstadoUS",
+            "Ver UserStory",
+            "Crear UserStory",
+            "Editar UserStory",
+            "Borrar UserStory",
+            "Ver ProductBacklog",
+            "Crear ProductBacklog",
+            "Editar ProductBacklog",
+            "Borrar ProductBacklog",
+            "Ver Kanban",
+        ])
         dev = RolProyecto.objects.create(nombre="Developer",
                                          descripcion="Developer del Proyecto.",
                                          proyecto=proyecto)
         dev.agregar_permisos([
-                                "Ver RolProyecto",
-                                "Ver Permiso",
-                                "Ver Usuario",
-                                "Ver Equipo",
-                                "Ver Proyecto",
-                                "Ver Sprint",
-                                "Ver TipoUserStory",
-                                "Ver EstadoUS",
-                                "Ver UserStory",
-                                "Ver ProductBacklog",
-                                "Ver Kanban",
-                                "Cambiar EstadoUS",
-                                "Editar Kanban",
-                                "Cargar trabajo UserStory",
-                            ])
+            "Ver RolProyecto",
+            "Ver Permiso",
+            "Ver Usuario",
+            "Ver Equipo",
+            "Ver Proyecto",
+            "Ver Sprint",
+            "Ver TipoUserStory",
+            "Ver EstadoUS",
+            "Ver UserStory",
+            "Ver ProductBacklog",
+            "Ver Kanban",
+            "Cambiar EstadoUS",
+            "Editar Kanban",
+            "Cargar trabajo UserStory",
+        ])
         return scrum
 
 
@@ -394,12 +394,12 @@ class CrearTiposUSView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
             tipo_del_post = form.cleaned_data
-            array_de_tipos = TipoUserStory.objects.all().filter(nombre=tipo_del_post['nombre'], proyecto_id=id_proyecto) | TipoUserStory.objects.\
+            array_de_tipos = TipoUserStory.objects.all().filter(nombre=tipo_del_post['nombre'], proyecto_id=id_proyecto) | TipoUserStory.objects. \
                 all().filter(nombre=tipo_del_post['prefijo'], proyecto_id=id_proyecto)
 
             if len(array_de_tipos) == 0:
                 tipo = TipoUserStory.objects.create(nombre=tipo_del_post['nombre'], prefijo=tipo_del_post['prefijo']
-                                                 , proyecto_id=id_proyecto)
+                                                    , proyecto_id=id_proyecto)
                 orden = OrdenEstado.objects.create(orden=1)
                 EstadoUS.objects.create(nombre="TO DO", tipoUserStory=tipo, orden=orden)
                 orden = OrdenEstado.objects.create(orden=2)
@@ -502,9 +502,9 @@ class CrearUSView(View):
                 numero = UserStory.obtener_ultimo_valor_de_us(id_proyecto=id_proyecto)
                 user_story = UserStory.objects.create(numero=numero,
                                                       nombre=us['nombre'], descripcion=us['descripcion'], proyecto=p,
-                                         tipo=us['tipo'], estado=estado_inicial,
-                                         duracion=us['duracion'], prioridad_de_negocio=us['prioridad_de_negocio'],
-                                         prioridad_tecnica=us['prioridad_tecnica'])
+                                                      tipo=us['tipo'], estado=estado_inicial,
+                                                      duracion=us['duracion'], prioridad_de_negocio=us['prioridad_de_negocio'],
+                                                      prioridad_tecnica=us['prioridad_tecnica'])
 
                 user_story.calcular_prioridad()
                 HistorialUS.objects.create(log="User Story creado.", fecha=date.today(),
@@ -657,8 +657,8 @@ class ActualizarEquipoView(View):
         if form.is_valid():
 
             self.eliminar_roles_de_miembros_eliminados(equipo_ant=equipo.miembros,
-                                                                             equipo_nuevo=form.cleaned_data["miembros"],
-                                                                             id_proyecto=id_proyecto)
+                                                       equipo_nuevo=form.cleaned_data["miembros"],
+                                                       id_proyecto=id_proyecto)
 
             for miembro in form.cleaned_data["miembros"]:
                 if len(miembro.rolProyecto.all().filter(proyecto_id=id_proyecto)) == 0:
@@ -717,7 +717,7 @@ class CrearSprint(View):
                 p = Proyecto.objects.get(id=id_proyecto)
                 numero = Sprint.obtener_ultimo_valor_de_sprint(id_proyecto=id_proyecto)
                 sprint = Sprint.objects.create(numero=numero, descripcion=sprintform['descripcion'],
-                                             proyecto=p, estado=EstadoSprint.NO_INICIADO, duracion=sprintform["duracion"])
+                                               proyecto=p, estado=EstadoSprint.NO_INICIADO, duracion=sprintform["duracion"])
                 return redirect('ver_sprint', id_proyecto, sprint.id)
             elif not proyecto_en_proceso:
                 return render(request, 'sprint/warning.html', {"mensajeerror": "El proyecto no esta iniciado!"})
@@ -849,7 +849,7 @@ class AsignarMiembroASprint(View):
                     return redirect("detalle_proyecto", id_proyecto)
 
                 form = self.form_class()
-                form.fields["miembro"] = forms.\
+                form.fields["miembro"] = forms. \
                     ModelChoiceField(label="Miembro a ingresar al Sprint.",
                                      help_text="Seleccione al developer que entrara al sprint.",
                                      queryset=Usuario.objects.filter(
@@ -909,9 +909,9 @@ class AsignarUSASprint(View):
 
                 form = self.form_class()
                 form.fields["user_stories"].queryset = UserStory.objects.filter(
-                                                 proyecto_id=id_proyecto,
-                                                 sprint__isnull=True
-                                                 ).order_by('-prioridad')
+                    proyecto_id=id_proyecto,
+                    sprint__isnull=True
+                ).order_by('-prioridad')
 
                 return render(request, 'sprint/asignarussprint.html', {'form': form})
             elif not tiene_permisos:
@@ -1360,18 +1360,22 @@ class AgregarTrabajoAUserStory(View):
 
     def post(self, request, id_proyecto, id_us):
 
-        form = self.form_class(request.POST)
+        form = self.form_class(request.POST, request.FILES)
+
         if form.is_valid():
 
             cleaned_data = form.cleaned_data
 
+
             HistorialUS.objects.create(log=cleaned_data["log"], user_story_id=id_us,
                                        horas_trabajadas=cleaned_data["horas_trabajadas"],
-                                       fecha=date.today(), usuario_id=request.user.id
+                                       fecha=date.today(), usuario_id=request.user.id, archivos=cleaned_data["archivos"]
                                        )
 
-        messages.success(request, 'Creado exitosamente!')
-        return redirect('detalle_US', id_proyecto, id_us)
+            messages.success(request, 'Creado exitosamente!')
+            return redirect('detalle_US', id_proyecto, id_us)
+        else:
+            return redirect("detalle_proyecto", id_proyecto)
 
 
 class AsignarDevAUserStory(View):

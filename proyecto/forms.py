@@ -108,10 +108,11 @@ class FormAgregarTrabajoUS(ModelForm):
 
     log = forms.CharField(max_length=1000, label="Describa su trabajo realizado")
     horas_trabajadas = forms.IntegerField(min_value=1, label="Cantidad de horas usadas.")
+    archivos = forms.FileField(label="Suba los archivos que verifiquen el trabajo realizado", required=True)
 
     class Meta:
         model = HistorialUS
-        fields = ["log", "horas_trabajadas"]
+        fields = ["log", "horas_trabajadas", "archivos"]
 
 
 class FormAsignarRolAUsuario(forms.Form):
