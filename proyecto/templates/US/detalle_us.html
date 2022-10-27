@@ -51,6 +51,7 @@
             <th scope="col">Evento</th>
             <th scope="col">Usuario</th>
             <th scope="col">Horas Trabajadas</th>
+            <th scope="col">Archivos</th>
             <th scope="col"> - </th>
         </tr>
         </thead>
@@ -65,7 +66,11 @@
                 {% else %}
                     <td>{{ historial.horas_trabajadas }}</td>
                 {% endif %}
-
+                {% if historial.archivos != "0" %}
+                    <td><a href="{{ historial.archivos.url }}" download class="btn btn-dark float-right">Download</a></td>
+                {% else %}
+                    <td>-</td>
+                {% endif %}
                 <td></td>
             </tr>
         {% endfor %}

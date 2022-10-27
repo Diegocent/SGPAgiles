@@ -203,4 +203,4 @@ class HistorialUS(models.Model):
     horas_trabajadas = models.PositiveIntegerField(default=0)
     fecha = models.DateField()
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-    archivos = models.FileField(null=True)
+    archivos = models.FileField(null=True, upload_to="historial")
