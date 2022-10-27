@@ -1,62 +1,77 @@
 {% extends 'base.html' %}
 {% block content %}
+    <style>
 
-<h1 class="mt-4">Tabla de Miembros del Equipo.</h1>
-<ol class="breadcrumb mb-4">
-    <li class="breadcrumb-item active">Vizualiza la tabla de mMiembros de Equipo del Proyecto, con sus respectivos roles.</li>
-</ol>
+        .table-custom{
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+
+        }
+
+        .table-custom th{
+            border: none;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            color: white;
+        }
+
+        .table-custom tr{
+            /* height: 20%; */
+            border-bottom: 1px solid rgb(212, 212, 212);
+            color: white;
+        }
+
+    </style>
+    <h1 class="mt-4">Tabla de Miembros del Equipo.</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Vizualiza la tabla de mMiembros de Equipo del Proyecto, con sus respectivos roles.</li>
+    </ol>
 
     <h3>Nombre del Equipo: {{ equipo.nombre }}</h3>
 
-<div class="row">
+    <div class="row">
 
- <div class="col-xl-6 col-md-6">
-{% for miembrorol in miembrosroles %}
-
-
-
-    <table class="table table-dark">
-  <thead>
-    <tr>
-      <th scope="col">Miembro</th>
-      <th scope="col">Rol</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-
-
-        {% for key, value in miembrorol.items %}
-        {% if key == "rol" %}
-            {% for rol in value %}
-                <td>rol:{{ rol.nombre }}</td>
-            {% endfor %}
-        {% else %}
-            <td>{{ key}}:{{ value }}</td>
-        {% endif %}
-    {% endfor %}
-
-
-
-    </tr>
-  </tbody>
-</table>
-
-{% endfor %}
- </div>
- <div class="col-xl-6 col-md-6">
+        <div class="col-xl-6 col-md-6">
+            <table class="table-custom">
+                <thead>
+                <tr>
+                    <th scope="col">Usuario</th>
+                    <th scope="col">Rol(es)</th>
+                    <th scope="col">Acciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for miembro in miembros %}
+                    <tr height="60px">
+                        <td>{{ miembro.email }}</td>
+                        <td>
+                            {% for rol in miembro.rolProyecto.all %}
+                                {{ rol.nombre }}
+                            {% endfor %}
+                        </td>
+                    {% if not miembro.es_scrum_master %}
+                        <td><a href="{% url "asignar_rol_proyecto" id_proyecto=id_proyecto id_equipo=equipo.id id_usuario=miembro.id %}">Asignar rol</a></td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="col-xl-6 col-md-6">
 
 
-     <div class="col-xl-6 col-md-6">
-    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
-  <div class="card-header">Quieres editar los miembros de tu Equipo?</div>
-  <div class="card-body">
-    <h5 class="card-title"><a href="{% url 'editar_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Editar Miembros</a>
-</h5>
-    <p class="card-text">Modifica los miembros del equipo: {{ equipo.nombre }}.</p>
-  </div>
-</div>
-    </div>
+                <div class="col-xl-6 col-md-6">
+                    <div class="card text-white bg-dark mb-3" style="max-width: 18rem;">
+                        <div class="card-header">Quieres editar los miembros de tu Equipo?</div>
+                        <div class="card-body">
+                            <h5 class="card-title"><a href="{% url 'editar_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Editar Miembros</a>
+                            </h5>
+                            <p class="card-text">Modifica los miembros del equipo: {{ equipo.nombre }}.</p>
+                        </div>
+                    </div>
+                </div>
 
-</div>
+            </div>
 {% endblock %}

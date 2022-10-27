@@ -618,14 +618,10 @@ class DetalleEquipoView(View):
             if tiene_permisos:
                 equipo = Equipo.objects.get(id=id_equipo)
                 miembros = equipo.miembros.all()
-                miembrosroles = []
-                for miembro in miembros:
-                    rol = miembro.rolProyecto.filter(proyecto_id=id_proyecto)
-                    dicc = {"miembro": miembro, "rol": rol}
-                    miembrosroles.append(dicc)
+
                 context = {
                     'equipo': equipo,
-                    'miembrosroles': miembrosroles,
+                    'miembros': miembros,
                     'id_proyecto': id_proyecto,
                 }
                 return render(request, 'equipo/detalle_equipo.html', context)
