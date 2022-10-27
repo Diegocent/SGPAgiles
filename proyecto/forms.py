@@ -101,7 +101,7 @@ class FormImportarTiposDeUS(forms.Form):
 
 
 class FormAsignarDevAUserStory(forms.Form):
-    desarrollador = forms.ModelChoiceField(queryset=Usuario.objects.all(), label="Seleccione el desarrollador.")
+    desarrollador = forms.ModelChoiceField(queryset=Usuario.objects.all(), label="Seleccione el desarrollador.", required=False)
 
 
 class FormAgregarTrabajoUS(ModelForm):
