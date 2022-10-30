@@ -52,50 +52,18 @@ Actualmente contamos con los siguientes views:</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">request</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-3'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-3'>#</a>
-      </div>
-      <p>Se verifica si el usuario esta autenticado</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>        <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span> <span class="c1">#Se verifica si el usuario esta autenticado</span>
                 <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
                 <span class="n">user</span><span class="p">:</span><span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
                 <span class="n">cantidad_de_usuarios</span> <span class="o">=</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
-                <span class="n">unico_usuario_es_admin</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-4'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-4'>#</a>
-      </div>
-      <p>si hay un solo usuario y el current usuario no es admin, se le asigna como admin</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>                <span class="k">if</span><span class="p">(</span><span class="n">cantidad_de_usuarios</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">unico_usuario_es_admin</span><span class="p">):</span>
-                        <span class="n">array_de_roles</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;admin&quot;</span><span class="p">)</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-5'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-5'>#</a>
-      </div>
-      <p>Lista de permisos segun requerimientos</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_de_roles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1">#si no existe el rol de admin, se crea</span>
-                                <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">unico_usuario_es_admin</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span>
+                <span class="k">if</span><span class="p">(</span><span class="n">cantidad_de_usuarios</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">unico_usuario_es_admin</span><span class="p">):</span> <span class="c1">#si hay un solo usuario y el current usuario no es admin, se le asigna como admin</span>
+                        <span class="n">array_de_roles</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;admin&quot;</span><span class="p">)</span>
+
+                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_de_roles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1">#si no existe el rol de admin, se crea</span>
+                                <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span>  <span class="c1">#Lista de permisos segun requerimientos</span>
                                     <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver Permiso&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Permisos&quot;</span><span class="p">),</span>
                                     <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear Permiso&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Permisos&quot;</span><span class="p">),</span>
                                     <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar Permiso&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Permisos&quot;</span><span class="p">),</span>
@@ -187,7 +155,6 @@ Actualmente contamos con los siguientes views:</p>
                                 <span class="n">admin</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;admin&quot;</span><span class="p">)</span>
                                 <span class="n">user</span><span class="o">.</span><span class="n">rolSistema</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">admin</span><span class="p">)</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">rolSistema</span><span class="o">.</span><span class="n">all</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hola&quot;</span><span class="p">)</span>
                     <span class="n">usuario_simple</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Usuario simple&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Rol para usuarios simples&quot;</span><span class="p">)</span>
                     <span class="n">user</span><span class="o">.</span><span class="n">rolSistema</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">usuario_simple</span><span class="p">)</span>
                     <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
