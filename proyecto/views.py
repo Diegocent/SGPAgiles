@@ -1549,23 +1549,38 @@ class TableroKanbanView(View):
 
                     for tipo in tipos_de_user_story:
                         estados_dict = []
-                        us_dict = []
+                        uss_dict = []
                         estados = EstadoUS.objects.filter(tipoUserStory=tipo)
                         uss = user_stories.filter(tipo=tipo)
                         for estado in estados:
                             estados_dict.append(model_to_dict(estado))
 
                         for us in uss:
-                            us_dict.append(model_to_dict(us))
+                            us_dict = model_to_dict(us)
+                            us_dict["desarrollador"] = us.desarrollador.email
+                            uss_dict.append(us_dict)
 
                         tipo_dict = model_to_dict(tipo)
                         tipo_dict["estados"] = estados_dict
-                        tipo_dict["user_stories"] = us_dict
+                        tipo_dict["user_stories"] = uss_dict
 
                         tipos_dict.append(tipo_dict)
-
+                    id_tipo_us = request.GET.get('id_tipo_us', '')
+                    if id_tipo_us != "":
+                        try:
+                            tipo = tipos_de_user_story.get(id=id_tipo_us)
+                            tipo_mostrado_en_pantalla = tipo.nombre
+                        except ObjectDoesNotExist:
+                            messages.error(request, "No existe el tipo de usuario con esas caracteristicas")
+                            return redirect("detalle_proyecto", id_proyecto)
+                    else:
+                        id_tipo_us = tipos_dict[0]["id"]
+                        tipo_mostrado_en_pantalla = tipos_dict[0]["nombre"]
                     context = {
-                        "tipos_dict": tipos_dict
+                        "tipos_dict": tipos_dict,
+                        "id_proyecto": id_proyecto,
+                        "id_tipo_us":  id_tipo_us,
+                        "tipo_mostrado_en_pantalla": tipo_mostrado_en_pantalla
                     }
                     return render(request, 'kanban/tablero.html', context)
             elif not tiene_permisos:

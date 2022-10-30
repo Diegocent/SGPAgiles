@@ -1,11 +1,7 @@
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Tablero Kanban</title>
+
+{% block head %}
     <link rel="stylesheet" href="{% static "dist/jkanban.min.css" %}" />
     <script src="{% static "dist/jkanban.min.js" %}"></script>
     <link
@@ -53,106 +49,122 @@
             font-size: 16px;
         }
     </style>
-</head>
+{% endblock %}
+
 <body>
+{% block content %}
+    {{ tipos_dict|json_script:"tipos_dict" }}
 
-{{ tipos_dict|json_script:"tipos_dict" }}
-<div id="myKanban"></div>
-<button id="addDefault">Add "Default" board</button>
-<br />
-<button id="addToDo">Add element in "To Do" Board</button>
-<br />
-<button id="addToDoAtPosition">Add element in "To Do" Board at position 2</button>
-<br />
-<button id="removeBoard">Remove "Done" Board</button>
-<br />
-<button id="removeElement">Remove "My Task Test"</button>
+    <div class="filtros" style="padding: 15px">Filtrar por:
+        {% for tipo in tipos_dict %}
+            <a href="{% url "kanban" id_proyecto=id_proyecto %}?id_tipo_us={{ tipo.id }}">{{ tipo.nombre }}</a>
+        {% endfor %}
+    </div>
 
+    <div class="titulo-tipo-us" style="padding-left: 15px">Tipo de US: {{ tipo_mostrado_en_pantalla }}</div>
 
-<script>
-
-    const tipos_dict = JSON.parse(document.getElementById('tipos_dict').textContent)
-
-    console.log(tipos_dict)
-    var KanbanTest = new jKanban({
-        element: "#myKanban",
-        gutter: "10px",
-        widthBoard: "450px",
-        itemHandleOptions:{
-            enabled: true,
-        },
-        click: function(el) {
-            console.log("Ver User Story");
-        },
-        boards: obtener_estados_kanban(tipos_dict)
-        /*   boards: [
-               {
-                   id: "_todo",
-                   title: "To Do (Can drop item only in working)",
-                   class: "info,good",
-                   dragTo: ["_working"],
-                   item: getItems(us_dict)
-               },
-               {
-                   id: "_working",
-                   title: "Working (Try drag me too)",
-                   class: "warning",
-                   item: getItems(us_dict)
-               },
-               {
-                   id: "_done",
-                   title: "Done (Can drop item only in working)",
-                   class: "success",
-                   dragTo: ["_working"],
-                   item: getItems(us_dict)
-               }
-           ]*/
-    });
+    <div id="myKanban"></div>
 
 
+    <script>
 
-    function obtener_estados_kanban(tipos_dict){
-        tipo = tipos_dict[1]
-        boards = []
-        estados = tipo.estados
+        const tipos_dict = JSON.parse(document.getElementById('tipos_dict').textContent)
+        id_tipo_us = 2
+        console.log(tipos_dict)
+        var KanbanTest = new jKanban({
+            element: "#myKanban",
+            gutter: "10px",
+            widthBoard: "300px",
+            itemHandleOptions:{
+                enabled: true,
+            },
+            click: function(el) {
+                id_us = el.getAttribute("data-eid")
+                url = `/proyecto/{{ id_proyecto }}/backlog/US/${id_us}`
 
-        for (estado in estados){
-            board = {}
-            board.id = `_${estados[estado].id}`
-            board.title = estados[estado].nombre
-            board.item = getItems(tipo.user_stories, estados[estado].id)
-            boards.push(board)
-        }
+                window.location.href=url
+            },
+            boards: obtener_estados_kanban(tipos_dict),
+            dragBoards: false,
+            /*   boards: [
+                   {
+                       id: "_todo",
+                       title: "To Do (Can drop item only in working)",
+                       class: "info,good",
+                       dragTo: ["_working"],
+                       item: getItems(us_dict)
+                   },
+                   {
+                       id: "_working",
+                       title: "Working (Try drag me too)",
+                       class: "warning",
+                       item: getItems(us_dict)
+                   },
+                   {
+                       id: "_done",
+                       title: "Done (Can drop item only in working)",
+                       class: "success",
+                       dragTo: ["_working"],
+                       item: getItems(us_dict)
+                   }
+               ]*/
+        });
 
-        return boards
-    }
 
-    /*
-    * {
-                id: "_todo",
-                title: "To Do (Can drop item only in working)",
-                class: "info,good",
-                dragTo: ["_working"],
-                item: getItems(us_dict)
-            },*/
 
-    function getItems(us_dict, status){
-        items = []
-        console.log("estado")
-        console.log(status)
-        for (us in us_dict){
-            console.log(us_dict[us].estado)
+        function obtener_estados_kanban(tipos_dict){
+            console.log(id_tipo_us)
+            tipo = tipos_dict.filter((x)=> x.id === {{ id_tipo_us }})[0]
 
-            if(us_dict[us].estado === status){
-                item = {}
-                item.id = us_dict[us].id
-                item.title = us_dict[us].nombre
-                items.push(item)
+            boards = []
+            estados = tipo.estados
+
+            for (estado in estados){
+                board = {}
+                board.id = `_${estados[estado].id}`
+                board.title = estados[estado].nombre
+                board.item = getItems(tipo.user_stories, estados[estado].id)
+                boards.push(board)
             }
-        }
-        return items
-    }
 
-</script>
+            return boards
+        }
+
+        /*
+        * {
+                    id: "_todo",
+                    title: "To Do (Can drop item only in working)",
+                    class: "info,good",
+                    dragTo: ["_working"],
+                    item: getItems(us_dict)
+                },*/
+
+        function getItems(us_dict, status){
+            items = []
+            console.log("estado")
+            console.log(status)
+            for (us in us_dict){
+                console.log(us_dict[us].estado)
+
+                if(us_dict[us].estado === status){
+                    item = {}
+                    item.id = us_dict[us].id
+                    item.title = html_del_user_story(us_dict[us])
+                    item.username = us_dict[us].desarrollador
+
+                    items.push(item)
+                }
+            }
+            return items
+        }
+
+        function html_del_user_story(us_item){
+            return `<div>${us_item.nombre}</div><br><div>Dev: ${us_item.desarrollador}</div>`
+        }
+
+
+    </script>
+
+{% endblock %}
 </body>
 </html>
