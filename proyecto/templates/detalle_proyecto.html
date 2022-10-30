@@ -1,109 +1,93 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
+
     <style>
-    div{
-        color: white;
-        text-align: center;
-    }
-    h1{
-        text-align: left;
-        font-size: 25px;
-    }
-   .sidebar {
-  height: 100%;
-  width: 300px;
-  position: fixed;
-  z-index: 1;
-  top: 56px;
-  left: 0;
-  background-color: whitesmoke;
-  overflow-x: hidden;
-  padding-top: 100px;
-}
 
-/* Style sidebar links */
-.sidebar a {
-  padding: 6px 8px 6px 16px;
-  text-decoration: none;
-  font-size: 20px;
-  color: black;
-  display: block;
-}
+        h1{
+            text-align: left;
+            font-size: 25px;
+        }
+        .sidebar {
+            height: 100%;
+            width: 300px;
+            position: fixed;
+            z-index: 1;
+            top: 56px;
+            left: 0;
+            background-color: whitesmoke;
+            overflow-x: hidden;
+            padding-top: 100px;
+        }
 
-/* Style links on mouse-over */
-.sidebar a:hover {
-  color: black;
-}
+        /* Style sidebar links */
+        .sidebar a {
+            padding: 6px 8px 6px 16px;
+            text-decoration: none;
+            font-size: 20px;
+            color: black;
+            display: block;
+        }
 
-/* Style the main content */
-.main {
-  margin-left: 160px; /* Same as the width of the sidenav */
-  padding: 0px 10px;
-}
+        /* Style links on mouse-over */
+        .sidebar a:hover {
+            color: black;
+        }
+
+        /* Style the main content */
+        .main {
+            margin-left: 160px; /* Same as the width of the sidenav */
+            padding: 0px 10px;
+        }
+
+        body {
+            font-family: "Lato";
+            margin: 0;
+            padding: 0;
+        }
+
+        #myKanban {
+            overflow-x: auto;
+            padding: 20px 0;
+            color: black;
+        }
+
+
     </style>
     <div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<br>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <br>
 
 
 
 
-    {% if sprint %}
-        <div class="row">
-            <div class="col-xl-6 col-md-6">
-            <span class="float-right">
-            <table class="table table-dark">
-                {% for s in sprint %}
+        {% if sprint is not None %}
+            <div style="padding-left: 300px">{% include "kanban/tablero.html" %}</div>
+        {% else %}
+            {% if proyecto.estado == "EN_PROCESO" %}
 
-
-  <thead>
-    <tr>
-      <th scope="col">Sprint ID: {{s.numero}}</th>
-      <th scope="col">Para Detalles:<a href="{% url 'ver_sprint' id_proyecto=proyecto.id id_sprint=s.id %}">Click Aqui.</a>
-</th>
-    </tr>
-  </thead>
-
-                 {% endfor %}
-            </table>
-            </span>
-            </div>
-
-
-        <div class="col-xl-6 col-md-6 float-right">
-            <div class="card text-white bg-warning mb-3" style="max-width: 18rem;">
-            <div class="card-header">Sprint Creado.</div>
-            <div class="card-body">
-                <h5 class="card-title">Podras crea mas Sprints cunado finalice el actual!</h5>
-                 <p class="card-text"></p>
-            </div>
-            </div>
-        </div>
-        </div>
-    {% else %}
-        {% if proyecto.estado == "EN_PROCESO" %}
-
-            <div class="col-xl-5 col-md-5 float-right">
-        <table class="table table-dark">
-  <thead>
-    <tr>
-      <th scope="col">Nombre del Proyecto</th>
-      <th scope="col">{{proyecto.nombre}}</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Fecha inicio:</td>
-      <td>{{ proyecto.fecha_inicio }}</td>
-    </tr>
-    <tr>
-        <td>Fecha fin estimada:</td>
-      <td>{{ proyecto.fecha_fin_estimada }}</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-            <div class="col-xl-6 col-md-6 float-right">
+                <div class="col-xl-5 col-md-5 float-right">
+                    <table class="table table-dark">
+                        <thead>
+                        <tr>
+                            <th scope="col">Nombre del Proyecto</th>
+                            <th scope="col">{{proyecto.nombre}}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>Fecha inicio:</td>
+                            <td>{{ proyecto.fecha_inicio }}</td>
+                        </tr>
+                        <tr>
+                            <td>Fecha fin estimada:</td>
+                            <td>{{ proyecto.fecha_fin_estimada }}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-xl-6 col-md-6 float-right">
             <span class="float-right">
             <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
   <div class="card-header">Enhorabuena!</div>
@@ -112,35 +96,35 @@
     <p class="card-text">Crealo ahora.</p>
   </div>
            </span>
-            <span class="float-right"><a href="{% url 'crear_sprint' id_proyecto=proyecto.id %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Crear Sprint</a></span>
-            </div>
-        {% endif  %}
+                    <span class="float-right"><a href="{% url 'crear_sprint' id_proyecto=proyecto.id %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Crear Sprint</a></span>
+                </div>
+            {% endif  %}
 
-    {% endif %}
+        {% endif %}
 
 
-    <div class="sidebar">
+        <div class="sidebar">
 
-        <a href="{% url "ver_roles" id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Roles de Proyecto</button></a>
-        <a href="{% url 'ver_product_backlog' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Product Backlog</button></a>
-<br>
-{% if proyecto.estado == "NO_INICIADO" %}
+            <a href="{% url "ver_roles" id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Roles de Proyecto</button></a>
+            <a href="{% url 'ver_product_backlog' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Product Backlog</button></a>
+            <br>
+            {% if proyecto.estado == "NO_INICIADO" %}
 
-    {% if not equipo %}
-        <a href="{% url 'crear_equipo' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Crear Equipo</button></a>
-    {% else %}
+                {% if not equipo %}
+                    <a href="{% url 'crear_equipo' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Crear Equipo</button></a>
+                {% else %}
 
-        <p style="color: black; font-size: 20px">Equipo: {{ equipo.nombre }}</p>
-        <a href="{% url 'ver_equipo' id_proyecto=proyecto.id  id_equipo=equipo.id %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Miembros</button></a>
+                    <p style="color: black; font-size: 20px">Equipo: {{ equipo.nombre }}</p>
+                    <a href="{% url 'ver_equipo' id_proyecto=proyecto.id  id_equipo=equipo.id %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black font">Miembros</button></a>
 
-    {% endif %}
-    <br>
-{% else %}
-    <p style="color: black; font-size: 20px" >Equipo: <a href="{% url 'ver_equipo' id_proyecto=proyecto.id id_equipo=equipo.id %}">{{ equipo.nombre }}</a></p>
-{% endif %}
-<p style="color: black; font-size: 20px" ><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SPRINTS</a></p>
-{% if proyecto.estado == "NO_INICIADO" and equipo %}
-    <a href="{% url 'iniciar_proyecto' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Iniciar proyecto</button></a>
-{% endif %}
-    </div></div>
+                {% endif %}
+                <br>
+            {% else %}
+                <p style="color: black; font-size: 20px" >Equipo: <a href="{% url 'ver_equipo' id_proyecto=proyecto.id id_equipo=equipo.id %}">{{ equipo.nombre }}</a></p>
+            {% endif %}
+            <p style="color: black; font-size: 20px" ><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SPRINTS</a></p>
+            {% if proyecto.estado == "NO_INICIADO" and equipo %}
+                <a href="{% url 'iniciar_proyecto' id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Iniciar proyecto</button></a>
+            {% endif %}
+        </div></div>
 {% endblock %}

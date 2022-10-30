@@ -1,7 +1,7 @@
 {% load static %}
 
+{% block content %}
 
-{% block head %}
     <link rel="stylesheet" href="{% static "dist/jkanban.min.css" %}" />
     <script src="{% static "dist/jkanban.min.js" %}"></script>
     <link
@@ -10,16 +10,7 @@
     />
 
     <style>
-        body {
-            font-family: "Lato";
-            margin: 0;
-            padding: 0;
-        }
 
-        #myKanban {
-            overflow-x: auto;
-            padding: 20px 0;
-        }
 
         .success {
             background: #00b961;
@@ -48,16 +39,14 @@
             display: inline-block;
             font-size: 16px;
         }
-    </style>
-{% endblock %}
 
-<body>
-{% block content %}
+    </style>
+
     {{ tipos_dict|json_script:"tipos_dict" }}
 
     <div class="filtros" style="padding: 15px">Filtrar por:
         {% for tipo in tipos_dict %}
-            <a href="{% url "kanban" id_proyecto=id_proyecto %}?id_tipo_us={{ tipo.id }}">{{ tipo.nombre }}</a>
+            <a href="{% url "detalle_proyecto" id_proyecto=id_proyecto %}?id_tipo_us={{ tipo.id }}">{{ tipo.nombre }}</a>
         {% endfor %}
     </div>
 
@@ -77,6 +66,38 @@
             widthBoard: "300px",
             itemHandleOptions:{
                 enabled: true,
+            },
+            dropEl: function (el, target, source, sibling) {
+
+
+                id_estado_done = "_{{ id_estado_done }}"
+                dev = el.getAttribute("data-username")
+                user = "{{ request.user.email }}"
+
+                data_id = target.parentElement.getAttribute("data-id")
+                id_estado_done = "_{{ id_estado_done }}"
+
+
+                esta_aprobado = el.getAttribute("data-aprobado")
+                console.log(el)
+                if (dev === user) {
+                    if (id_estado_done !== data_id) {
+                        console.log("NO ES DONE")
+                        return true
+                    }
+                    else if (esta_aprobado === "true") {
+                        console.log("SI ES DONE y esta aprobado ")
+                        return true
+                    }else {
+                        console.log("ES DONE Y NO esta aprobado ")
+                        alert("El US debe ser aprobado por el Scrum Master para ponerlo en DONE")
+                        return false
+                    }
+                }else
+                    alert("Solo el desarrolador del user story puede moverlo en el kanban")
+                    return false
+
+
             },
             click: function(el) {
                 id_us = el.getAttribute("data-eid")
@@ -151,7 +172,7 @@
                     item.id = us_dict[us].id
                     item.title = html_del_user_story(us_dict[us])
                     item.username = us_dict[us].desarrollador
-
+                    item.aprobado = us_dict[us].aprobado_por_scrum_master
                     items.push(item)
                 }
             }
@@ -166,5 +187,3 @@
     </script>
 
 {% endblock %}
-</body>
-</html>

@@ -184,12 +184,16 @@ class VerProyectoView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                p = Proyecto.objects.get(id=id_proyecto)
+
+                try:
+                    p = Proyecto.objects.get(id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, "No se encontro el proyecto con esas caractetisticas")
+                    return redirect("ver_proyectos")
+
                 tipos = TipoUserStory.objects.all().filter(proyecto=p)
 
-
-                sprint = Sprint.objects.all().filter(proyecto_id=id_proyecto, estado=EstadoProyecto.EN_PROCESO)
-
+                sprint = Sprint.obtener_sprint_en_proceso(id_proyecto=id_proyecto)
 
                 us = UserStory.objects.all().filter(proyecto=p)
                 equipo = p.equipo
@@ -217,12 +221,57 @@ class VerProyectoView(View):
                         return redirect('ver_proyectos')
                     context = {
                         "proyecto": p,
-                        "equipo": equipo,
+                        "sprint": sprint,
                         "tipos": tipos,
                         "todos_con_estados": todos_con_estados,
                         "us": us,
                         "id_proyecto":id_proyecto
                     }
+
+                if sprint is not None:
+
+                    user_stories = sprint.obtener_user_stories_del_sprint()
+                    tipos_de_user_story = p.obtener_tipos_de_user_story_del_proyecto()
+
+                    tipos_dict = []
+
+                    for tipo in tipos_de_user_story:
+                        estados_dict = []
+                        uss_dict = []
+                        estados = EstadoUS.objects.filter(tipoUserStory=tipo)
+                        uss = user_stories.filter(tipo=tipo)
+                        for estado in estados:
+                            estados_dict.append(model_to_dict(estado))
+
+                        for us in uss:
+                            us_dict = model_to_dict(us)
+                            us_dict["desarrollador"] = us.desarrollador.email
+                            uss_dict.append(us_dict)
+
+                        tipo_dict = model_to_dict(tipo)
+                        tipo_dict["estados"] = estados_dict
+                        tipo_dict["user_stories"] = uss_dict
+
+                        tipos_dict.append(tipo_dict)
+                    id_tipo_us = request.GET.get('id_tipo_us', '')
+                    if id_tipo_us != "":
+                        try:
+                            tipo = tipos_de_user_story.get(id=id_tipo_us)
+                            tipo_mostrado_en_pantalla = tipo.nombre
+                        except ObjectDoesNotExist:
+                            messages.error(request, "No existe el tipo de usuario con esas caracteristicas")
+                            return redirect("detalle_proyecto", id_proyecto)
+                    else:
+                        id_tipo_us = tipos_dict[0]["id"]
+                        tipo = tipos_de_user_story.get(id=id_tipo_us)
+                        tipo_mostrado_en_pantalla = tipo.nombre
+
+                    id_estado_done = EstadoUS.objects.get(nombre="DONE", tipoUserStory=tipo).id
+
+                    context["tipos_dict"] = tipos_dict
+                    context["id_tipo_us"] = id_tipo_us
+                    context["tipo_mostrado_en_pantalla"] = tipo_mostrado_en_pantalla
+                    context["id_estado_done"] = id_estado_done
                 return render(request, 'detalle_proyecto.html', context)
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
@@ -1540,10 +1589,6 @@ class TableroKanbanView(View):
                 if sprint is not None:
                     user_stories = sprint.obtener_user_stories_del_sprint()
                     tipos_de_user_story = proyecto.obtener_tipos_de_user_story_del_proyecto()
-
-
-
-
 
                     tipos_dict = []
 
