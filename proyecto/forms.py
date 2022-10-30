@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 
-from .models import Equipo, TipoUserStory, UserStory, Sprint, MiembrosSprint, Proyecto, HistorialUS
+from .models import Equipo, TipoUserStory, UserStory, Sprint, MiembrosSprint, Proyecto, HistorialUS, AprobacionDeUS
 from Usuario.models import Permisos, Usuario, RolProyecto
 from django import forms
 
@@ -119,3 +119,22 @@ class FormAsignarRolAUsuario(forms.Form):
 
     roles = forms.ModelMultipleChoiceField(queryset=RolProyecto.objects.all(),
                                            label="Seleccione los roles para el usuario")
+
+
+class FormSolicitarAprobacion(ModelForm):
+
+    descripcion_del_trabajo = forms.CharField(max_length=1000, label="Describa su trabajo realizado")
+    archivos = forms.FileField(label="Suba los archivos que verifiquen el trabajo realizado", required=True)
+
+    class Meta:
+        model = AprobacionDeUS
+        fields = ["descripcion_del_trabajo", "archivos"]
+
+
+class FormRechazarSolicitud(ModelForm):
+
+    razon_de_rechazo = forms.CharField(max_length=1000, label="Describa la razón para rechazar esta solicitud")
+
+    class Meta:
+        model = AprobacionDeUS
+        fields = ["razon_de_rechazo",]
