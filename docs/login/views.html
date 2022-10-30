@@ -26,7 +26,9 @@ Actualmente contamos con los siguientes views:</p>
     <div class='code'>
       <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponse</span>
 <span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span>
-<span class="kn">from</span> <span class="nn">Usuario.models</span> <span class="kn">import</span> <span class="n">Usuario</span></pre></div>
+<span class="kn">from</span> <span class="nn">django.views</span> <span class="kn">import</span> <span class="n">View</span>
+
+<span class="kn">from</span> <span class="nn">Usuario.models</span> <span class="kn">import</span> <span class="n">Usuario</span><span class="p">,</span> <span class="n">RolSistema</span><span class="p">,</span> <span class="n">Permisos</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -38,11 +40,158 @@ Actualmente contamos con los siguientes views:</p>
       <h3><span id="login" href="login"> login </span></h3>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="s1">&#39;account/login.html&#39;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span><span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+      <div class="highlight"><pre></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-2'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-2'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">def</span> <span class="nf">login</span><span class="p">(</span><span class="n">request</span><span class="p">):</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-3'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-3'>#</a>
+      </div>
+      <p>Se verifica si el usuario esta autenticado</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>        <span class="k">if</span> <span class="ow">not</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+                <span class="n">user</span><span class="p">:</span><span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+                <span class="n">cantidad_de_usuarios</span> <span class="o">=</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+                <span class="n">unico_usuario_es_admin</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">es_admin</span><span class="p">()</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-4'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-4'>#</a>
+      </div>
+      <p>si hay un solo usuario y el current usuario no es admin, se le asigna como admin</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                <span class="k">if</span><span class="p">(</span><span class="n">cantidad_de_usuarios</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">unico_usuario_es_admin</span><span class="p">):</span>
+                        <span class="n">array_de_roles</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;admin&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-5'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-5'>#</a>
+      </div>
+      <p>Lista de permisos segun requerimientos</p>
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>                        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_de_roles</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1">#si no existe el rol de admin, se crea</span>
+                                <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver Permiso&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Permisos&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear Permiso&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Permisos&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar Permiso&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Permisos&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar Permiso&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar Permisos&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver RolSistema&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Roles de Sistema&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Asignar RolSistema&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Asignar Roles de Sistema&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear RolSistema&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Roles de Sistema&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar RolSistema&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Roles de Sistema&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar RolSistema&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar Roles de Sistema&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Asignar RolProyecto&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Asignar Roles de Proyecto&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver RolProyecto&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Roles de Proyecto&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear RolProyecto&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Roles de Proyecto&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Roles de Proyecto&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar RolProyecto&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar Roles de Proyecto&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver Usuario&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Usuarios&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear Usuario&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Usuarios&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar Usuario&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Usuarios&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar Usuario&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar Usuarios&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver Equipo&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Equipo&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear Equipo&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Equipo&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar Equipo&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Equipo&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar Equipo&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar Equipo&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver Proyecto&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Proyecto&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear Proyecto&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Proyecto&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar Proyecto&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Proyecto&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar Proyecto&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar Proyecto&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Iniciar Proyecto&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Iniciar Proyecto&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Cancelar Proyecto&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Cancelar Proyecto&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver Sprint&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Sprint&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear Sprint&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Sprint&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar Sprint&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Sprint&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar Sprint&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar Sprint&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Iniciar Sprint&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Iniciar Sprint&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Cancelar Sprint&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Cancelar Sprint&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver TipoUserStory&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Tipos de User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear TipoUserStory&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Tipos de User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar TipoUserStory&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Tipos de User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar TipoUserStory&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar Tipos de User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver EstadoUS&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Estados de User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear EstadoUS&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Estados de User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar EstadoUS&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Estados de User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar EstadoUS&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar Estados de User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Cambiar EstadoUS&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Cambiar Estados de User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver UserStory&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear UserStory&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar UserStory&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar UserStory&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar User Story&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver ProductBacklog&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Product Backlog&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear ProductBacklog&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Product Backlog&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar ProductBacklog&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Product Backlog&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar ProductBacklog&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar Product Backlog&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Ver Kanban&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Ver Kanban&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Crear Kanban&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Crear Kanban&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Editar Kanban&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Editar Kanban&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Borrar Kanban&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Borrar Kanban&quot;</span><span class="p">),</span>
+                                    <span class="n">Permisos</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Cargar trabajo UserStory&quot;</span><span class="p">,</span>
+                                             <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para Cargar trabajo en el User Story&quot;</span><span class="p">),</span>
+                                <span class="p">]</span>
+                                <span class="n">Permisos</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">bulk_create</span><span class="p">(</span><span class="n">permisos</span><span class="p">)</span>
+                                <span class="n">permiso_de_admin</span> <span class="o">=</span> <span class="n">Permisos</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Permiso de administrador&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Permiso para administrador de sistema.&quot;</span><span class="p">)</span>
+                                <span class="n">admin</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;admin&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Administrador del sistema.&quot;</span><span class="p">)</span>
+                                <span class="n">admin</span><span class="o">.</span><span class="n">permisos</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">permiso_de_admin</span><span class="p">)</span>
+                                <span class="n">admin</span><span class="o">.</span><span class="n">permisos</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">*</span><span class="n">permisos</span><span class="p">)</span>
+
+                                <span class="n">user</span><span class="o">.</span><span class="n">rolSistema</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">admin</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span> <span class="c1">#si existe el rol de admin, se le asigna directamente al usuario</span>
+                                <span class="n">admin</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;admin&quot;</span><span class="p">)</span>
+                                <span class="n">user</span><span class="o">.</span><span class="n">rolSistema</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">admin</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">rolSistema</span><span class="o">.</span><span class="n">all</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;hola&quot;</span><span class="p">)</span>
+                    <span class="n">usuario_simple</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Usuario simple&quot;</span><span class="p">,</span> <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Rol para usuarios simples&quot;</span><span class="p">)</span>
+                    <span class="n">user</span><span class="o">.</span><span class="n">rolSistema</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">usuario_simple</span><span class="p">)</span>
+                    <span class="n">user</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;index.html&#39;</span><span class="p">)</span>
 
 </pre></div>
     </div>

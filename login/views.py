@@ -14,6 +14,7 @@ Actualmente contamos con los siguientes views:
 # === login ===
 
 def login(request):
+    #Se verifica si el usuario esta autenticado
         if not request.user.is_authenticated:
                 return render(request, 'index.html')
         else:
@@ -23,6 +24,7 @@ def login(request):
                 #si hay un solo usuario y el current usuario no es admin, se le asigna como admin
                 if(cantidad_de_usuarios == 1 and not unico_usuario_es_admin):
                         array_de_roles = RolSistema.objects.all().filter(nombre="admin")
+                        #Lista de permisos segun requerimientos
                         if len(array_de_roles) == 0: #si no existe el rol de admin, se crea
                                 permisos = [
                                     Permisos(nombre="Ver Permiso", descripcion="Permiso para Ver Permisos"),
