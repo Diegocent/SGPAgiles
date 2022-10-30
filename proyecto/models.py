@@ -1,3 +1,4 @@
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from Usuario.models import Usuario
 # Create your models here.
@@ -30,6 +31,9 @@ class Proyecto(models.Model):
 
     def __str__(self):
         return '{}'.format(self.nombre)
+
+    def obtener_tipos_de_user_story_del_proyecto(self):
+        return TipoUserStory.objects.filter(proyecto=self)
 
 
 class EstadoSprint(models.TextChoices):
@@ -97,6 +101,17 @@ class Sprint(models.Model):
         return True
 
     @staticmethod
+    def obtener_sprint_en_proceso(id_proyecto):
+        try:
+            sprint_en_proceso = Sprint.objects.get(estado=EstadoSprint.EN_PROCESO, proyecto_id=id_proyecto)
+            return sprint_en_proceso
+        except ObjectDoesNotExist:
+            return None
+
+    def obtener_user_stories_del_sprint(self):
+        return UserStory.objects.filter(sprint=self)
+
+    @staticmethod
     def hay_otros_sprints_en_planificacion(id_proyecto):
         sprints_en_planificacion = Sprint.objects.filter(estado=EstadoSprint.NO_INICIADO, proyecto_id=id_proyecto)
         if len(sprints_en_planificacion) == 0:
@@ -142,6 +157,9 @@ class EstadoUS(models.Model):
 
     def __str__(self):
         return '{}'.format(self.nombre)
+
+    class Meta:
+        ordering = ["-orden"]
 
 
 class Prioridad(models.TextChoices):

@@ -1,5 +1,6 @@
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.forms import model_to_dict
 from django.shortcuts import render, redirect, get_object_or_404
 from django import forms
 from django.views import View
@@ -1515,3 +1516,59 @@ class AsignarRolProyectoAUsuario(View):
 
             return redirect('ver_equipo', id_proyecto, id_equipo)
         return render(request, 'roles/asignar_rol_proyecto.html', {'form': form})
+
+
+class TableroKanbanView(View):
+
+    permisos = ["Ver Proyecto"]
+
+    def get(self, request, id_proyecto):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+
+                try:
+                    proyecto = Proyecto.objects.get(id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, "No se encontro el proyecto con esas caractetisticas")
+                    return redirect("ver_proyectos")
+
+
+                sprint = Sprint.obtener_sprint_en_proceso(id_proyecto=id_proyecto)
+
+                if sprint is not None:
+                    user_stories = sprint.obtener_user_stories_del_sprint()
+                    tipos_de_user_story = proyecto.obtener_tipos_de_user_story_del_proyecto()
+
+
+
+
+
+                    tipos_dict = []
+
+                    for tipo in tipos_de_user_story:
+                        estados_dict = []
+                        us_dict = []
+                        estados = EstadoUS.objects.filter(tipoUserStory=tipo)
+                        uss = user_stories.filter(tipo=tipo)
+                        for estado in estados:
+                            estados_dict.append(model_to_dict(estado))
+
+                        for us in uss:
+                            us_dict.append(model_to_dict(us))
+
+                        tipo_dict = model_to_dict(tipo)
+                        tipo_dict["estados"] = estados_dict
+                        tipo_dict["user_stories"] = us_dict
+
+                        tipos_dict.append(tipo_dict)
+
+                    context = {
+                        "tipos_dict": tipos_dict
+                    }
+                    return render(request, 'kanban/tablero.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
