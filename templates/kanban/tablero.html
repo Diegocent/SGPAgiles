@@ -56,6 +56,66 @@
 
 
     <script>
+        function actualizar_estado_actual(id, id_estado_nuevo){
+
+            url = `/proyecto/{{ id_proyecto }}/backlog/US/${id}/cambiar_estado/`
+            token = document.cookie.split(";").find((row)=> row.trim().startsWith("csrftoken=")).split("=")[1].trim()
+            console.log(token)
+            data = {
+                    "estado": id_estado_nuevo
+                }
+            fetch(url, {
+                credentials: 'include',
+                method: "POST",
+                headers: {
+                    "Content-Type" : "application/json",
+                    "X-CSRFToken": token
+                },
+                body: JSON.stringify(data)
+            })
+        }
+
+        verificar_dropEl = function (el, target, source, sibling) {
+
+
+                id_estado_done = "_{{ id_estado_done }}"
+                dev = el.getAttribute("data-username")
+                user = "{{ request.user.email }}"
+
+                us_data_id = el.getAttribute("data-eid")
+                estado_data_id = target.parentElement.getAttribute("data-id")
+                id_estado_done = "_{{ id_estado_done }}"
+
+
+                esta_aprobado = el.getAttribute("data-aprobado")
+
+                if (dev === user) {
+
+
+
+                    /*    alert("El estado del US no coinicide con el de la base de datos. Favor reinicie la pagina")
+                        return false*/
+
+                    if (id_estado_done !== estado_data_id) {
+                        actualizar_estado_actual(us_data_id, estado_data_id)
+                        console.log("NO ES DONE")
+                        return true
+                    }
+                    else if (esta_aprobado === "true") {
+                        actualizar_estado_actual(us_data_id, estado_data_id)
+                        console.log("SI ES DONE y esta aprobado ")
+                        return true
+                    }else {
+                        console.log("ES DONE Y NO esta aprobado ")
+                        alert("El US debe ser aprobado por el Scrum Master para ponerlo en DONE")
+                        return false
+                    }
+                }else
+                    alert("Solo el desarrolador del user story puede moverlo en el kanban")
+                return false
+
+
+            }
 
         const tipos_dict = JSON.parse(document.getElementById('tipos_dict').textContent)
         id_tipo_us = 2
@@ -67,38 +127,7 @@
             itemHandleOptions:{
                 enabled: true,
             },
-            dropEl: function (el, target, source, sibling) {
-
-
-                id_estado_done = "_{{ id_estado_done }}"
-                dev = el.getAttribute("data-username")
-                user = "{{ request.user.email }}"
-
-                data_id = target.parentElement.getAttribute("data-id")
-                id_estado_done = "_{{ id_estado_done }}"
-
-
-                esta_aprobado = el.getAttribute("data-aprobado")
-                console.log(el)
-                if (dev === user) {
-                    if (id_estado_done !== data_id) {
-                        console.log("NO ES DONE")
-                        return true
-                    }
-                    else if (esta_aprobado === "true") {
-                        console.log("SI ES DONE y esta aprobado ")
-                        return true
-                    }else {
-                        console.log("ES DONE Y NO esta aprobado ")
-                        alert("El US debe ser aprobado por el Scrum Master para ponerlo en DONE")
-                        return false
-                    }
-                }else
-                    alert("Solo el desarrolador del user story puede moverlo en el kanban")
-                    return false
-
-
-            },
+            dropEl: verificar_dropEl,
             click: function(el) {
                 id_us = el.getAttribute("data-eid")
                 url = `/proyecto/{{ id_proyecto }}/backlog/US/${id_us}`
@@ -134,7 +163,7 @@
 
 
         function obtener_estados_kanban(tipos_dict){
-            console.log(id_tipo_us)
+
             tipo = tipos_dict.filter((x)=> x.id === {{ id_tipo_us }})[0]
 
             boards = []
@@ -162,10 +191,9 @@
 
         function getItems(us_dict, status){
             items = []
-            console.log("estado")
-            console.log(status)
+
             for (us in us_dict){
-                console.log(us_dict[us].estado)
+
 
                 if(us_dict[us].estado === status){
                     item = {}

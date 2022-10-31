@@ -26,6 +26,7 @@ urlpatterns = [
     path('<int:id_proyecto>/backlog/US/<int:id_us>/cargar_trabajo/', views.AgregarTrabajoAUserStory.as_view(),
          name='cargar_trabajo_US'),
     path('<int:id_proyecto>/backlog/US/<int:id_us>/asignar_dev/', views.AsignarDevAUserStory.as_view(), name='asignar_dev_US'),
+    path('<int:id_proyecto>/backlog/US/<int:id_us>/cambiar_estado/', views.CambiarEstadoUSView.as_view(), name='cambiar_estado_us'),
     path('<int:id_proyecto>/equipo/<int:id_equipo>/', views.DetalleEquipoView.as_view(), name='ver_equipo'),
     path('<int:id_proyecto>/equipo/<int:id_equipo>/editar/', views.ActualizarEquipoView.as_view(), name='editar_equipo'),
     path('<int:id_proyecto>/equipo/<int:id_equipo>/asignar_roles/<int:id_usuario>', views.AsignarRolProyectoAUsuario.as_view(), name='asignar_rol_proyecto'),

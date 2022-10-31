@@ -1,6 +1,8 @@
+import json
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import model_to_dict
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django import forms
 from django.views import View
@@ -1628,6 +1630,39 @@ class TableroKanbanView(View):
                         "tipo_mostrado_en_pantalla": tipo_mostrado_en_pantalla
                     }
                     return render(request, 'kanban/tablero.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+
+class CambiarEstadoUSView(View):
+
+    permisos = ["Ver UserStory"]
+
+    def post(self, request, id_proyecto, id_us):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+
+            if tiene_permisos:
+                try:
+                    proyecto = Proyecto.objects.get(id=id_proyecto)
+                    us = UserStory.objects.get(id=id_us, proyecto=proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, "No se encontro el proyecto con esas caractetisticas")
+                    return redirect("ver_proyectos")
+
+                body = json.loads(request.body)
+
+                id_estado = body["estado"][1:]
+
+                nuevo_estado = EstadoUS.objects.get(id=id_estado)
+
+                us.estado = nuevo_estado
+                us.save()
+                return HttpResponse(status=200)
+
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
