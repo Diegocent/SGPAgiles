@@ -28,6 +28,7 @@ class Proyecto(models.Model):
     fecha_fin_estimada = models.DateField(null=True)
     fecha_fin_real = models.DateField(null=True)
     estado = models.CharField(choices=EstadoProyecto.choices, max_length=100)
+    scrum_master = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="scrum_master")
 
     def __str__(self):
         return '{}'.format(self.nombre)
@@ -222,3 +223,32 @@ class HistorialUS(models.Model):
     fecha = models.DateField()
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     archivos = models.FileField(null=True, upload_to="historial", default="0")
+
+    class Meta:
+        ordering = ["fecha", "id"]
+
+
+class EstadoAprobacion(models.TextChoices):
+    EN_ESPERA = 'EN_ESPERA', 'En espera de aprobacion'
+    RECHAZADO = 'RECHAZADO', 'Rechazado'
+    ACEPTADO = 'ACEPTADO', 'Aceptado'
+
+
+class AprobacionDeUS(models.Model):
+    numero = models.PositiveIntegerField(default=0)
+    user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
+    descripcion_del_trabajo = models.CharField(max_length=1000)
+    fecha = models.DateField()
+    solicitado_por = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="desarrollador")
+    archivos = models.FileField(null=True, upload_to="historial", default="0")
+    aprobado_por = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="aprobado_por", null=True)
+    estado = models.CharField(choices=EstadoAprobacion.choices, max_length=100, default=EstadoAprobacion.EN_ESPERA)
+    razon_de_rechazo = models.CharField(max_length=1000, null=True)
+
+    @staticmethod
+    def obtener_ultimo_valor_de_solicitud(id_us):
+        ultimo_valor = AprobacionDeUS.objects.all().filter(user_story_id=id_us).last()
+        if ultimo_valor is not None:
+            return ultimo_valor.numero + 1
+        else:
+            return 1

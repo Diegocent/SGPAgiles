@@ -37,6 +37,14 @@
     {% if us.sprint is not None and puede_asignar_dev %}
         <a href="{% url "asignar_dev_US" id_proyecto=id_proyecto id_us=us.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Asignar Dev</button></a>
     {% endif %}
+    {% if horas_trabajadas != 0 %}
+        <a href="{% url "solicitar_aprobacion" id_proyecto=id_proyecto id_us=us.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Solicitar Aprobacion</button></a>
+    {% else %}
+        <a href="{% url "solicitar_aprobacion" id_proyecto=id_proyecto id_us=us.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black" disabled>Solicitar Aprobacion</button></a>
+    {% endif %}
+
+    <a href="{% url "solicitudes" id_proyecto=id_proyecto id_us=us.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Solicitudes</button></a>
+
 
     {% if us.desarrollador is not None %}
         <h3>Desarrollador: {{ us.desarrollador.email }}</h3>

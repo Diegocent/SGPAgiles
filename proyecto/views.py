@@ -8,9 +8,10 @@ from django import forms
 from django.views import View
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
     FormUS, FormSprint, FormMiembroSprint, FormUSSprint, FormImportarMainPage, FormImportarRolesProyecto, \
-    FormImportarTiposDeUS, FormAsignarDevAUserStory, FormAgregarTrabajoUS, FormAsignarRolAUsuario
+    FormImportarTiposDeUS, FormAsignarDevAUserStory, FormAgregarTrabajoUS, FormAsignarRolAUsuario, \
+    FormSolicitarAprobacion, FormRechazarSolicitud
 from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado, \
-    EstadoSprint, MiembrosSprint, HistorialUS
+    EstadoSprint, MiembrosSprint, HistorialUS, AprobacionDeUS, EstadoAprobacion
 from Usuario.models import Usuario, RolProyecto
 from django.contrib import messages
 from datetime import date
@@ -114,6 +115,9 @@ class CrearProyectoView(View):
                                            descripcion="Scrum Master del Proyecto.",
                                            proyecto=proyecto)
         scrum.agregar_permisos([
+            "Ver Solicitud",
+            "Aceptar Solicitud",
+            "Rechazar Solicitud",
             "Ver RolProyecto",
             "Crear RolProyecto",
             "Editar RolProyecto",
@@ -152,6 +156,8 @@ class CrearProyectoView(View):
                                          descripcion="Developer del Proyecto.",
                                          proyecto=proyecto)
         dev.agregar_permisos([
+            "Solicitar Aprobacion",
+            "Ver Solicitud",
             "Ver RolProyecto",
             "Ver Permiso",
             "Ver Usuario",
@@ -1392,11 +1398,13 @@ class AgregarTrabajoAUserStory(View):
                     if us.desarrollador == user:
                         usuario_es_su_desarrollador = True
 
-                    if usuario_es_su_desarrollador or user.es_admin():
+                    if usuario_es_su_desarrollador and us.estado.nombre != "DONE":
                         form = self.form_class()
                         return render(request, 'HUS/cargartrabajo.html', {"form": form})
                     elif not usuario_es_su_desarrollador:
                         messages.error(request, message="No podes cargarle trabajo a un US sin ser su desarrolador!")
+                    elif us.estado.nombre == "DONE":
+                        messages.error(request, message="No podes cargarle trabajo a un US ya terminado!")
                     return redirect("detalle_proyecto", id_proyecto)
                 else:
                     messages.error(request, message="No podes cargarle trabajo a un US sin que el sprint este en proceso!")
@@ -1568,6 +1576,194 @@ class AsignarRolProyectoAUsuario(View):
             return redirect('ver_equipo', id_proyecto, id_equipo)
         return render(request, 'roles/asignar_rol_proyecto.html', {'form': form})
 
+
+class SolicitarAprobacionDeUS(View):
+    form_class = FormSolicitarAprobacion
+    permisos = ["Solicitar Aprobacion"]
+
+    def get(self, request, id_proyecto, id_us):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    us = UserStory.objects.get(id=id_us, proyecto_id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, "No se encuentra el US con esas caracteristicas")
+                    return redirect("detalle_proyecto", id_proyecto)
+                if us.total_horas_trabajadas != 0 and us.desarrollador == request.user:
+                    form = self.form_class()
+                    return render(request, 'US/solicitar_aprobacion.html', {'form': form})
+                elif us.total_horas_trabajadas == 0:
+                    messages.error(request,
+                                   "No se puede solicitar una aprobacion para un US que no tiene horas trabajadas!")
+                    return redirect("detalle_US", id_proyecto, id_us)
+                elif not us.desarrollador == request.user:
+                    messages.error(request,
+                                   "No se puede solicitar la aprobacion de un US si no sos su desarrollador!")
+                    return redirect("detalle_US", id_proyecto, id_us)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_us):
+        form = self.form_class(request.POST, request.FILES)
+
+        if form.is_valid():
+            form = form.cleaned_data
+
+            AprobacionDeUS.objects.create(solicitado_por=request.user,
+                                          descripcion_del_trabajo=form["descripcion_del_trabajo"],
+                                          archivos=form["archivos"],
+                                          user_story_id=id_us,
+                                          fecha=date.today(),
+                                          numero=AprobacionDeUS.obtener_ultimo_valor_de_solicitud(id_us=id_us)
+                                          )
+
+            HistorialUS.objects.create(log="Se solicitó la aprobación del US para terminarlo",
+                                       fecha=date.today(),
+                                       user_story_id=id_us, usuario=request.user, horas_trabajadas=0)
+
+            return redirect('detalle_US', id_proyecto, id_us)
+        return render(request, 'US/solicitar_aprobacion.html', {'form': form})
+
+
+class VerSolicitudes(View):
+    permisos = ["Ver Solicitud"]
+
+    def get(self, request, id_proyecto, id_us):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                solicitudes = AprobacionDeUS.objects.filter(user_story_id=id_us, user_story__proyecto_id=id_proyecto)
+                us = UserStory.objects.get(id=id_us, proyecto_id=id_proyecto)
+                context = {
+                    'solicitudes': solicitudes,
+                    'id_proyecto': id_proyecto,
+                    "us": us,
+                }
+                return render(request, 'US/solicitudes.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+
+class AprobarSolicitudDeUS(View):
+    permisos = ["Aceptar Solicitud"]
+
+    def get(self, request, id_proyecto, id_us, id_solicitud):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    proyecto = Proyecto.objects.get(id=id_proyecto)
+                    us = UserStory.objects.get(id=id_us, proyecto=proyecto)
+                    solicitud = AprobacionDeUS.objects.get(id=id_solicitud, user_story=us)
+
+                except ObjectDoesNotExist:
+                    messages.error(request, "No se encuentra la solicitud con esas caracteristicas")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                if solicitud.estado == EstadoAprobacion.EN_ESPERA:
+                    solicitud.estado = EstadoAprobacion.ACEPTADO
+                    solicitud.save()
+
+                    us.aprobado_por_scrum_master = True
+                    us.save()
+
+                    HistorialUS.objects.create(log="US aprobado por Scrum Master",
+                                               fecha=date.today(),
+                                               user_story_id=id_us, usuario=proyecto.scrum_master, horas_trabajadas=0)
+
+                    messages.success(request, "US aprobado!")
+                    return redirect("detalle_proyecto", id_proyecto)
+                else:
+                    messages.error(request, "Esta solicitud ya fue tratada.")
+                    return redirect("detalle_proyecto", id_proyecto)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+
+class RechazarSolicitudDeUS(View):
+    permisos = ["Rechazar Solicitud"]
+    form_class = FormRechazarSolicitud
+
+    def get(self, request, id_proyecto, id_us, id_solicitud):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    solicitud = AprobacionDeUS.objects.get(id=id_solicitud, user_story_id=id_us, user_story__proyecto_id=id_proyecto)
+
+                except ObjectDoesNotExist:
+                    messages.error(request, "No se encuentra la solicitud con esas caracteristicas")
+                    return redirect("detalle_proyecto", id_proyecto)
+                if solicitud.estado == EstadoAprobacion.EN_ESPERA:
+                    form = self.form_class()
+                    return render(request, 'US/rechazar_solicitud.html', {'form': form})
+                else:
+                    messages.error(request, "Esta solicitud ya fue tratada.")
+                    return redirect("detalle_proyecto", id_proyecto)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_us, id_solicitud):
+        form = self.form_class(request.POST)
+
+        if form.is_valid():
+            form = form.cleaned_data
+
+            solicitud = AprobacionDeUS.objects.get(id=id_solicitud, user_story_id=id_us)
+
+            solicitud.razon_de_rechazo = form["razon_de_rechazo"]
+            solicitud.estado = EstadoAprobacion.RECHAZADO
+            solicitud.save()
+
+            HistorialUS.objects.create(log="Solicitud de aprobación rechazado por scrum master",
+                                       fecha=date.today(),
+                                       user_story_id=id_us, usuario=request.user, horas_trabajadas=0)
+
+            return redirect('detalle_US', id_proyecto, id_us)
+        return render(request, 'US/solicitar_aprobacion.html', {'form': form})
+
+
+class DetalleSolicitud(View):
+    permisos = ["Ver Solicitud"]
+
+    def get(self, request, id_proyecto, id_us, id_solicitud):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    us = UserStory.objects.get(id=id_us, proyecto_id=id_proyecto)
+                    solicitud = AprobacionDeUS.objects.get(id=id_solicitud, user_story=us)
+                except ObjectDoesNotExist:
+                    messages.error(request, "No se encuentra a la solicitud con esos requerimientos!")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                puede_aprobar_y_rechazar = user.tiene_permisos(permisos=["Aprobar Solicitud", "Rechazar Solicitud"], id_proyecto=id_proyecto)
+
+                context = {
+                    "puede_aprobar_y_rechazar" : puede_aprobar_y_rechazar,
+                    'solicitud': solicitud,
+                    'id_proyecto': id_proyecto,
+                    "us": us,
+                }
+                return render(request, 'US/detalle_solicitud.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
 class TableroKanbanView(View):
 

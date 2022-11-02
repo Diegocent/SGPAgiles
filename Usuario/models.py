@@ -68,9 +68,9 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
             return False
 
     def tiene_permisos(self, permisos: list, id_proyecto=0):
-        tiene_permisos = True
+        tiene_permisos = False
         for permiso in permisos:
-            encontro_permiso = True
+            encontro_permiso = False
             roles = self.rolSistema.all()
             for rol in roles:
                 try:
@@ -80,14 +80,12 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
                     for rolproyecto in rolesProyecto:
                         try:
                             rolproyecto.permisos.get(nombre=permiso)
-                        except ObjectDoesNotExist:
-                            encontro_permiso = False
+                            encontro_permiso = True
                             break
-                    if not encontro_permiso or len(rolesProyecto) == 0:
-                        encontro_permiso = False
-                        break
-            if not encontro_permiso or len(roles) == 0:
-                tiene_permisos = False
+                        except ObjectDoesNotExist:
+                            pass
+            if encontro_permiso:
+                tiene_permisos = True
                 break
         return tiene_permisos
 

@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <style>
+
+        .table-custom{
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+
+        }
+
+        .table-custom th{
+            border: none;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            color: white;
+        }
+
+        .table-custom tr{
+            /* height: 20%; */
+            border-bottom: 1px solid rgb(212, 212, 212);
+            color: white;
+        }
+
+    </style>
+
+    <h1 class="mt-4">Solicitud de aprobación de US</h1>
+    <h3>User story: {{ us.codigo }} - {{ us.nombre }}</h3>
+    <h3>Solicitud Nº {{ solicitud.numero }}</h3>
+    <h4>Estado: {{ solicitud.get_estado_display }}</h4>
+    {% if puede_aprobar_y_rechazar %}
+        <a href="{% url "aprobar_solicitud" id_proyecto=id_proyecto id_us=us.id id_solicitud=solicitud.id%}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Aprobar</button></a>
+        <a href="{% url "rechazar_solicitud" id_proyecto=id_proyecto id_us=us.id id_solicitud=solicitud.id%}"><button type="button" class="btn btn-lg btn-danger fw-bold border-opacity-75 bg-black">Rechazar</button></a>
+
+    {% endif %}
+
+
+    <table class="table-custom">
+        <thead>
+        <tr>
+            <th scope="col">Trabajo Realizado</th>
+            <th scope="col">Archivos</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr height="60px">
+            <td>{{ solicitud.descripcion_del_trabajo }}</td>
+
+            {% if solicitud.archivos != "0" %}
+                <td><a href="{{ solicitud.archivos.url }}" download class="btn btn-dark float-right">Download</a></td>
+            {% else %}
+                <td>-</td>
+            {% endif %}
+        </tr>
+
+        </tbody>
+    </table>
+    {% if solicitud.razon_de_rechazo is not None %}
+        <br>
+        <br>
+        <thead>
+        <tr>
+            <th scope="col">Razón del rechazo</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr height="60px">
+            <td>{{ solicitud.razon_de_rechazo }}</td>
+        </tr>
+
+        </tbody>
+    </table>
+    {% endif %}
+
+{% endblock %}

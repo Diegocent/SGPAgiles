@@ -104,6 +104,12 @@ def login(request):
                                     Permisos(nombre="Borrar Kanban", descripcion="Permiso para Borrar Kanban"),
                                     Permisos(nombre="Cargar trabajo UserStory",
                                              descripcion="Permiso para Cargar trabajo en el User Story"),
+                                    Permisos(nombre="Solicitar Aprobacion",
+                                             descripcion="Permiso para Solicitar Aprobacion de User Story"),
+                                    Permisos(nombre="Ver Solicitud", descripcion="Permiso para Ver Solicitud"),
+                                    Permisos(nombre="Aceptar Solicitud", descripcion="Permiso para Aceptar Solicitud"),
+                                    Permisos(nombre="Rechazar Solicitud",
+                                             descripcion="Permiso para Rechazar Solicitud"),
                                 ]
                                 Permisos.objects.bulk_create(permisos)
                                 permiso_de_admin = Permisos.objects.create(nombre="Permiso de administrador", descripcion="Permiso para administrador de sistema.")
