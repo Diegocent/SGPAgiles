@@ -28,7 +28,7 @@ class Proyecto(models.Model):
     fecha_fin_estimada = models.DateField(null=True)
     fecha_fin_real = models.DateField(null=True)
     estado = models.CharField(choices=EstadoProyecto.choices, max_length=100)
-    scrum_master = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="scrum_master")
+    scrum_master = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="scrum_master", null=True)
 
     def __str__(self):
         return '{}'.format(self.nombre)

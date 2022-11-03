@@ -75,6 +75,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
             for rol in roles:
                 try:
                     rol.permisos.get(nombre=permiso)
+                    encontro_permiso = True
+                    break
                 except ObjectDoesNotExist:
                     rolesProyecto = self.rolProyecto.all().filter(proyecto_id=id_proyecto)
                     for rolproyecto in rolesProyecto:

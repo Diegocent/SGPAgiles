@@ -91,7 +91,8 @@ class CrearProyectoView(View):
             proyecto = Proyecto.objects.create(
                 nombre=cleaned_data["nombre"],
                 descripcion=cleaned_data["descripcion"],
-                estado=EstadoProyecto.NO_INICIADO
+                estado=EstadoProyecto.NO_INICIADO,
+                scrum_master=cleaned_data["scrum_master"]
             )
             scrum = self.crearRoles(proyecto)
 
@@ -253,7 +254,10 @@ class VerProyectoView(View):
 
                         for us in uss:
                             us_dict = model_to_dict(us)
-                            us_dict["desarrollador"] = us.desarrollador.email
+                            if us.desarrollador is not None:
+                                us_dict["desarrollador"] = us.desarrollador.email
+                            else:
+                                us_dict["desarrollador"] = ""
                             uss_dict.append(us_dict)
 
                         tipo_dict = model_to_dict(tipo)
