@@ -1,6 +1,6 @@
 import pytest, pytz
 from proyecto.models import Proyecto, EstadoProyecto, UserStory, TipoUserStory, EstadoUS, OrdenEstado, AprobacionDeUS, \
-    EstadoAprobacion
+    EstadoAprobacion, HistorialUS, Equipo
 from Usuario.models import Usuario
 from datetime import date, datetime
 
@@ -220,3 +220,53 @@ def test_rechazar_solicitud():
     solicitud.estado = EstadoAprobacion.RECHAZADO
     solicitud.save()
     assert solicitud.estado == "RECHAZADO", "ERROR: no se pudo rechazar la solicitud."
+
+@pytest.mark.django_db
+def test_agregar_trabajo_a_us():
+    proyecto = Proyecto.objects.create(nombre="ver_pagina_admin",
+                                       descripcion="Permiso para ver la pagina del administrador",
+                                       estado=EstadoProyecto.NO_INICIADO,
+                                       fecha_fin_estimada=datetime(year=2023, month=9, day=12, hour=12, minute=12,
+                                                                   tzinfo=pytz.timezone("America/Asuncion")),
+                                       fecha_inicio=datetime(year=2022, month=9, day=12, hour=12, minute=12,
+                                                             tzinfo=pytz.timezone("America/Asuncion")),
+                                       )
+
+    tipo = TipoUserStory.objects.create(nombre="test1", prefijo="TEST", proyecto=proyecto)
+    us = UserStory.objects.create(nombre="TEST-1", descripcion="TEST", tipo=tipo, proyecto=proyecto,
+                                  prioridad_de_negocio=1, prioridad_tecnica=1, esfuerzo_anterior=0, duracion=10)
+
+    usuario = Usuario.objects.create(email='a@a.a')
+    historial_1 = HistorialUS.objects.create(log="detalle", user_story=us,
+                               horas_trabajadas=5,
+                               fecha=date.today(), usuario=usuario
+                               )
+    historial = HistorialUS.objects.all()
+    assert len(historial)==1, "ERROR: no se pudo agregar trabajo al us"
+
+@pytest.mark.django_db
+def test_asignar_dev_a_us():
+    proyecto = Proyecto.objects.create(nombre="ver_pagina_admin",
+                                       descripcion="Permiso para ver la pagina del administrador",
+                                       estado=EstadoProyecto.NO_INICIADO,
+                                       fecha_fin_estimada=datetime(year=2023, month=9, day=12, hour=12, minute=12,
+                                                                   tzinfo=pytz.timezone("America/Asuncion")),
+                                       fecha_inicio=datetime(year=2022, month=9, day=12, hour=12, minute=12,
+                                                             tzinfo=pytz.timezone("America/Asuncion")),
+                                       )
+
+    tipo = TipoUserStory.objects.create(nombre="test1", prefijo="TEST", proyecto=proyecto)
+    us = UserStory.objects.create(nombre="TEST-1", descripcion="TEST", tipo=tipo, proyecto=proyecto,
+                                  prioridad_de_negocio=1, prioridad_tecnica=1, esfuerzo_anterior=0, duracion=10)
+
+    usuario = Usuario.objects.create(email='a@a.a')
+
+    dev: Usuario = usuario
+    us.desarrollador = dev
+    us.save()
+    historial_1 = HistorialUS.objects.create(log="detalle", user_story=us,
+                               horas_trabajadas=5,
+                               fecha=date.today(), usuario=usuario
+                               )
+    historial = HistorialUS.objects.all()
+    assert len(historial)==1, "ERROR: no se pudo asignar dev a user story"
