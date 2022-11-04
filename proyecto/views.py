@@ -39,7 +39,11 @@ Actualmente contamos con los siguientes views en Proyecto:
 17. **VerUSView** - Vista para visualizar los US existentes (salta a la seccion [[views.py#VerUSView]])
 18. **BorrarUSView** - Vista para eliminar un US (salta a la seccion [[views.py#BorrarUSView]])
 19. **ActualizarUSView** - Vista para actualizar/modificar los datos del Equipo (salta a la seccion [[views.py#ActualizarUSView]])
-20. ** verProductBacklog** - Vista para el Product Backlog (salta a la seccion [[views.py# verProductBacklog]])
+20. ** verProductBacklog** - Vista para el Product Backlog (salta a la seccion [[views.py#verProductBacklog]])
+21. **AsignarMiembroASprint** - Vista para Asignarle Miembro a Un Sprint (salta a la seccion [[views.py#AsignarMiembroASprint]])
+22. **AsignarUSASprint** - Vista para Asignar US as Sprint (salta a la seccion [[views.py#AsignarUSASprint]])
+23. **BorrarUSASprint** - Vista para Borrar US as Sprint (salta a la seccion [[views.py#BorrarUSASprint]])
+
 """
 
 
@@ -47,9 +51,9 @@ class VerProyectosView(View):
 
     def get(self, request):
         usuario: Usuario = request.user
-        if usuario.is_authenticated:
-            if usuario.es_admin():
-                proyectos = Proyecto.objects.all()
+        if usuario.is_authenticated: #Si el usuario esta autenticado
+            if usuario.es_admin(): #Y si el usuario es administrador
+                proyectos = Proyecto.objects.all() #Entonces dicho usuario podra ver los proyectos creados
                 context = {
                     'admin': True,
                     'proyectos': proyectos
@@ -60,7 +64,7 @@ class VerProyectosView(View):
                     "proyectos": []
                 }
                 equipos = Equipo.objects.all().filter(miembros__id=usuario.id)
-                for equipo in equipos:
+                for equipo in equipos: #Tambien podra ver el equipo
                     proyecto = Proyecto.objects.get(equipo=equipo)
                     context['proyectos'].append(proyecto)
             return render(request, 'ver_proyectos.html', context)
@@ -115,7 +119,7 @@ class CrearProyectoView(View):
         scrum = RolProyecto.objects.create(nombre="Scrum Master",
                                            descripcion="Scrum Master del Proyecto.",
                                            proyecto=proyecto)
-        scrum.agregar_permisos([
+        scrum.agregar_permisos([ #Se definen los permisos para Crear Roles
             "Ver Solicitud",
             "Aceptar Solicitud",
             "Rechazar Solicitud",
@@ -156,7 +160,7 @@ class CrearProyectoView(View):
         dev = RolProyecto.objects.create(nombre="Developer",
                                          descripcion="Developer del Proyecto.",
                                          proyecto=proyecto)
-        dev.agregar_permisos([
+        dev.agregar_permisos([ #Permisos para el Developer
             "Solicitar Aprobacion",
             "Ver Solicitud",
             "Ver RolProyecto",
@@ -890,7 +894,7 @@ class verProductBacklog(View):
 
 
 class AsignarMiembroASprint(View):
-    permisos = ["Editar Sprint"]
+    permisos = ["Editar Sprint"] #Se edita el sprint para poder asignarle miembros
 
     form_class = FormMiembroSprint
 
@@ -945,7 +949,7 @@ class AsignarMiembroASprint(View):
 
 
 class AsignarUSASprint(View):
-    permisos = ["Editar Sprint"]
+    permisos = ["Editar Sprint"] #Se asigna permisos al US para el sprint
 
     form_class = FormUSSprint
 
@@ -1008,7 +1012,7 @@ class AsignarUSASprint(View):
 
 
 class BorrarUSASprint(View):
-    permisos = ["Editar Sprint"]
+    permisos = ["Editar Sprint"] #Asignar permiso para borrar un US del Srpint
 
     def get(self, request, id_proyecto, id_sprint, id_us):
         user: Usuario = request.user
