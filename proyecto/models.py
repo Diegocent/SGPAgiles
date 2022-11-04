@@ -145,6 +145,8 @@ class OrdenEstado(models.Model):
     @staticmethod
     def obtener_ultimo_valor_de_orden(tipo_id):
         ultimo_valor = OrdenEstado.objects.all().filter(orden_del_estado__tipoUserStory_id=tipo_id).first()
+        if ultimo_valor is None:
+            return 1
         return ultimo_valor.orden + 1
 
     class Meta:
