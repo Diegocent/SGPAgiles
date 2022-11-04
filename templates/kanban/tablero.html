@@ -44,13 +44,13 @@
 
     {{ tipos_dict|json_script:"tipos_dict" }}
 
-    <div class="filtros" style="padding: 15px">Filtrar por:
+    <div class="filtros" style="padding: 15px;color:black">Filtrar por:
         {% for tipo in tipos_dict %}
-            <a href="{% url "detalle_proyecto" id_proyecto=id_proyecto %}?id_tipo_us={{ tipo.id }}">{{ tipo.nombre }}</a>
+            <a style="color:black" href="{% url "detalle_proyecto" id_proyecto=id_proyecto %}?id_tipo_us={{ tipo.id }}">{{ tipo.nombre }}</a>
         {% endfor %}
     </div>
 
-    <div class="titulo-tipo-us" style="padding-left: 15px">Tipo de US: {{ tipo_mostrado_en_pantalla }}</div>
+    <div class="titulo-tipo-us" style="padding-left: 15px; color:black">Tipo de US: {{ tipo_mostrado_en_pantalla }}</div>
 
     <div id="myKanban"></div>
 
@@ -208,7 +208,7 @@
         }
 
         function html_del_user_story(us_item){
-            return `<div>${us_item.nombre}</div><br><div>Dev: ${us_item.desarrollador}</div>`
+            return `<div style="color:black">${us_item.nombre}</div><br><div style="color:black;text-overflow: ellipsis;overflow: hidden">Dev: ${us_item.desarrollador}</div>`
         }
 
 
