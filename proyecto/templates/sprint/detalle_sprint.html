@@ -113,16 +113,18 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
-                            {% for dev in devs %}
+                        {% for dev in devs %}
+                            <tr>
+
                                 <td>{{ dev.miembro.email }}</td>
                                 <td>{{ dev.capacidad  }} hora(s)</td>
                                 <td>{{ dev.carga_horaria  }} hora(s)</td>
                                 {% if sprint.estado == "NO_INICIADO" %}
                                     <td><a href="{% url "actualizar_miembros_sprint" id_proyecto=id_proyecto id_sprint=sprint.id id_miembrosprint=dev.id %}">Editar</a> - <a href="{% url "eliminar_miembros_sprint" id_proyecto=id_proyecto id_sprint=sprint.id id_miembrosprint=dev.id %}">Remover</a></td>
                                 {% endif %}
-                            {% endfor %}
-                        </tr>
+
+                            </tr>
+                        {% endfor %}
 
 
                         </tbody>
