@@ -1,0 +1,44 @@
+version: "3.2"
+
+services:
+  postgres:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=is2sgpa
+    ports:
+      - '5432:5432'
+    volumes: 
+      - postgres:/var/lib/postgresql/data
+    networks:
+      is2:
+        aliases:
+          - postgres
+  django-apache2:
+    build: .
+    container_name: django-deployment
+    command:  bash -c "pip install -r requirements.txt && python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py loaddata datos.json && python3 manage.py runserver 0.0.0.0:8000"
+    ports:
+      - '8000:8000'
+    env_file:
+      - .env
+    volumes:
+      - .:/usr/src/is2/
+    networks:
+      is2:
+        aliases:
+          - django
+    depends_on:
+      - postgres
+    links:
+      - postgres:postgres
+    
+volumes:
+  postgres:
+    driver: local
+  django-apache2:
+    driver: local
+networks:
+  is2:
