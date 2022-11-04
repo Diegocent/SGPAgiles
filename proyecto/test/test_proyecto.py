@@ -1,6 +1,7 @@
 import pytest, pytz
 from proyecto.models import Proyecto, EstadoProyecto, UserStory, TipoUserStory, EstadoUS, OrdenEstado, AprobacionDeUS, \
     EstadoAprobacion
+from Usuario.models import Usuario
 from datetime import date, datetime
 
 
@@ -91,7 +92,8 @@ def test_crear_sprint():
 
     tipo = TipoUserStory.objects.create(nombre="test1", prefijo="TEST", proyecto=proyecto)
 
-    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo)
+    orden_1 = OrdenEstado.objects.create(orden=OrdenEstado.obtener_ultimo_valor_de_orden(tipo_id=tipo.id))
+    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo, orden=orden_1)
 
     estados = EstadoUS.objects.all()
     assert len(estados) == 1, "ERROR: Sprint no fue creado."
@@ -110,7 +112,8 @@ def test_modificar_estado_US():
 
     tipo = TipoUserStory.objects.create(nombre="test1", prefijo="TEST", proyecto=proyecto)
 
-    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo)
+    orden_1 = OrdenEstado.objects.create(orden=OrdenEstado.obtener_ultimo_valor_de_orden(tipo_id=tipo.id))
+    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo, orden=orden_1)
 
     estados = EstadoUS.objects.all()
     assert len(estados) == 1, "ERROR al modificar el estado del US"
@@ -129,7 +132,8 @@ def test_cancelar_sprint():
 
     tipo = TipoUserStory.objects.create(nombre="test1", prefijo="TEST", proyecto=proyecto)
 
-    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo)
+    orden_1 = OrdenEstado.objects.create(orden=OrdenEstado.obtener_ultimo_valor_de_orden(tipo_id=tipo.id))
+    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo, orden=orden_1)
 
     estados = EstadoUS.objects.all()
     assert len(estados) == 1, "ERROR al cancelar un sprint."
@@ -148,7 +152,8 @@ def test_estimar_US():
 
     tipo = TipoUserStory.objects.create(nombre="test1", prefijo="TEST", proyecto=proyecto)
 
-    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo)
+    orden_1 = OrdenEstado.objects.create(orden=OrdenEstado.obtener_ultimo_valor_de_orden(tipo_id=tipo.id))
+    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo, orden=orden_1)
 
     estados = EstadoUS.objects.all()
     assert len(estados) == 1, "ERROR: US no pudo estimarse correctamente."
@@ -170,12 +175,14 @@ def test_crear_solicitud():
     us = UserStory.objects.create(nombre="TEST-1", descripcion="TEST", tipo=tipo, proyecto=proyecto,
                                   prioridad_de_negocio=1, prioridad_tecnica=1, esfuerzo_anterior=0, duracion=10)
 
-    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo)
-    AprobacionDeUS.objects.create(
+    orden_1 = OrdenEstado.objects.create(orden=OrdenEstado.obtener_ultimo_valor_de_orden(tipo_id=tipo.id))
+    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo, orden=orden_1)
+    usuario = Usuario.objects.create(email='a@a.a')
+    AprobacionDeUS.objects.create(solicitado_por=usuario,
         descripcion_del_trabajo="descripcion_del_trabajo",
         archivos="archivos",
         user_story_id=us.id,
-        fecha='2022/11/03',
+        fecha="2022-11-03",
         numero=AprobacionDeUS.obtener_ultimo_valor_de_solicitud(id_us=us.id)
     )
     aprobaciones = AprobacionDeUS.objects.all()
@@ -198,16 +205,17 @@ def test_rechazar_solicitud():
     us = UserStory.objects.create(nombre="TEST-1", descripcion="TEST", tipo=tipo, proyecto=proyecto,
                                   prioridad_de_negocio=1, prioridad_tecnica=1, esfuerzo_anterior=0, duracion=10)
 
-    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo)
-    solicitud = AprobacionDeUS.objects.create(
+    orden_1 = OrdenEstado.objects.create(orden=OrdenEstado.obtener_ultimo_valor_de_orden(tipo_id=tipo.id))
+    estado = EstadoUS.objects.create(nombre="TEST", tipoUserStory=tipo, orden=orden_1)
+
+    usuario = Usuario.objects.create(email='a@a.a')
+    solicitud = AprobacionDeUS.objects.create(solicitado_por=usuario,
         descripcion_del_trabajo="descripcion_del_trabajo",
         archivos="archivos",
         user_story_id=us.id,
-        fecha='2022/11/03',
+        fecha="2022-11-03",
         numero=AprobacionDeUS.obtener_ultimo_valor_de_solicitud(id_us=us.id)
     )
-    solicitud = AprobacionDeUS.objects.get(id=solicitud.id, user_story_id=us.id)
-
     solicitud.razon_de_rechazo = "razon_de_rechazo"
     solicitud.estado = EstadoAprobacion.RECHAZADO
     solicitud.save()
