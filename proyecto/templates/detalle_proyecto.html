@@ -191,6 +191,9 @@ a.article:hover {
 
             <ul class="list-unstyled components">
                 <p>Scrum Master<br>{{ proyecto.scrum_master}}</p>
+                {% if sprint is not None %}
+            <p style="text-align: left">Sprint Activo<br>N°: {{ sprint.numero }}</p>
+            {% endif %}
 
                 <li>
                     <a href="{% url "ver_roles" id_proyecto=id_proyecto %}">Roles de Proyecto</a>
@@ -224,6 +227,7 @@ a.article:hover {
         {% endif %}
 
         <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SPRINTS</a></li>
+
         <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SOLICITUDES</a></li>
 
         {% if proyecto.estado == "NO_INICIADO" and equipo %}
