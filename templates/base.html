@@ -50,15 +50,13 @@
                 usuario: {{request.user.email}}
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    {% for usuario in usuarios %}
-                        <tr>
-                            {% for rol in usuario.rolSistema.all %}
 
+                            {% for rol in request.user.rolSistema.all %}
+                                <tr>
                                 <h5> <td>{{ rol.nombre }} : {{ rol.descripcion }} </td> </h5>
-
+                                </tr>
                             {% endfor %}
 
-                    {% endfor %}
                 </div>
             </div>
 
