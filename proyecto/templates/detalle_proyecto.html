@@ -2,187 +2,187 @@
 {% load static %}
 {% block content %}
 
-<style>
-    /*
-    DEMO STYLE
-*/
+    <style>
+        /*
+        DEMO STYLE
+    */
 
-@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #fafafa;
-}
+        @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #fafafa;
+        }
 
-p {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.1em;
-    font-weight: 300;
-    line-height: 1.7em;
-    color: #999;
-}
+        p {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1em;
+            font-weight: 300;
+            line-height: 1.7em;
+            color: #999;
+        }
 
-a,
-a:hover,
-a:focus {
-    color: inherit;
-    text-decoration: none;
-    transition: all 0.3s;
-}
+        a,
+        a:hover,
+        a:focus {
+            color: inherit;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
 
-.navbar {
-    padding: 15px 10px;
-    background: #fff;
-    border: none;
-    border-radius: 0;
-    margin-bottom: 40px;
-    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-}
+        .navbar {
+            padding: 15px 10px;
+            background: #fff;
+            border: none;
+            border-radius: 0;
+            margin-bottom: 40px;
+            box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
 
-.navbar-btn {
-    box-shadow: none;
-    outline: none !important;
-    border: none;
-}
+        .navbar-btn {
+            box-shadow: none;
+            outline: none !important;
+            border: none;
+        }
 
-.line {
-    width: 100%;
-    height: 1px;
-    border-bottom: 1px dashed #ddd;
-    margin: 40px 0;
-}
+        .line {
+            width: 100%;
+            height: 1px;
+            border-bottom: 1px dashed #ddd;
+            margin: 40px 0;
+        }
 
-/* ---------------------------------------------------
-    SIDEBAR STYLE
------------------------------------------------------ */
+        /* ---------------------------------------------------
+            SIDEBAR STYLE
+        ----------------------------------------------------- */
 
-.wrapper {
-    display: flex;
-    width: 100%;
-    align-items: stretch;
-}
+        .wrapper {
+            display: flex;
+            width: 100%;
+            align-items: stretch;
+        }
 
-#sidebar {
-    min-width: 250px;
-    max-width: 250px;
-    background: #7386D5;
-    color: #fff;
-    transition: all 0.3s;
-}
+        #sidebar {
+            min-width: 250px;
+            max-width: 250px;
+            background: #7386D5;
+            color: #fff;
+            transition: all 0.3s;
+        }
 
-#sidebar.active {
-    margin-left: -250px;
-}
+        #sidebar.active {
+            margin-left: -250px;
+        }
 
-#sidebar .sidebar-header {
-    padding: 20px;
-    background: #6d7fcc;
-}
+        #sidebar .sidebar-header {
+            padding: 20px;
+            background: #6d7fcc;
+        }
 
-#sidebar ul.components {
-    padding: 20px 0;
-    border-bottom: 1px solid #47748b;
-}
+        #sidebar ul.components {
+            padding: 20px 0;
+            border-bottom: 1px solid #47748b;
+        }
 
-#sidebar ul p {
-    color: #fff;
-    padding: 10px;
-}
+        #sidebar ul p {
+            color: #fff;
+            padding: 10px;
+        }
 
-#sidebar ul li a {
-    padding: 10px;
-    font-size: 1.1em;
-    display: block;
-}
+        #sidebar ul li a {
+            padding: 10px;
+            font-size: 1.1em;
+            display: block;
+        }
 
-#sidebar ul li a:hover {
-    color: #7386D5;
-    background: #fff;
-}
+        #sidebar ul li a:hover {
+            color: #7386D5;
+            background: #fff;
+        }
 
-#sidebar ul li.active>a,
-a[aria-expanded="true"] {
-    color: #fff;
-    background: #6d7fcc;
-}
+        #sidebar ul li.active>a,
+        a[aria-expanded="true"] {
+            color: #fff;
+            background: #6d7fcc;
+        }
 
-a[data-toggle="collapse"] {
-    position: relative;
-}
+        a[data-toggle="collapse"] {
+            position: relative;
+        }
 
-.dropdown-toggle::after {
-    display: block;
-    position: absolute;
-    top: 50%;
-    right: 20px;
-    transform: translateY(-50%);
-}
+        .dropdown-toggle::after {
+            display: block;
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+        }
 
-ul ul a {
-    font-size: 0.9em !important;
-    padding-left: 30px !important;
-    background: #6d7fcc;
-}
+        ul ul a {
+            font-size: 0.9em !important;
+            padding-left: 30px !important;
+            background: #6d7fcc;
+        }
 
-ul.CTAs {
-    padding: 20px;
-}
+        ul.CTAs {
+            padding: 20px;
+        }
 
-ul.CTAs a {
-    text-align: center;
-    font-size: 0.9em !important;
-    display: block;
-    border-radius: 5px;
-    margin-bottom: 5px;
-}
+        ul.CTAs a {
+            text-align: center;
+            font-size: 0.9em !important;
+            display: block;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
 
-a.download {
-    background: #fff;
-    color: #7386D5;
-}
+        a.download {
+            background: #fff;
+            color: #7386D5;
+        }
 
-a.article,
-a.article:hover {
-    background: #6d7fcc !important;
-    color: #fff !important;
-}
+        a.article,
+        a.article:hover {
+            background: #6d7fcc !important;
+            color: #fff !important;
+        }
 
-/* ---------------------------------------------------
-    CONTENT STYLE
------------------------------------------------------ */
+        /* ---------------------------------------------------
+            CONTENT STYLE
+        ----------------------------------------------------- */
 
-#content {
-    width: 100%;
-    padding: 20px;
-    min-height: 100vh;
-    transition: all 0.3s;
-}
+        #content {
+            width: 100%;
+            padding: 20px;
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
 
-/* ---------------------------------------------------
-    MEDIAQUERIES
------------------------------------------------------ */
+        /* ---------------------------------------------------
+            MEDIAQUERIES
+        ----------------------------------------------------- */
 
-@media (max-width: 768px) {
-    #sidebar {
-        margin-left: -250px;
-    }
-    #sidebar.active {
-        margin-left: 0;
-    }
-    #sidebarCollapse span {
-        display: none;
-    }
-}
-</style>
+        @media (max-width: 768px) {
+            #sidebar {
+                margin-left: -250px;
+            }
+            #sidebar.active {
+                margin-left: 0;
+            }
+            #sidebarCollapse span {
+                display: none;
+            }
+        }
+    </style>
 
-<script>
-    $(document).ready(function () {
+    <script>
+        $(document).ready(function () {
             $('#sidebarCollapse').on('click', function () {
                 $('#sidebar').toggleClass('active');
             });
         });
-</script>
+    </script>
 
-<div class="wrapper">
+    <div class="wrapper">
         <!-- Sidebar  -->
         <nav id="sidebar">
             <div class="sidebar-header">
@@ -192,8 +192,8 @@ a.article:hover {
             <ul class="list-unstyled components">
                 <p>Scrum Master<br>{{ proyecto.scrum_master}}</p>
                 {% if sprint is not None %}
-            <p style="text-align: left">Sprint Activo<br>N°: {{ sprint.numero }}</p>
-            {% endif %}
+                    <p style="text-align: left">Sprint Activo<br><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}">N°: {{ sprint.numero }}</a></p>
+                {% endif %}
 
                 <li>
                     <a href="{% url "ver_roles" id_proyecto=id_proyecto %}">Roles de Proyecto</a>
@@ -202,37 +202,37 @@ a.article:hover {
 
                 {% if proyecto.estado == "NO_INICIADO" %}
 
-            {% if not equipo %}
-                    <li><a href="{% url 'crear_equipo' id_proyecto=id_proyecto %}">Crear Equipo</a></li>
+                    {% if not equipo %}
+                        <li><a href="{% url 'crear_equipo' id_proyecto=id_proyecto %}">Crear Equipo</a></li>
+                    {% else %}
+
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle"  data-toggle="dropdown">Equipo<span class="caret"></span></a>
+                            <ul class="dropdown-menu animated fadeInLeft" role="menu">
+                                <div class="dropdown-header">{{ equipo.nombre }}</div>
+                                <li><a href="{% url 'ver_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Miembros</a></li>
+                                <li><a href="{% url 'editar_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Editar</a></li>
+                            </ul>
+                        </li>
+                    {% endif %}
                 {% else %}
-
-                 <li class="dropdown">
-            <a href="#" class="dropdown-toggle"  data-toggle="dropdown">Equipo<span class="caret"></span></a>
-            <ul class="dropdown-menu animated fadeInLeft" role="menu">
-             <div class="dropdown-header">{{ equipo.nombre }}</div>
-            <li><a href="{% url 'ver_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Miembros</a></li>
-             <li><a href="{% url 'editar_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Editar</a></li>
-             </ul>
-            </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle"  data-toggle="dropdown">Equipo<span class="caret"></span></a>
+                        <ul class="dropdown-menu animated fadeInLeft" role="menu">
+                            <div class="dropdown-header">{{ equipo.nombre }}</div>
+                            <li><a href="{% url 'ver_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Miembros</a></li>
+                            <li><a href="{% url 'editar_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Editar</a></li>
+                        </ul>
+                    </li>
                 {% endif %}
-        {% else %}
-            <li class="dropdown">
-            <a href="#" class="dropdown-toggle"  data-toggle="dropdown">Equipo<span class="caret"></span></a>
-            <ul class="dropdown-menu animated fadeInLeft" role="menu">
-             <div class="dropdown-header">{{ equipo.nombre }}</div>
-            <li><a href="{% url 'ver_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Miembros</a></li>
-             <li><a href="{% url 'editar_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Editar</a></li>
-             </ul>
-            </li>
-        {% endif %}
 
-        <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SPRINTS</a></li>
+                <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SPRINTS</a></li>
 
-        <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SOLICITUDES</a></li>
+                <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SOLICITUDES</a></li>
 
-        {% if proyecto.estado == "NO_INICIADO" and equipo %}
-            <li><a href="{% url 'iniciar_proyecto' id_proyecto=id_proyecto %}">Iniciar Proyecto</a></li>
-        {% endif %}
+                {% if proyecto.estado == "NO_INICIADO" and equipo %}
+                    <li><a href="{% url 'iniciar_proyecto' id_proyecto=id_proyecto %}">Iniciar Proyecto</a></li>
+                {% endif %}
 
         </nav>
 
@@ -261,37 +261,37 @@ a.article:hover {
 
 
 
-<div>
+            <div>
 
 
 
 
-        {% if sprint is not None %}
-            <div style="padding-left: 10px">{% include "kanban/tablero.html" %}</div>
-        {% else %}
-            {% if proyecto.estado == "EN_PROCESO" %}
+                {% if sprint is not None %}
+                    <div style="padding-left: 10px">{% include "kanban/tablero.html" %}</div>
+                {% else %}
+                    {% if proyecto.estado == "EN_PROCESO" %}
 
-                <div class="col-xl-5 col-md-5 float-right">
-                    <table class="table table-dark">
-                        <thead>
-                        <tr>
-                            <th scope="col">Nombre del Proyecto</th>
-                            <th scope="col">{{proyecto.nombre}}</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                            <td>Fecha inicio:</td>
-                            <td>{{ proyecto.fecha_inicio }}</td>
-                        </tr>
-                        <tr>
-                            <td>Fecha fin estimada:</td>
-                            <td>{{ proyecto.fecha_fin_estimada }}</td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="col-xl-6 col-md-6 float-right">
+                        <div class="col-xl-5 col-md-5 float-right">
+                            <table class="table table-dark">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Nombre del Proyecto</th>
+                                    <th scope="col">{{proyecto.nombre}}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Fecha inicio:</td>
+                                    <td>{{ proyecto.fecha_inicio }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Fecha fin estimada:</td>
+                                    <td>{{ proyecto.fecha_fin_estimada }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xl-6 col-md-6 float-right">
             <span class="float-right">
             <div class="card text-white  mb-3" style="max-width: 18rem;background: #6d7fcc;">
   <div class="card-header">Enhorabuena!</div>
@@ -302,15 +302,15 @@ a.article:hover {
 
   </div>
            </span>
-                </div>
-            {% endif  %}
+                        </div>
+                    {% endif  %}
 
-        {% endif %}
-
-
+                {% endif %}
 
 
+
+
+            </div>
         </div>
-    </div>
 
 {% endblock %}
