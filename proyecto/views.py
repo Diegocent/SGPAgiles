@@ -43,7 +43,25 @@ Actualmente contamos con los siguientes views en Proyecto:
 21. **AsignarMiembroASprint** - Vista para Asignarle Miembro a Un Sprint (salta a la seccion [[views.py#AsignarMiembroASprint]])
 22. **AsignarUSASprint** - Vista para Asignar US as Sprint (salta a la seccion [[views.py#AsignarUSASprint]])
 23. **BorrarUSASprint** - Vista para Borrar US as Sprint (salta a la seccion [[views.py#BorrarUSASprint]])
-
+24. **ActualizarMiembrosSprintView** - Vista para Actualizar los miembros del Sprint (salta a la seccion [[views.py#ActualizarMiembrosSprintView]])
+25. **BorrarMiembrosSprintView** - Vista para Borrar Miebros del Sprint (salta a la seccion [[views.py#BorrarMiembrosSprintView]])
+26. **VerSprintsView** - Vista para ver los Sprints (salta a la seccion [[views.py#VerSprintsView]])
+27. **ImportarMainPageView** - Vista para ver importar la pagina principal (salta a la seccion [[views.py#ImportarMainPageView]])
+28. **ImportarRolesDeOtroProyectoView** - Vista para importar los roles de otros proyecyod (salta a la seccion [[views.py#ImportarRolesDeOtroProyectoView]])
+29. **ImportarTiposUSDeOtroProyectoView** - Vista para importar los roles de tipos de us de otros proyectos (salta a la seccion [[views.py#ImportarTiposUSDeOtroProyectoView]])
+30. **IniciarSprint** - Vista para iniciar un sprint (salta a la seccion [[views.py#IniciarSprint]])
+31. **DetalleUSView** - Vista para ver los detalles de US (salta a la seccion [[views.py#DetalleUSView]])
+32. **AgregarTrabajoAUserStory** - Vista para agregar trabajo a los US (salta a la seccion [[views.py#AgregarTrabajoAUserStory]])
+33. **AsignarDevAUserStory** - Vista para asignar developer a un US (salta a la seccion [[views.py#AsignarDevAUserStory]])
+34. **ActualizarRolProyecto** - Vista para actualizar los roles del proyecto (salta a la seccion [[views.py#ActualizarRolProyecto]])
+35. **AsignarRolProyectoAUsuario** - Vista para asignar rol proyecto al usuario (salta a la seccion [[views.py#AsignarRolProyectoAUsuario]])
+36. **SolicitarAprobacionDeUS** - Vista para solicitar aprobacion de US (salta a la seccion [[views.py#SolicitarAprobacionDeUS]])
+37. **VerSolicitudes** - Vista para ver las solicitudes (salta a la seccion [[views.py#VerSolicitudes]])
+38. **AprobarSolicitudDeUS** - Vista para aprobar las solicitudes (salta a la seccion [[views.py#AprobarSolicitudDeUS]])
+39. **RechazarSolicitudDeUS** - Vista para rechazar solicitudes de US (salta a la seccion [[views.py#RechazarSolicitudDeUS]])
+40. **DetalleSolicitud** - Vista para ver los detalles de la solicitud (salta a la seccion [[views.py#DetalleSolicitud]])
+41. **TableroKanbanView** - Vista para ver el tablero Kanban (salta a la seccion [[views.py#TableroKanbanView]])
+42. **CambiarEstadoUSView** - Vista para cambiar los estados de US (salta a la seccion [[views.py#CambiarEstadoUSView]])
 """
 
 
@@ -1066,7 +1084,7 @@ class BorrarUSASprint(View):
 
 
 class ActualizarMiembrosSprintView(View):
-    permisos = ["Editar Sprint"]
+    permisos = ["Editar Sprint"] #Se actualizan los miembros del Sprint con el permiso correspondiente
 
     def get(self, request, id_proyecto, id_sprint, id_miembrosprint):
         user: Usuario = request.user
@@ -1108,7 +1126,7 @@ class ActualizarMiembrosSprintView(View):
 
 
 class BorrarMiembrosSprintView(View):
-    permisos = ["Editar Sprint"]
+    permisos = ["Editar Sprint"] #Borrar miembros del Sprint
 
     def get(self, request, id_proyecto, id_sprint, id_miembrosprint):
         user: Usuario = request.user
@@ -1142,7 +1160,7 @@ class BorrarMiembrosSprintView(View):
 
 class VerSprintsView(View):
 
-    permisos = ["Ver Sprint"]
+    permisos = ["Ver Sprint"] #Se pueden ver los Sprint
 
     def get(self, request, id_proyecto):
         user: Usuario = request.user
@@ -1172,7 +1190,7 @@ class VerSprintsView(View):
 
 
 class ImportarMainPageView(View):
-    permisos = ["Editar RolProyecto", "Editar TipoUserStory"]
+    permisos = ["Editar RolProyecto", "Editar TipoUserStory"] #Se importa la pagina principal donde se edita el rol del proyectp y los tipos de US
 
     form_class = FormImportarMainPage
 
@@ -1206,7 +1224,7 @@ class ImportarMainPageView(View):
 
 class ImportarRolesDeOtroProyectoView(View):
 
-    permisos = ["Editar RolProyecto", "Editar TipoUserStory"]
+    permisos = ["Editar RolProyecto", "Editar TipoUserStory"] #Se importan los roles de otros proyectos
 
     form_class = FormImportarRolesProyecto
 
@@ -1246,7 +1264,7 @@ class ImportarRolesDeOtroProyectoView(View):
 
 class ImportarTiposUSDeOtroProyectoView(View):
 
-    permisos = ["Editar RolProyecto", "Editar TipoUserStory"]
+    permisos = ["Editar RolProyecto", "Editar TipoUserStory"] #Se importan los tipos de US de otros proyectos
 
     form_class = FormImportarTiposDeUS
 
@@ -1303,7 +1321,7 @@ class ImportarTiposUSDeOtroProyectoView(View):
 
 class IniciarSprint(View):
 
-    permisos = ["Iniciar Sprint"]
+    permisos = ["Iniciar Sprint"] #Funcion para iniciar un Sprint
 
     def get(self, request, id_proyecto, id_sprint):
         user: Usuario = request.user
@@ -1354,7 +1372,7 @@ class IniciarSprint(View):
 
 
 class DetalleUSView(View):
-    permisos = ["Ver UserStory"]
+    permisos = ["Ver UserStory"] #Se pueden ver con detalle los US
 
     def get(self, request, id_proyecto, id_us):
         user: Usuario = request.user
@@ -1386,7 +1404,7 @@ class DetalleUSView(View):
 
 class AgregarTrabajoAUserStory(View):
     form_class = FormAgregarTrabajoUS
-    permisos = ["Cargar trabajo UserStory"]
+    permisos = ["Cargar trabajo UserStory"]#funcion para cargar trabajo a los US
 
     def get(self, request, id_proyecto, id_us):
         user: Usuario = request.user
@@ -1445,7 +1463,7 @@ class AgregarTrabajoAUserStory(View):
 class AsignarDevAUserStory(View):
 
     form_class = FormAsignarDevAUserStory
-    permisos = ["Editar UserStory"]
+    permisos = ["Editar UserStory"] #Funcion para asignar developer a un US
 
     def get(self, request, id_proyecto, id_us):
         user: Usuario = request.user
@@ -1501,7 +1519,7 @@ class AsignarDevAUserStory(View):
 
 class ActualizarRolProyecto(View):
     form_class = FormRolProyecto
-    permisos = ["Editar RolProyecto"]
+    permisos = ["Editar RolProyecto"] #Se asignan roles al proyecto
 
     def get(self, request, id_proyecto, id_rol):
         user: Usuario = request.user
@@ -1542,7 +1560,7 @@ class ActualizarRolProyecto(View):
 
 class AsignarRolProyectoAUsuario(View):
     form_class = FormAsignarRolAUsuario
-    permisos = ["Editar RolProyecto"]
+    permisos = ["Editar RolProyecto"] #Se asignan los roles del proyecto al usuario
 
     def get(self, request, id_proyecto, id_equipo, id_usuario):
         user: Usuario = request.user
@@ -1587,7 +1605,7 @@ class AsignarRolProyectoAUsuario(View):
 
 class SolicitarAprobacionDeUS(View):
     form_class = FormSolicitarAprobacion
-    permisos = ["Solicitar Aprobacion"]
+    permisos = ["Solicitar Aprobacion"] #Se solicitan aprobacion de us
 
     def get(self, request, id_proyecto, id_us):
         user: Usuario = request.user
@@ -1638,7 +1656,7 @@ class SolicitarAprobacionDeUS(View):
 
 
 class VerSolicitudes(View):
-    permisos = ["Ver Solicitud"]
+    permisos = ["Ver Solicitud"] #Ver las solicitudes
 
     def get(self, request, id_proyecto, id_us):
         user: Usuario = request.user
@@ -1660,7 +1678,7 @@ class VerSolicitudes(View):
 
 
 class AprobarSolicitudDeUS(View):
-    permisos = ["Aceptar Solicitud"]
+    permisos = ["Aceptar Solicitud"] #Se aceptan las solicitudes
 
     def get(self, request, id_proyecto, id_us, id_solicitud):
         user: Usuario = request.user
@@ -1699,7 +1717,7 @@ class AprobarSolicitudDeUS(View):
 
 
 class RechazarSolicitudDeUS(View):
-    permisos = ["Rechazar Solicitud"]
+    permisos = ["Rechazar Solicitud"] #se rechazan las solicitudes
     form_class = FormRechazarSolicitud
 
     def get(self, request, id_proyecto, id_us, id_solicitud):
@@ -1745,7 +1763,7 @@ class RechazarSolicitudDeUS(View):
 
 
 class DetalleSolicitud(View):
-    permisos = ["Ver Solicitud"]
+    permisos = ["Ver Solicitud"] #Se ven los detalles de la solicitud
 
     def get(self, request, id_proyecto, id_us, id_solicitud):
         user: Usuario = request.user
@@ -1775,7 +1793,7 @@ class DetalleSolicitud(View):
 
 class TableroKanbanView(View):
 
-    permisos = ["Ver Proyecto"]
+    permisos = ["Ver Proyecto"] #Funcion para ver el tablero kanban
 
     def get(self, request, id_proyecto):
         user: Usuario = request.user
@@ -1842,7 +1860,7 @@ class TableroKanbanView(View):
 
 class CambiarEstadoUSView(View):
 
-    permisos = ["Ver UserStory"]
+    permisos = ["Ver UserStory"] #Cambiar el estado de la US
 
     def post(self, request, id_proyecto, id_us):
         user: Usuario = request.user

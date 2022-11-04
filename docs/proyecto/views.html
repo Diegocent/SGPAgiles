@@ -20,16 +20,20 @@
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ObjectDoesNotExist</span>
+      <div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ObjectDoesNotExist</span>
 <span class="kn">from</span> <span class="nn">django.forms</span> <span class="kn">import</span> <span class="n">model_to_dict</span>
+<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">JsonResponse</span><span class="p">,</span> <span class="n">HttpResponse</span>
 <span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> <span class="n">get_object_or_404</span>
 <span class="kn">from</span> <span class="nn">django</span> <span class="kn">import</span> <span class="n">forms</span>
 <span class="kn">from</span> <span class="nn">django.views</span> <span class="kn">import</span> <span class="n">View</span>
 <span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="n">FormCrearProyecto</span><span class="p">,</span> <span class="n">FormCrearEquipo</span><span class="p">,</span> <span class="n">FormIniciarProyecto</span><span class="p">,</span> <span class="n">FormRolProyecto</span><span class="p">,</span> <span class="n">FormTiposUS</span><span class="p">,</span> <span class="n">FormEstadoUS</span><span class="p">,</span> \
     <span class="n">FormUS</span><span class="p">,</span> <span class="n">FormSprint</span><span class="p">,</span> <span class="n">FormMiembroSprint</span><span class="p">,</span> <span class="n">FormUSSprint</span><span class="p">,</span> <span class="n">FormImportarMainPage</span><span class="p">,</span> <span class="n">FormImportarRolesProyecto</span><span class="p">,</span> \
-    <span class="n">FormImportarTiposDeUS</span><span class="p">,</span> <span class="n">FormAsignarDevAUserStory</span><span class="p">,</span> <span class="n">FormAgregarTrabajoUS</span><span class="p">,</span> <span class="n">FormAsignarRolAUsuario</span>
+    <span class="n">FormImportarTiposDeUS</span><span class="p">,</span> <span class="n">FormAsignarDevAUserStory</span><span class="p">,</span> <span class="n">FormAgregarTrabajoUS</span><span class="p">,</span> <span class="n">FormAsignarRolAUsuario</span><span class="p">,</span> \
+    <span class="n">FormSolicitarAprobacion</span><span class="p">,</span> <span class="n">FormRechazarSolicitud</span>
 <span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">Proyecto</span><span class="p">,</span> <span class="n">EstadoProyecto</span><span class="p">,</span> <span class="n">Equipo</span><span class="p">,</span> <span class="n">TipoUserStory</span><span class="p">,</span> <span class="n">UserStory</span><span class="p">,</span> <span class="n">EstadoUS</span><span class="p">,</span> <span class="n">Sprint</span><span class="p">,</span> <span class="n">OrdenEstado</span><span class="p">,</span> \
-    <span class="n">EstadoSprint</span><span class="p">,</span> <span class="n">MiembrosSprint</span><span class="p">,</span> <span class="n">HistorialUS</span>
+    <span class="n">EstadoSprint</span><span class="p">,</span> <span class="n">MiembrosSprint</span><span class="p">,</span> <span class="n">HistorialUS</span><span class="p">,</span> <span class="n">AprobacionDeUS</span><span class="p">,</span> <span class="n">EstadoAprobacion</span>
 <span class="kn">from</span> <span class="nn">Usuario.models</span> <span class="kn">import</span> <span class="n">Usuario</span><span class="p">,</span> <span class="n">RolProyecto</span>
 <span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span></pre></div>
@@ -64,7 +68,29 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 <li><strong>VerUSView</strong> - Vista para visualizar los US existentes (salta a la seccion  <a href="views.html#VerUSView">views.py</a>)</li>
 <li><strong>BorrarUSView</strong> - Vista para eliminar un US (salta a la seccion  <a href="views.html#BorrarUSView">views.py</a>)</li>
 <li><strong>ActualizarUSView</strong> - Vista para actualizar/modificar los datos del Equipo (salta a la seccion  <a href="views.html#ActualizarUSView">views.py</a>)</li>
-<li><strong> verProductBacklog</strong> - Vista para el Product Backlog (salta a la seccion  <a href="views.html# verProductBacklog">views.py</a>)</li>
+<li><strong> verProductBacklog</strong> - Vista para el Product Backlog (salta a la seccion  <a href="views.html#verProductBacklog">views.py</a>)</li>
+<li><strong>AsignarMiembroASprint</strong> - Vista para Asignarle Miembro a Un Sprint (salta a la seccion  <a href="views.html#AsignarMiembroASprint">views.py</a>)</li>
+<li><strong>AsignarUSASprint</strong> - Vista para Asignar US as Sprint (salta a la seccion  <a href="views.html#AsignarUSASprint">views.py</a>)</li>
+<li><strong>BorrarUSASprint</strong> - Vista para Borrar US as Sprint (salta a la seccion  <a href="views.html#BorrarUSASprint">views.py</a>)</li>
+<li><strong>ActualizarMiembrosSprintView</strong> - Vista para Actualizar los miembros del Sprint (salta a la seccion  <a href="views.html#ActualizarMiembrosSprintView">views.py</a>)</li>
+<li><strong>BorrarMiembrosSprintView</strong> - Vista para Borrar Miebros del Sprint (salta a la seccion  <a href="views.html#BorrarMiembrosSprintView">views.py</a>)</li>
+<li><strong>VerSprintsView</strong> - Vista para ver los Sprints (salta a la seccion  <a href="views.html#VerSprintsView">views.py</a>)</li>
+<li><strong>ImportarMainPageView</strong> - Vista para ver importar la pagina principal (salta a la seccion  <a href="views.html#ImportarMainPageView">views.py</a>)</li>
+<li><strong>ImportarRolesDeOtroProyectoView</strong> - Vista para importar los roles de otros proyecyod (salta a la seccion  <a href="views.html#ImportarRolesDeOtroProyectoView">views.py</a>)</li>
+<li><strong>ImportarTiposUSDeOtroProyectoView</strong> - Vista para importar los roles de tipos de us de otros proyectos (salta a la seccion  <a href="views.html#ImportarTiposUSDeOtroProyectoView">views.py</a>)</li>
+<li><strong>IniciarSprint</strong> - Vista para iniciar un sprint (salta a la seccion  <a href="views.html#IniciarSprint">views.py</a>)</li>
+<li><strong>DetalleUSView</strong> - Vista para ver los detalles de US (salta a la seccion  <a href="views.html#DetalleUSView">views.py</a>)</li>
+<li><strong>AgregarTrabajoAUserStory</strong> - Vista para agregar trabajo a los US (salta a la seccion  <a href="views.html#AgregarTrabajoAUserStory">views.py</a>)</li>
+<li><strong>AsignarDevAUserStory</strong> - Vista para asignar developer a un US (salta a la seccion  <a href="views.html#AsignarDevAUserStory">views.py</a>)</li>
+<li><strong>ActualizarRolProyecto</strong> - Vista para actualizar los roles del proyecto (salta a la seccion  <a href="views.html#ActualizarRolProyecto">views.py</a>)</li>
+<li><strong>AsignarRolProyectoAUsuario</strong> - Vista para asignar rol proyecto al usuario (salta a la seccion  <a href="views.html#AsignarRolProyectoAUsuario">views.py</a>)</li>
+<li><strong>SolicitarAprobacionDeUS</strong> - Vista para solicitar aprobacion de US (salta a la seccion  <a href="views.html#SolicitarAprobacionDeUS">views.py</a>)</li>
+<li><strong>VerSolicitudes</strong> - Vista para ver las solicitudes (salta a la seccion  <a href="views.html#VerSolicitudes">views.py</a>)</li>
+<li><strong>AprobarSolicitudDeUS</strong> - Vista para aprobar las solicitudes (salta a la seccion  <a href="views.html#AprobarSolicitudDeUS">views.py</a>)</li>
+<li><strong>RechazarSolicitudDeUS</strong> - Vista para rechazar solicitudes de US (salta a la seccion  <a href="views.html#RechazarSolicitudDeUS">views.py</a>)</li>
+<li><strong>DetalleSolicitud</strong> - Vista para ver los detalles de la solicitud (salta a la seccion  <a href="views.html#DetalleSolicitud">views.py</a>)</li>
+<li><strong>TableroKanbanView</strong> - Vista para ver el tablero Kanban (salta a la seccion  <a href="views.html#TableroKanbanView">views.py</a>)</li>
+<li><strong>CambiarEstadoUSView</strong> - Vista para cambiar los estados de US (salta a la seccion  <a href="views.html#CambiarEstadoUSView">views.py</a>)</li>
 </ol>
     </div>
     <div class='code'>
@@ -94,9 +120,9 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
         <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
-        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
-                <span class="n">proyectos</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span> <span class="c1">#Si el usuario esta autenticado</span>
+            <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span> <span class="c1">#Y si el usuario es administrador</span>
+                <span class="n">proyectos</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="c1">#Entonces dicho usuario podra ver los proyectos creados</span>
                 <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s1">&#39;admin&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
                     <span class="s1">&#39;proyectos&#39;</span><span class="p">:</span> <span class="n">proyectos</span>
@@ -107,7 +133,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
                     <span class="s2">&quot;proyectos&quot;</span><span class="p">:</span> <span class="p">[]</span>
                 <span class="p">}</span>
                 <span class="n">equipos</span> <span class="o">=</span> <span class="n">Equipo</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">miembros__id</span><span class="o">=</span><span class="n">usuario</span><span class="o">.</span><span class="n">id</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">equipo</span> <span class="ow">in</span> <span class="n">equipos</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">equipo</span> <span class="ow">in</span> <span class="n">equipos</span><span class="p">:</span> <span class="c1">#Tambien podra ver el equipo</span>
                     <span class="n">proyecto</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">equipo</span><span class="o">=</span><span class="n">equipo</span><span class="p">)</span>
                     <span class="n">context</span><span class="p">[</span><span class="s1">&#39;proyectos&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">proyecto</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;ver_proyectos.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
@@ -167,7 +193,8 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
             <span class="n">proyecto</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
                 <span class="n">nombre</span><span class="o">=</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;nombre&quot;</span><span class="p">],</span>
                 <span class="n">descripcion</span><span class="o">=</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;descripcion&quot;</span><span class="p">],</span>
-                <span class="n">estado</span><span class="o">=</span><span class="n">EstadoProyecto</span><span class="o">.</span><span class="n">NO_INICIADO</span>
+                <span class="n">estado</span><span class="o">=</span><span class="n">EstadoProyecto</span><span class="o">.</span><span class="n">NO_INICIADO</span><span class="p">,</span>
+                <span class="n">scrum_master</span><span class="o">=</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;scrum_master&quot;</span><span class="p">]</span>
             <span class="p">)</span>
             <span class="n">scrum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">crearRoles</span><span class="p">(</span><span class="n">proyecto</span><span class="p">)</span>
 
@@ -200,7 +227,10 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
         <span class="n">scrum</span> <span class="o">=</span> <span class="n">RolProyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Scrum Master&quot;</span><span class="p">,</span>
                                            <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Scrum Master del Proyecto.&quot;</span><span class="p">,</span>
                                            <span class="n">proyecto</span><span class="o">=</span><span class="n">proyecto</span><span class="p">)</span>
-        <span class="n">scrum</span><span class="o">.</span><span class="n">agregar_permisos</span><span class="p">([</span>
+        <span class="n">scrum</span><span class="o">.</span><span class="n">agregar_permisos</span><span class="p">([</span> <span class="c1">#Se definen los permisos para Crear Roles</span>
+            <span class="s2">&quot;Ver Solicitud&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Aceptar Solicitud&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Rechazar Solicitud&quot;</span><span class="p">,</span>
             <span class="s2">&quot;Ver RolProyecto&quot;</span><span class="p">,</span>
             <span class="s2">&quot;Crear RolProyecto&quot;</span><span class="p">,</span>
             <span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">,</span>
@@ -238,7 +268,9 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
         <span class="n">dev</span> <span class="o">=</span> <span class="n">RolProyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;Developer&quot;</span><span class="p">,</span>
                                          <span class="n">descripcion</span><span class="o">=</span><span class="s2">&quot;Developer del Proyecto.&quot;</span><span class="p">,</span>
                                          <span class="n">proyecto</span><span class="o">=</span><span class="n">proyecto</span><span class="p">)</span>
-        <span class="n">dev</span><span class="o">.</span><span class="n">agregar_permisos</span><span class="p">([</span>
+        <span class="n">dev</span><span class="o">.</span><span class="n">agregar_permisos</span><span class="p">([</span> <span class="c1">#Permisos para el Developer</span>
+            <span class="s2">&quot;Solicitar Aprobacion&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Ver Solicitud&quot;</span><span class="p">,</span>
             <span class="s2">&quot;Ver RolProyecto&quot;</span><span class="p">,</span>
             <span class="s2">&quot;Ver Permiso&quot;</span><span class="p">,</span>
             <span class="s2">&quot;Ver Usuario&quot;</span><span class="p">,</span>
@@ -273,12 +305,16 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
         <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
             <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
-                <span class="n">p</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">p</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ObjectDoesNotExist</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No se encontro el proyecto con esas caractetisticas&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;ver_proyectos&quot;</span><span class="p">)</span>
+
                 <span class="n">tipos</span> <span class="o">=</span> <span class="n">TipoUserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
 
-
-                <span class="n">sprint</span> <span class="o">=</span> <span class="n">Sprint</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">,</span> <span class="n">estado</span><span class="o">=</span><span class="n">EstadoProyecto</span><span class="o">.</span><span class="n">EN_PROCESO</span><span class="p">)</span>
-
+                <span class="n">sprint</span> <span class="o">=</span> <span class="n">Sprint</span><span class="o">.</span><span class="n">obtener_sprint_en_proceso</span><span class="p">(</span><span class="n">id_proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
 
                 <span class="n">us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">proyecto</span><span class="o">=</span><span class="n">p</span><span class="p">)</span>
                 <span class="n">equipo</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">equipo</span>
@@ -306,12 +342,60 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
                         <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;ver_proyectos&#39;</span><span class="p">)</span>
                     <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
                         <span class="s2">&quot;proyecto&quot;</span><span class="p">:</span> <span class="n">p</span><span class="p">,</span>
-                        <span class="s2">&quot;equipo&quot;</span><span class="p">:</span> <span class="n">equipo</span><span class="p">,</span>
+                        <span class="s2">&quot;sprint&quot;</span><span class="p">:</span> <span class="n">sprint</span><span class="p">,</span>
                         <span class="s2">&quot;tipos&quot;</span><span class="p">:</span> <span class="n">tipos</span><span class="p">,</span>
                         <span class="s2">&quot;todos_con_estados&quot;</span><span class="p">:</span> <span class="n">todos_con_estados</span><span class="p">,</span>
                         <span class="s2">&quot;us&quot;</span><span class="p">:</span> <span class="n">us</span><span class="p">,</span>
                         <span class="s2">&quot;id_proyecto&quot;</span><span class="p">:</span><span class="n">id_proyecto</span>
                     <span class="p">}</span>
+
+                <span class="k">if</span> <span class="n">sprint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                    <span class="n">user_stories</span> <span class="o">=</span> <span class="n">sprint</span><span class="o">.</span><span class="n">obtener_user_stories_del_sprint</span><span class="p">()</span>
+                    <span class="n">tipos_de_user_story</span> <span class="o">=</span> <span class="n">p</span><span class="o">.</span><span class="n">obtener_tipos_de_user_story_del_proyecto</span><span class="p">()</span>
+
+                    <span class="n">tipos_dict</span> <span class="o">=</span> <span class="p">[]</span>
+
+                    <span class="k">for</span> <span class="n">tipo</span> <span class="ow">in</span> <span class="n">tipos_de_user_story</span><span class="p">:</span>
+                        <span class="n">estados_dict</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">uss_dict</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="n">estados</span> <span class="o">=</span> <span class="n">EstadoUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tipoUserStory</span><span class="o">=</span><span class="n">tipo</span><span class="p">)</span>
+                        <span class="n">uss</span> <span class="o">=</span> <span class="n">user_stories</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">tipo</span><span class="o">=</span><span class="n">tipo</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">estado</span> <span class="ow">in</span> <span class="n">estados</span><span class="p">:</span>
+                            <span class="n">estados_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_to_dict</span><span class="p">(</span><span class="n">estado</span><span class="p">))</span>
+
+                        <span class="k">for</span> <span class="n">us</span> <span class="ow">in</span> <span class="n">uss</span><span class="p">:</span>
+                            <span class="n">us_dict</span> <span class="o">=</span> <span class="n">model_to_dict</span><span class="p">(</span><span class="n">us</span><span class="p">)</span>
+                            <span class="k">if</span> <span class="n">us</span><span class="o">.</span><span class="n">desarrollador</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                                <span class="n">us_dict</span><span class="p">[</span><span class="s2">&quot;desarrollador&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">us</span><span class="o">.</span><span class="n">desarrollador</span><span class="o">.</span><span class="n">email</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="n">us_dict</span><span class="p">[</span><span class="s2">&quot;desarrollador&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+                            <span class="n">uss_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">us_dict</span><span class="p">)</span>
+
+                        <span class="n">tipo_dict</span> <span class="o">=</span> <span class="n">model_to_dict</span><span class="p">(</span><span class="n">tipo</span><span class="p">)</span>
+                        <span class="n">tipo_dict</span><span class="p">[</span><span class="s2">&quot;estados&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">estados_dict</span>
+                        <span class="n">tipo_dict</span><span class="p">[</span><span class="s2">&quot;user_stories&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">uss_dict</span>
+
+                        <span class="n">tipos_dict</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tipo_dict</span><span class="p">)</span>
+                    <span class="n">id_tipo_us</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;id_tipo_us&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">id_tipo_us</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                        <span class="k">try</span><span class="p">:</span>
+                            <span class="n">tipo</span> <span class="o">=</span> <span class="n">tipos_de_user_story</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_tipo_us</span><span class="p">)</span>
+                            <span class="n">tipo_mostrado_en_pantalla</span> <span class="o">=</span> <span class="n">tipo</span><span class="o">.</span><span class="n">nombre</span>
+                        <span class="k">except</span> <span class="n">ObjectDoesNotExist</span><span class="p">:</span>
+                            <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No existe el tipo de usuario con esas caracteristicas&quot;</span><span class="p">)</span>
+                            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;detalle_proyecto&quot;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">id_tipo_us</span> <span class="o">=</span> <span class="n">tipos_dict</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+                        <span class="n">tipo</span> <span class="o">=</span> <span class="n">tipos_de_user_story</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_tipo_us</span><span class="p">)</span>
+                        <span class="n">tipo_mostrado_en_pantalla</span> <span class="o">=</span> <span class="n">tipo</span><span class="o">.</span><span class="n">nombre</span>
+
+                    <span class="n">id_estado_done</span> <span class="o">=</span> <span class="n">EstadoUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">nombre</span><span class="o">=</span><span class="s2">&quot;DONE&quot;</span><span class="p">,</span> <span class="n">tipoUserStory</span><span class="o">=</span><span class="n">tipo</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
+
+                    <span class="n">context</span><span class="p">[</span><span class="s2">&quot;tipos_dict&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tipos_dict</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s2">&quot;id_tipo_us&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_tipo_us</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s2">&quot;tipo_mostrado_en_pantalla&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tipo_mostrado_en_pantalla</span>
+                    <span class="n">context</span><span class="p">[</span><span class="s2">&quot;id_estado_done&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">id_estado_done</span>
                 <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;detalle_proyecto.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
             <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
@@ -918,7 +1002,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 
 <span class="k">class</span> <span class="nc">AsignarMiembroASprint</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar Sprint&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar Sprint&quot;</span><span class="p">]</span> <span class="c1">#Se edita el sprint para poder asignarle miembros</span>
 
     <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormMiembroSprint</span>
 
@@ -973,7 +1057,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 
 <span class="k">class</span> <span class="nc">AsignarUSASprint</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar Sprint&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar Sprint&quot;</span><span class="p">]</span> <span class="c1">#Se asigna permisos al US para el sprint</span>
 
     <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormUSSprint</span>
 
@@ -1036,7 +1120,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 
 <span class="k">class</span> <span class="nc">BorrarUSASprint</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar Sprint&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar Sprint&quot;</span><span class="p">]</span> <span class="c1">#Asignar permiso para borrar un US del Srpint</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_sprint</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
@@ -1090,7 +1174,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 
 <span class="k">class</span> <span class="nc">ActualizarMiembrosSprintView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar Sprint&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar Sprint&quot;</span><span class="p">]</span> <span class="c1">#Se actualizan los miembros del Sprint con el permiso correspondiente</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_sprint</span><span class="p">,</span> <span class="n">id_miembrosprint</span><span class="p">):</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
@@ -1132,7 +1216,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 
 <span class="k">class</span> <span class="nc">BorrarMiembrosSprintView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar Sprint&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar Sprint&quot;</span><span class="p">]</span> <span class="c1">#Borrar miembros del Sprint</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_sprint</span><span class="p">,</span> <span class="n">id_miembrosprint</span><span class="p">):</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
@@ -1166,7 +1250,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 <span class="k">class</span> <span class="nc">VerSprintsView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
 
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ver Sprint&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ver Sprint&quot;</span><span class="p">]</span> <span class="c1">#Se pueden ver los Sprint</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
@@ -1196,7 +1280,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 
 <span class="k">class</span> <span class="nc">ImportarMainPageView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">,</span> <span class="s2">&quot;Editar TipoUserStory&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">,</span> <span class="s2">&quot;Editar TipoUserStory&quot;</span><span class="p">]</span> <span class="c1">#Se importa la pagina principal donde se edita el rol del proyectp y los tipos de US</span>
 
     <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormImportarMainPage</span>
 
@@ -1230,7 +1314,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 <span class="k">class</span> <span class="nc">ImportarRolesDeOtroProyectoView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
 
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">,</span> <span class="s2">&quot;Editar TipoUserStory&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">,</span> <span class="s2">&quot;Editar TipoUserStory&quot;</span><span class="p">]</span> <span class="c1">#Se importan los roles de otros proyectos</span>
 
     <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormImportarRolesProyecto</span>
 
@@ -1270,7 +1354,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 <span class="k">class</span> <span class="nc">ImportarTiposUSDeOtroProyectoView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
 
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">,</span> <span class="s2">&quot;Editar TipoUserStory&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">,</span> <span class="s2">&quot;Editar TipoUserStory&quot;</span><span class="p">]</span> <span class="c1">#Se importan los tipos de US de otros proyectos</span>
 
     <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormImportarTiposDeUS</span>
 
@@ -1327,7 +1411,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 <span class="k">class</span> <span class="nc">IniciarSprint</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
 
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Iniciar Sprint&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Iniciar Sprint&quot;</span><span class="p">]</span> <span class="c1">#Funcion para iniciar un Sprint</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_sprint</span><span class="p">):</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
@@ -1378,7 +1462,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 
 <span class="k">class</span> <span class="nc">DetalleUSView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ver UserStory&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ver UserStory&quot;</span><span class="p">]</span> <span class="c1">#Se pueden ver con detalle los US</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
@@ -1410,7 +1494,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 <span class="k">class</span> <span class="nc">AgregarTrabajoAUserStory</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
     <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormAgregarTrabajoUS</span>
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Cargar trabajo UserStory&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Cargar trabajo UserStory&quot;</span><span class="p">]</span><span class="c1">#funcion para cargar trabajo a los US</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
@@ -1430,11 +1514,13 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
                     <span class="k">if</span> <span class="n">us</span><span class="o">.</span><span class="n">desarrollador</span> <span class="o">==</span> <span class="n">user</span><span class="p">:</span>
                         <span class="n">usuario_es_su_desarrollador</span> <span class="o">=</span> <span class="kc">True</span>
 
-                    <span class="k">if</span> <span class="n">usuario_es_su_desarrollador</span> <span class="ow">or</span> <span class="n">user</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">usuario_es_su_desarrollador</span> <span class="ow">and</span> <span class="n">us</span><span class="o">.</span><span class="n">estado</span><span class="o">.</span><span class="n">nombre</span> <span class="o">!=</span> <span class="s2">&quot;DONE&quot;</span><span class="p">:</span>
                         <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
                         <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;HUS/cargartrabajo.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;form&quot;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
                     <span class="k">elif</span> <span class="ow">not</span> <span class="n">usuario_es_su_desarrollador</span><span class="p">:</span>
                         <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;No podes cargarle trabajo a un US sin ser su desarrolador!&quot;</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">us</span><span class="o">.</span><span class="n">estado</span><span class="o">.</span><span class="n">nombre</span> <span class="o">==</span> <span class="s2">&quot;DONE&quot;</span><span class="p">:</span>
+                        <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;No podes cargarle trabajo a un US ya terminado!&quot;</span><span class="p">)</span>
                     <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;detalle_proyecto&quot;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s2">&quot;No podes cargarle trabajo a un US sin que el sprint este en proceso!&quot;</span><span class="p">)</span>
@@ -1467,7 +1553,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 <span class="k">class</span> <span class="nc">AsignarDevAUserStory</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
 
     <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormAsignarDevAUserStory</span>
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar UserStory&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar UserStory&quot;</span><span class="p">]</span> <span class="c1">#Funcion para asignar developer a un US</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
@@ -1523,7 +1609,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 <span class="k">class</span> <span class="nc">ActualizarRolProyecto</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
     <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormRolProyecto</span>
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">]</span> <span class="c1">#Se asignan roles al proyecto</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_rol</span><span class="p">):</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
@@ -1564,7 +1650,7 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
 
 <span class="k">class</span> <span class="nc">AsignarRolProyectoAUsuario</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
     <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormAsignarRolAUsuario</span>
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Editar RolProyecto&quot;</span><span class="p">]</span> <span class="c1">#Se asignan los roles del proyecto al usuario</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_equipo</span><span class="p">,</span> <span class="n">id_usuario</span><span class="p">):</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
@@ -1607,9 +1693,197 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
         <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/asignar_rol_proyecto.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
 
 
+<span class="k">class</span> <span class="nc">SolicitarAprobacionDeUS</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormSolicitarAprobacion</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Solicitar Aprobacion&quot;</span><span class="p">]</span> <span class="c1">#Se solicitan aprobacion de us</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_us</span><span class="p">,</span> <span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ObjectDoesNotExist</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No se encuentra el US con esas caracteristicas&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;detalle_proyecto&quot;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">us</span><span class="o">.</span><span class="n">total_horas_trabajadas</span> <span class="o">!=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">us</span><span class="o">.</span><span class="n">desarrollador</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
+                    <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/solicitar_aprobacion.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+                <span class="k">elif</span> <span class="n">us</span><span class="o">.</span><span class="n">total_horas_trabajadas</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+                                   <span class="s2">&quot;No se puede solicitar una aprobacion para un US que no tiene horas trabajadas!&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;detalle_US&quot;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">us</span><span class="o">.</span><span class="n">desarrollador</span> <span class="o">==</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+                                   <span class="s2">&quot;No se puede solicitar la aprobacion de un US si no sos su desarrollador!&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;detalle_US&quot;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">request</span><span class="o">.</span><span class="n">FILES</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
+
+            <span class="n">AprobacionDeUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">solicitado_por</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span>
+                                          <span class="n">descripcion_del_trabajo</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;descripcion_del_trabajo&quot;</span><span class="p">],</span>
+                                          <span class="n">archivos</span><span class="o">=</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;archivos&quot;</span><span class="p">],</span>
+                                          <span class="n">user_story_id</span><span class="o">=</span><span class="n">id_us</span><span class="p">,</span>
+                                          <span class="n">fecha</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span>
+                                          <span class="n">numero</span><span class="o">=</span><span class="n">AprobacionDeUS</span><span class="o">.</span><span class="n">obtener_ultimo_valor_de_solicitud</span><span class="p">(</span><span class="n">id_us</span><span class="o">=</span><span class="n">id_us</span><span class="p">)</span>
+                                          <span class="p">)</span>
+
+            <span class="n">HistorialUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="s2">&quot;Se solicitó la aprobación del US para terminarlo&quot;</span><span class="p">,</span>
+                                       <span class="n">fecha</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span>
+                                       <span class="n">user_story_id</span><span class="o">=</span><span class="n">id_us</span><span class="p">,</span> <span class="n">usuario</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">horas_trabajadas</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;detalle_US&#39;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/solicitar_aprobacion.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+
+
+<span class="k">class</span> <span class="nc">VerSolicitudes</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ver Solicitud&quot;</span><span class="p">]</span> <span class="c1">#Ver las solicitudes</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="n">solicitudes</span> <span class="o">=</span> <span class="n">AprobacionDeUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">user_story_id</span><span class="o">=</span><span class="n">id_us</span><span class="p">,</span> <span class="n">user_story__proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+                <span class="n">us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_us</span><span class="p">,</span> <span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;solicitudes&#39;</span><span class="p">:</span> <span class="n">solicitudes</span><span class="p">,</span>
+                    <span class="s1">&#39;id_proyecto&#39;</span><span class="p">:</span> <span class="n">id_proyecto</span><span class="p">,</span>
+                    <span class="s2">&quot;us&quot;</span><span class="p">:</span> <span class="n">us</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/solicitudes.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">AprobarSolicitudDeUS</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Aceptar Solicitud&quot;</span><span class="p">]</span> <span class="c1">#Se aceptan las solicitudes</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">,</span> <span class="n">id_solicitud</span><span class="p">):</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">proyecto</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+                    <span class="n">us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_us</span><span class="p">,</span> <span class="n">proyecto</span><span class="o">=</span><span class="n">proyecto</span><span class="p">)</span>
+                    <span class="n">solicitud</span> <span class="o">=</span> <span class="n">AprobacionDeUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_solicitud</span><span class="p">,</span> <span class="n">user_story</span><span class="o">=</span><span class="n">us</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="n">ObjectDoesNotExist</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No se encuentra la solicitud con esas caracteristicas&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;detalle_proyecto&quot;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">solicitud</span><span class="o">.</span><span class="n">estado</span> <span class="o">==</span> <span class="n">EstadoAprobacion</span><span class="o">.</span><span class="n">EN_ESPERA</span><span class="p">:</span>
+                    <span class="n">solicitud</span><span class="o">.</span><span class="n">estado</span> <span class="o">=</span> <span class="n">EstadoAprobacion</span><span class="o">.</span><span class="n">ACEPTADO</span>
+                    <span class="n">solicitud</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+                    <span class="n">us</span><span class="o">.</span><span class="n">aprobado_por_scrum_master</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">us</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+                    <span class="n">HistorialUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="s2">&quot;US aprobado por Scrum Master&quot;</span><span class="p">,</span>
+                                               <span class="n">fecha</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span>
+                                               <span class="n">user_story_id</span><span class="o">=</span><span class="n">id_us</span><span class="p">,</span> <span class="n">usuario</span><span class="o">=</span><span class="n">proyecto</span><span class="o">.</span><span class="n">scrum_master</span><span class="p">,</span> <span class="n">horas_trabajadas</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+                    <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;US aprobado!&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;detalle_proyecto&quot;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;Esta solicitud ya fue tratada.&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;detalle_proyecto&quot;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">RechazarSolicitudDeUS</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Rechazar Solicitud&quot;</span><span class="p">]</span> <span class="c1">#se rechazan las solicitudes</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormRechazarSolicitud</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">,</span> <span class="n">id_solicitud</span><span class="p">):</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">solicitud</span> <span class="o">=</span> <span class="n">AprobacionDeUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_solicitud</span><span class="p">,</span> <span class="n">user_story_id</span><span class="o">=</span><span class="n">id_us</span><span class="p">,</span> <span class="n">user_story__proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+
+                <span class="k">except</span> <span class="n">ObjectDoesNotExist</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No se encuentra la solicitud con esas caracteristicas&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;detalle_proyecto&quot;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">solicitud</span><span class="o">.</span><span class="n">estado</span> <span class="o">==</span> <span class="n">EstadoAprobacion</span><span class="o">.</span><span class="n">EN_ESPERA</span><span class="p">:</span>
+                    <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+                    <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/rechazar_solicitud.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;Esta solicitud ya fue tratada.&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;detalle_proyecto&quot;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">,</span> <span class="n">id_solicitud</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span> <span class="o">=</span> <span class="n">form</span><span class="o">.</span><span class="n">cleaned_data</span>
+
+            <span class="n">solicitud</span> <span class="o">=</span> <span class="n">AprobacionDeUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_solicitud</span><span class="p">,</span> <span class="n">user_story_id</span><span class="o">=</span><span class="n">id_us</span><span class="p">)</span>
+
+            <span class="n">solicitud</span><span class="o">.</span><span class="n">razon_de_rechazo</span> <span class="o">=</span> <span class="n">form</span><span class="p">[</span><span class="s2">&quot;razon_de_rechazo&quot;</span><span class="p">]</span>
+            <span class="n">solicitud</span><span class="o">.</span><span class="n">estado</span> <span class="o">=</span> <span class="n">EstadoAprobacion</span><span class="o">.</span><span class="n">RECHAZADO</span>
+            <span class="n">solicitud</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+
+            <span class="n">HistorialUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">log</span><span class="o">=</span><span class="s2">&quot;Solicitud de aprobación rechazado por scrum master&quot;</span><span class="p">,</span>
+                                       <span class="n">fecha</span><span class="o">=</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">(),</span>
+                                       <span class="n">user_story_id</span><span class="o">=</span><span class="n">id_us</span><span class="p">,</span> <span class="n">usuario</span><span class="o">=</span><span class="n">request</span><span class="o">.</span><span class="n">user</span><span class="p">,</span> <span class="n">horas_trabajadas</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;detalle_US&#39;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/solicitar_aprobacion.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+
+
+<span class="k">class</span> <span class="nc">DetalleSolicitud</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ver Solicitud&quot;</span><span class="p">]</span> <span class="c1">#Se ven los detalles de la solicitud</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">,</span> <span class="n">id_solicitud</span><span class="p">):</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_us</span><span class="p">,</span> <span class="n">proyecto_id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+                    <span class="n">solicitud</span> <span class="o">=</span> <span class="n">AprobacionDeUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_solicitud</span><span class="p">,</span> <span class="n">user_story</span><span class="o">=</span><span class="n">us</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ObjectDoesNotExist</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No se encuentra a la solicitud con esos requerimientos!&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;detalle_proyecto&quot;</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">)</span>
+
+                <span class="n">puede_aprobar_y_rechazar</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Aprobar Solicitud&quot;</span><span class="p">,</span> <span class="s2">&quot;Rechazar Solicitud&quot;</span><span class="p">],</span> <span class="n">id_proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+
+                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;puede_aprobar_y_rechazar&quot;</span> <span class="p">:</span> <span class="n">puede_aprobar_y_rechazar</span><span class="p">,</span>
+                    <span class="s1">&#39;solicitud&#39;</span><span class="p">:</span> <span class="n">solicitud</span><span class="p">,</span>
+                    <span class="s1">&#39;id_proyecto&#39;</span><span class="p">:</span> <span class="n">id_proyecto</span><span class="p">,</span>
+                    <span class="s2">&quot;us&quot;</span><span class="p">:</span> <span class="n">us</span><span class="p">,</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;US/detalle_solicitud.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span>
+
 <span class="k">class</span> <span class="nc">TableroKanbanView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
 
-    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ver Proyecto&quot;</span><span class="p">]</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ver Proyecto&quot;</span><span class="p">]</span> <span class="c1">#Funcion para ver el tablero kanban</span>
 
     <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">):</span>
         <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
@@ -1629,10 +1903,6 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
                 <span class="k">if</span> <span class="n">sprint</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">user_stories</span> <span class="o">=</span> <span class="n">sprint</span><span class="o">.</span><span class="n">obtener_user_stories_del_sprint</span><span class="p">()</span>
                     <span class="n">tipos_de_user_story</span> <span class="o">=</span> <span class="n">proyecto</span><span class="o">.</span><span class="n">obtener_tipos_de_user_story_del_proyecto</span><span class="p">()</span>
-
-
-
-
 
                     <span class="n">tipos_dict</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -1672,6 +1942,39 @@ Actualmente contamos con los siguientes views en Proyecto:</p>
                         <span class="s2">&quot;tipo_mostrado_en_pantalla&quot;</span><span class="p">:</span> <span class="n">tipo_mostrado_en_pantalla</span>
                     <span class="p">}</span>
                     <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;kanban/tablero.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">CambiarEstadoUSView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ver UserStory&quot;</span><span class="p">]</span> <span class="c1">#Cambiar el estado de la US</span>
+
+    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="p">,</span> <span class="n">id_us</span><span class="p">):</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">,</span> <span class="n">id_proyecto</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">proyecto</span> <span class="o">=</span> <span class="n">Proyecto</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_proyecto</span><span class="p">)</span>
+                    <span class="n">us</span> <span class="o">=</span> <span class="n">UserStory</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_us</span><span class="p">,</span> <span class="n">proyecto</span><span class="o">=</span><span class="n">proyecto</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ObjectDoesNotExist</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No se encontro el proyecto con esas caractetisticas&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;ver_proyectos&quot;</span><span class="p">)</span>
+
+                <span class="n">body</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+
+                <span class="n">id_estado</span> <span class="o">=</span> <span class="n">body</span><span class="p">[</span><span class="s2">&quot;estado&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span>
+
+                <span class="n">nuevo_estado</span> <span class="o">=</span> <span class="n">EstadoUS</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_estado</span><span class="p">)</span>
+
+                <span class="n">us</span><span class="o">.</span><span class="n">estado</span> <span class="o">=</span> <span class="n">nuevo_estado</span>
+                <span class="n">us</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">HttpResponse</span><span class="p">(</span><span class="n">status</span><span class="o">=</span><span class="mi">200</span><span class="p">)</span>
+
             <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
