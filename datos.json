@@ -1,1268 +1,2278 @@
 [
-      {
-      "model":"Usuario.permisos",
-      "pk":2,
-      "fields":{
-         "nombre":"Crear Permiso",
-         "descripcion":"Permiso para Crear Permisos"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":3,
-      "fields":{
-         "nombre":"Editar Permiso",
-         "descripcion":"Permiso para Editar Permisos"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":4,
-      "fields":{
-         "nombre":"Borrar Permiso",
-         "descripcion":"Permiso para Borrar Permisos"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":5,
-      "fields":{
-         "nombre":"Ver RolSistema",
-         "descripcion":"Permiso para Ver Roles de Sistema"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":6,
-      "fields":{
-         "nombre":"Asignar RolSistema",
-         "descripcion":"Permiso para Asignar Roles de Sistema"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":7,
-      "fields":{
-         "nombre":"Crear RolSistema",
-         "descripcion":"Permiso para Crear Roles de Sistema"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":8,
-      "fields":{
-         "nombre":"Editar RolSistema",
-         "descripcion":"Permiso para Editar Roles de Sistema"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":9,
-      "fields":{
-         "nombre":"Borrar RolSistema",
-         "descripcion":"Permiso para Borrar Roles de Sistema"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":10,
-      "fields":{
-         "nombre":"Asignar RolProyecto",
-         "descripcion":"Permiso para Asignar Roles de Proyecto"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":11,
-      "fields":{
-         "nombre":"Ver RolProyecto",
-         "descripcion":"Permiso para Ver Roles de Proyecto"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":12,
-      "fields":{
-         "nombre":"Crear RolProyecto",
-         "descripcion":"Permiso para Crear Roles de Proyecto"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":13,
-      "fields":{
-         "nombre":"Editar RolProyecto",
-         "descripcion":"Permiso para Editar Roles de Proyecto"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":14,
-      "fields":{
-         "nombre":"Borrar RolProyecto",
-         "descripcion":"Permiso para Borrar Roles de Proyecto"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":15,
-      "fields":{
-         "nombre":"Ver Usuario",
-         "descripcion":"Permiso para Ver Usuarios"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":16,
-      "fields":{
-         "nombre":"Crear Usuario",
-         "descripcion":"Permiso para Crear Usuarios"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":17,
-      "fields":{
-         "nombre":"Editar Usuario",
-         "descripcion":"Permiso para Editar Usuarios"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":18,
-      "fields":{
-         "nombre":"Borrar Usuario",
-         "descripcion":"Permiso para Borrar Usuarios"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":19,
-      "fields":{
-         "nombre":"Ver Equipo",
-         "descripcion":"Permiso para Ver Equipo"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":20,
-      "fields":{
-         "nombre":"Crear Equipo",
-         "descripcion":"Permiso para Crear Equipo"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":21,
-      "fields":{
-         "nombre":"Editar Equipo",
-         "descripcion":"Permiso para Editar Equipo"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":22,
-      "fields":{
-         "nombre":"Borrar Equipo",
-         "descripcion":"Permiso para Borrar Equipo"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":23,
-      "fields":{
-         "nombre":"Ver Proyecto",
-         "descripcion":"Permiso para Ver Proyecto"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":24,
-      "fields":{
-         "nombre":"Crear Proyecto",
-         "descripcion":"Permiso para Crear Proyecto"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":25,
-      "fields":{
-         "nombre":"Editar Proyecto",
-         "descripcion":"Permiso para Editar Proyecto"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":26,
-      "fields":{
-         "nombre":"Borrar Proyecto",
-         "descripcion":"Permiso para Borrar Proyecto"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":27,
-      "fields":{
-         "nombre":"Iniciar Proyecto",
-         "descripcion":"Permiso para Iniciar Proyecto"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":28,
-      "fields":{
-         "nombre":"Cancelar Proyecto",
-         "descripcion":"Permiso para Cancelar Proyecto"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":29,
-      "fields":{
-         "nombre":"Ver Sprint",
-         "descripcion":"Permiso para Ver Sprint"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":30,
-      "fields":{
-         "nombre":"Crear Sprint",
-         "descripcion":"Permiso para Crear Sprint"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":31,
-      "fields":{
-         "nombre":"Editar Sprint",
-         "descripcion":"Permiso para Editar Sprint"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":32,
-      "fields":{
-         "nombre":"Borrar Sprint",
-         "descripcion":"Permiso para Borrar Sprint"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":33,
-      "fields":{
-         "nombre":"Iniciar Sprint",
-         "descripcion":"Permiso para Iniciar Sprint"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":34,
-      "fields":{
-         "nombre":"Cancelar Sprint",
-         "descripcion":"Permiso para Cancelar Sprint"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":35,
-      "fields":{
-         "nombre":"Ver TipoUserStory",
-         "descripcion":"Permiso para Ver Tipos de User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":36,
-      "fields":{
-         "nombre":"Crear TipoUserStory",
-         "descripcion":"Permiso para Crear Tipos de User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":37,
-      "fields":{
-         "nombre":"Editar TipoUserStory",
-         "descripcion":"Permiso para Editar Tipos de User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":38,
-      "fields":{
-         "nombre":"Borrar TipoUserStory",
-         "descripcion":"Permiso para Borrar Tipos de User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":39,
-      "fields":{
-         "nombre":"Ver EstadoUS",
-         "descripcion":"Permiso para Ver Estados de User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":40,
-      "fields":{
-         "nombre":"Crear EstadoUS",
-         "descripcion":"Permiso para Crear Estados de User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":41,
-      "fields":{
-         "nombre":"Editar EstadoUS",
-         "descripcion":"Permiso para Editar Estados de User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":42,
-      "fields":{
-         "nombre":"Borrar EstadoUS",
-         "descripcion":"Permiso para Borrar Estados de User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":43,
-      "fields":{
-         "nombre":"Cambiar EstadoUS",
-         "descripcion":"Permiso para Cambiar Estados de User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":44,
-      "fields":{
-         "nombre":"Ver UserStory",
-         "descripcion":"Permiso para Ver User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":45,
-      "fields":{
-         "nombre":"Crear UserStory",
-         "descripcion":"Permiso para Crear User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":46,
-      "fields":{
-         "nombre":"Editar UserStory",
-         "descripcion":"Permiso para Editar User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":47,
-      "fields":{
-         "nombre":"Borrar UserStory",
-         "descripcion":"Permiso para Borrar User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":48,
-      "fields":{
-         "nombre":"Ver ProductBacklog",
-         "descripcion":"Permiso para Ver Product Backlog"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":49,
-      "fields":{
-         "nombre":"Crear ProductBacklog",
-         "descripcion":"Permiso para Crear Product Backlog"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":50,
-      "fields":{
-         "nombre":"Editar ProductBacklog",
-         "descripcion":"Permiso para Editar Product Backlog"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":51,
-      "fields":{
-         "nombre":"Borrar ProductBacklog",
-         "descripcion":"Permiso para Borrar Product Backlog"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":52,
-      "fields":{
-         "nombre":"Ver Kanban",
-         "descripcion":"Permiso para Ver Kanban"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":53,
-      "fields":{
-         "nombre":"Crear Kanban",
-         "descripcion":"Permiso para Crear Kanban"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":54,
-      "fields":{
-         "nombre":"Editar Kanban",
-         "descripcion":"Permiso para Editar Kanban"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":55,
-      "fields":{
-         "nombre":"Borrar Kanban",
-         "descripcion":"Permiso para Borrar Kanban"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":56,
-      "fields":{
-         "nombre":"Cargar trabajo UserStory",
-         "descripcion":"Permiso para Cargar trabajo en el User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":57,
-      "fields":{
-         "nombre":"Solicitar Aprobacion",
-         "descripcion":"Permiso para Solicitar Aprobacion de User Story"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":58,
-      "fields":{
-         "nombre":"Ver Solicitud",
-         "descripcion":"Permiso para Ver Solicitud"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":59,
-      "fields":{
-         "nombre":"Aceptar Solicitud",
-         "descripcion":"Permiso para Aceptar Solicitud"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":60,
-      "fields":{
-         "nombre":"Rechazar Solicitud",
-         "descripcion":"Permiso para Rechazar Solicitud"
-      }
-   },
-   {
-      "model":"Usuario.permisos",
-      "pk":61,
-      "fields":{
-         "nombre":"Permiso de administrador",
-         "descripcion":"Permiso para administrador de sistema."
-      }
-   },
-   {
-      "model":"Usuario.rolsistema",
-      "pk":1,
-      "fields":{
-         "nombre":"admin",
-         "descripcion":"Administrador del sistema.",
-         "permisos":[
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15,
-            16,
-            17,
-            18,
-            19,
-            20,
-            21,
-            22,
-            23,
-            24,
-            25,
-            26,
-            27,
-            28,
-            29,
-            30,
-            31,
-            32,
-            33,
-            34,
-            35,
-            36,
-            37,
-            38,
-            39,
-            40,
-            41,
-            42,
-            43,
-            44,
-            45,
-            46,
-            47,
-            48,
-            49,
-            50,
-            51,
-            52,
-            53,
-            54,
-            55,
-            56,
-            57,
-            58,
-            59,
-            60,
-            61
-         ]
-      }
-   },
-   {
-      "model":"Usuario.rolsistema",
-      "pk":2,
-      "fields":{
-         "nombre":"Usuario simple",
-         "descripcion":"Rol para usuarios simples",
-         "permisos":[
+    {
+       "model":"auth.permission",
+       "pk":1,
+       "fields":{
+          "name":"Can add log entry",
+          "content_type":1,
+          "codename":"add_logentry"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":2,
+       "fields":{
+          "name":"Can change log entry",
+          "content_type":1,
+          "codename":"change_logentry"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":3,
+       "fields":{
+          "name":"Can delete log entry",
+          "content_type":1,
+          "codename":"delete_logentry"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":4,
+       "fields":{
+          "name":"Can view log entry",
+          "content_type":1,
+          "codename":"view_logentry"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":5,
+       "fields":{
+          "name":"Can add permission",
+          "content_type":2,
+          "codename":"add_permission"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":6,
+       "fields":{
+          "name":"Can change permission",
+          "content_type":2,
+          "codename":"change_permission"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":7,
+       "fields":{
+          "name":"Can delete permission",
+          "content_type":2,
+          "codename":"delete_permission"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":8,
+       "fields":{
+          "name":"Can view permission",
+          "content_type":2,
+          "codename":"view_permission"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":9,
+       "fields":{
+          "name":"Can add group",
+          "content_type":3,
+          "codename":"add_group"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":10,
+       "fields":{
+          "name":"Can change group",
+          "content_type":3,
+          "codename":"change_group"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":11,
+       "fields":{
+          "name":"Can delete group",
+          "content_type":3,
+          "codename":"delete_group"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":12,
+       "fields":{
+          "name":"Can view group",
+          "content_type":3,
+          "codename":"view_group"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":13,
+       "fields":{
+          "name":"Can add content type",
+          "content_type":4,
+          "codename":"add_contenttype"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":14,
+       "fields":{
+          "name":"Can change content type",
+          "content_type":4,
+          "codename":"change_contenttype"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":15,
+       "fields":{
+          "name":"Can delete content type",
+          "content_type":4,
+          "codename":"delete_contenttype"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":16,
+       "fields":{
+          "name":"Can view content type",
+          "content_type":4,
+          "codename":"view_contenttype"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":17,
+       "fields":{
+          "name":"Can add session",
+          "content_type":5,
+          "codename":"add_session"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":18,
+       "fields":{
+          "name":"Can change session",
+          "content_type":5,
+          "codename":"change_session"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":19,
+       "fields":{
+          "name":"Can delete session",
+          "content_type":5,
+          "codename":"delete_session"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":20,
+       "fields":{
+          "name":"Can view session",
+          "content_type":5,
+          "codename":"view_session"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":21,
+       "fields":{
+          "name":"Can add sistema",
+          "content_type":6,
+          "codename":"add_sistema"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":22,
+       "fields":{
+          "name":"Can change sistema",
+          "content_type":6,
+          "codename":"change_sistema"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":23,
+       "fields":{
+          "name":"Can delete sistema",
+          "content_type":6,
+          "codename":"delete_sistema"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":24,
+       "fields":{
+          "name":"Can view sistema",
+          "content_type":6,
+          "codename":"view_sistema"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":25,
+       "fields":{
+          "name":"Can add permisos",
+          "content_type":7,
+          "codename":"add_permisos"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":26,
+       "fields":{
+          "name":"Can change permisos",
+          "content_type":7,
+          "codename":"change_permisos"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":27,
+       "fields":{
+          "name":"Can delete permisos",
+          "content_type":7,
+          "codename":"delete_permisos"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":28,
+       "fields":{
+          "name":"Can view permisos",
+          "content_type":7,
+          "codename":"view_permisos"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":29,
+       "fields":{
+          "name":"Can add rol proyecto",
+          "content_type":8,
+          "codename":"add_rolproyecto"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":30,
+       "fields":{
+          "name":"Can change rol proyecto",
+          "content_type":8,
+          "codename":"change_rolproyecto"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":31,
+       "fields":{
+          "name":"Can delete rol proyecto",
+          "content_type":8,
+          "codename":"delete_rolproyecto"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":32,
+       "fields":{
+          "name":"Can view rol proyecto",
+          "content_type":8,
+          "codename":"view_rolproyecto"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":33,
+       "fields":{
+          "name":"Can add rol sistema",
+          "content_type":9,
+          "codename":"add_rolsistema"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":34,
+       "fields":{
+          "name":"Can change rol sistema",
+          "content_type":9,
+          "codename":"change_rolsistema"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":35,
+       "fields":{
+          "name":"Can delete rol sistema",
+          "content_type":9,
+          "codename":"delete_rolsistema"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":36,
+       "fields":{
+          "name":"Can view rol sistema",
+          "content_type":9,
+          "codename":"view_rolsistema"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":37,
+       "fields":{
+          "name":"Can add usuario",
+          "content_type":10,
+          "codename":"add_usuario"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":38,
+       "fields":{
+          "name":"Can change usuario",
+          "content_type":10,
+          "codename":"change_usuario"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":39,
+       "fields":{
+          "name":"Can delete usuario",
+          "content_type":10,
+          "codename":"delete_usuario"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":40,
+       "fields":{
+          "name":"Can view usuario",
+          "content_type":10,
+          "codename":"view_usuario"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":41,
+       "fields":{
+          "name":"Can add equipo",
+          "content_type":11,
+          "codename":"add_equipo"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":42,
+       "fields":{
+          "name":"Can change equipo",
+          "content_type":11,
+          "codename":"change_equipo"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":43,
+       "fields":{
+          "name":"Can delete equipo",
+          "content_type":11,
+          "codename":"delete_equipo"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":44,
+       "fields":{
+          "name":"Can view equipo",
+          "content_type":11,
+          "codename":"view_equipo"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":45,
+       "fields":{
+          "name":"Can add proyecto",
+          "content_type":12,
+          "codename":"add_proyecto"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":46,
+       "fields":{
+          "name":"Can change proyecto",
+          "content_type":12,
+          "codename":"change_proyecto"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":47,
+       "fields":{
+          "name":"Can delete proyecto",
+          "content_type":12,
+          "codename":"delete_proyecto"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":48,
+       "fields":{
+          "name":"Can view proyecto",
+          "content_type":12,
+          "codename":"view_proyecto"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":49,
+       "fields":{
+          "name":"Can add estado us",
+          "content_type":13,
+          "codename":"add_estadous"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":50,
+       "fields":{
+          "name":"Can change estado us",
+          "content_type":13,
+          "codename":"change_estadous"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":51,
+       "fields":{
+          "name":"Can delete estado us",
+          "content_type":13,
+          "codename":"delete_estadous"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":52,
+       "fields":{
+          "name":"Can view estado us",
+          "content_type":13,
+          "codename":"view_estadous"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":53,
+       "fields":{
+          "name":"Can add sprint",
+          "content_type":14,
+          "codename":"add_sprint"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":54,
+       "fields":{
+          "name":"Can change sprint",
+          "content_type":14,
+          "codename":"change_sprint"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":55,
+       "fields":{
+          "name":"Can delete sprint",
+          "content_type":14,
+          "codename":"delete_sprint"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":56,
+       "fields":{
+          "name":"Can view sprint",
+          "content_type":14,
+          "codename":"view_sprint"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":57,
+       "fields":{
+          "name":"Can add tipo user story",
+          "content_type":15,
+          "codename":"add_tipouserstory"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":58,
+       "fields":{
+          "name":"Can change tipo user story",
+          "content_type":15,
+          "codename":"change_tipouserstory"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":59,
+       "fields":{
+          "name":"Can delete tipo user story",
+          "content_type":15,
+          "codename":"delete_tipouserstory"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":60,
+       "fields":{
+          "name":"Can view tipo user story",
+          "content_type":15,
+          "codename":"view_tipouserstory"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":61,
+       "fields":{
+          "name":"Can add user story",
+          "content_type":16,
+          "codename":"add_userstory"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":62,
+       "fields":{
+          "name":"Can change user story",
+          "content_type":16,
+          "codename":"change_userstory"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":63,
+       "fields":{
+          "name":"Can delete user story",
+          "content_type":16,
+          "codename":"delete_userstory"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":64,
+       "fields":{
+          "name":"Can view user story",
+          "content_type":16,
+          "codename":"view_userstory"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":65,
+       "fields":{
+          "name":"Can add orden estado",
+          "content_type":17,
+          "codename":"add_ordenestado"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":66,
+       "fields":{
+          "name":"Can change orden estado",
+          "content_type":17,
+          "codename":"change_ordenestado"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":67,
+       "fields":{
+          "name":"Can delete orden estado",
+          "content_type":17,
+          "codename":"delete_ordenestado"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":68,
+       "fields":{
+          "name":"Can view orden estado",
+          "content_type":17,
+          "codename":"view_ordenestado"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":69,
+       "fields":{
+          "name":"Can add miembros sprint",
+          "content_type":18,
+          "codename":"add_miembrossprint"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":70,
+       "fields":{
+          "name":"Can change miembros sprint",
+          "content_type":18,
+          "codename":"change_miembrossprint"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":71,
+       "fields":{
+          "name":"Can delete miembros sprint",
+          "content_type":18,
+          "codename":"delete_miembrossprint"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":72,
+       "fields":{
+          "name":"Can view miembros sprint",
+          "content_type":18,
+          "codename":"view_miembrossprint"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":73,
+       "fields":{
+          "name":"Can add historial us",
+          "content_type":19,
+          "codename":"add_historialus"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":74,
+       "fields":{
+          "name":"Can change historial us",
+          "content_type":19,
+          "codename":"change_historialus"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":75,
+       "fields":{
+          "name":"Can delete historial us",
+          "content_type":19,
+          "codename":"delete_historialus"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":76,
+       "fields":{
+          "name":"Can view historial us",
+          "content_type":19,
+          "codename":"view_historialus"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":77,
+       "fields":{
+          "name":"Can add aprobacion de us",
+          "content_type":20,
+          "codename":"add_aprobaciondeus"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":78,
+       "fields":{
+          "name":"Can change aprobacion de us",
+          "content_type":20,
+          "codename":"change_aprobaciondeus"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":79,
+       "fields":{
+          "name":"Can delete aprobacion de us",
+          "content_type":20,
+          "codename":"delete_aprobaciondeus"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":80,
+       "fields":{
+          "name":"Can view aprobacion de us",
+          "content_type":20,
+          "codename":"view_aprobaciondeus"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":81,
+       "fields":{
+          "name":"Can add site",
+          "content_type":21,
+          "codename":"add_site"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":82,
+       "fields":{
+          "name":"Can change site",
+          "content_type":21,
+          "codename":"change_site"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":83,
+       "fields":{
+          "name":"Can delete site",
+          "content_type":21,
+          "codename":"delete_site"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":84,
+       "fields":{
+          "name":"Can view site",
+          "content_type":21,
+          "codename":"view_site"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":85,
+       "fields":{
+          "name":"Can add email address",
+          "content_type":22,
+          "codename":"add_emailaddress"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":86,
+       "fields":{
+          "name":"Can change email address",
+          "content_type":22,
+          "codename":"change_emailaddress"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":87,
+       "fields":{
+          "name":"Can delete email address",
+          "content_type":22,
+          "codename":"delete_emailaddress"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":88,
+       "fields":{
+          "name":"Can view email address",
+          "content_type":22,
+          "codename":"view_emailaddress"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":89,
+       "fields":{
+          "name":"Can add email confirmation",
+          "content_type":23,
+          "codename":"add_emailconfirmation"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":90,
+       "fields":{
+          "name":"Can change email confirmation",
+          "content_type":23,
+          "codename":"change_emailconfirmation"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":91,
+       "fields":{
+          "name":"Can delete email confirmation",
+          "content_type":23,
+          "codename":"delete_emailconfirmation"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":92,
+       "fields":{
+          "name":"Can view email confirmation",
+          "content_type":23,
+          "codename":"view_emailconfirmation"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":93,
+       "fields":{
+          "name":"Can add social account",
+          "content_type":24,
+          "codename":"add_socialaccount"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":94,
+       "fields":{
+          "name":"Can change social account",
+          "content_type":24,
+          "codename":"change_socialaccount"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":95,
+       "fields":{
+          "name":"Can delete social account",
+          "content_type":24,
+          "codename":"delete_socialaccount"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":96,
+       "fields":{
+          "name":"Can view social account",
+          "content_type":24,
+          "codename":"view_socialaccount"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":97,
+       "fields":{
+          "name":"Can add social application",
+          "content_type":25,
+          "codename":"add_socialapp"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":98,
+       "fields":{
+          "name":"Can change social application",
+          "content_type":25,
+          "codename":"change_socialapp"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":99,
+       "fields":{
+          "name":"Can delete social application",
+          "content_type":25,
+          "codename":"delete_socialapp"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":100,
+       "fields":{
+          "name":"Can view social application",
+          "content_type":25,
+          "codename":"view_socialapp"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":101,
+       "fields":{
+          "name":"Can add social application token",
+          "content_type":26,
+          "codename":"add_socialtoken"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":102,
+       "fields":{
+          "name":"Can change social application token",
+          "content_type":26,
+          "codename":"change_socialtoken"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":103,
+       "fields":{
+          "name":"Can delete social application token",
+          "content_type":26,
+          "codename":"delete_socialtoken"
+       }
+    },
+    {
+       "model":"auth.permission",
+       "pk":104,
+       "fields":{
+          "name":"Can view social application token",
+          "content_type":26,
+          "codename":"view_socialtoken"
+       }
+    },
+    {
+       "model":"sessions.session",
+       "pk":"0vqo9w07bpmfivip0tpkpb0mxzp72csg",
+       "fields":{
+          "session_data":".eJxVjMsOwiAURP-FtSF4ebXu7I-QywUCsaGJwMr477amC13OmZnzYg5Hz260-HQlsBsDdvllHukR61Hguh6YI9E2auffzVk3ft9TrL0Q9rLV5Xz9qTK2vHvmIEDZoKwMEZS4GkuAqGwCAcZAIkpGqqCtJPReR6l1iBN4P83KSBTs_QGoOzwM:1oqOuo:3oxiHcmklRbWFAV1AqFb4bBdCbEhMD7Gka1P-eOn5vk",
+          "expire_date":"2022-11-17T01:21:06.572Z"
+       }
+    },
+    {
+       "model":"sessions.session",
+       "pk":"81yh7no01uco026ocnzd4gxyyu4j7t4s",
+       "fields":{
+          "session_data":".eJxVjMsOwiAURP-FtSF4ebXu7I-QywUCsaGJwMr477amC13OmZnzYg5Hz260-HQlsBuT7PLLPNIj1qPAdT0wR6Jt1M6_m7Nu_L6nWHsh7GWry_n6U2VseffMQYCyQVkZIihxNZYAUdkEAoyBRJSMVEFbSei9jlLrECfwfpqVkSjY-wOo3jwN:1oqOtz:Ra17Fsngv9qH49NmLgUTWL5lSyDdcNEhLCCarlFtFWw",
+          "expire_date":"2022-11-17T01:20:15.920Z"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":1,
+       "fields":{
+          "nombre":"Ver Permiso",
+          "descripcion":"Permiso para Ver Permisos"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":2,
+       "fields":{
+          "nombre":"Crear Permiso",
+          "descripcion":"Permiso para Crear Permisos"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":3,
+       "fields":{
+          "nombre":"Editar Permiso",
+          "descripcion":"Permiso para Editar Permisos"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":4,
+       "fields":{
+          "nombre":"Borrar Permiso",
+          "descripcion":"Permiso para Borrar Permisos"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":5,
+       "fields":{
+          "nombre":"Ver RolSistema",
+          "descripcion":"Permiso para Ver Roles de Sistema"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":6,
+       "fields":{
+          "nombre":"Asignar RolSistema",
+          "descripcion":"Permiso para Asignar Roles de Sistema"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":7,
+       "fields":{
+          "nombre":"Crear RolSistema",
+          "descripcion":"Permiso para Crear Roles de Sistema"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":8,
+       "fields":{
+          "nombre":"Editar RolSistema",
+          "descripcion":"Permiso para Editar Roles de Sistema"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":9,
+       "fields":{
+          "nombre":"Borrar RolSistema",
+          "descripcion":"Permiso para Borrar Roles de Sistema"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":10,
+       "fields":{
+          "nombre":"Asignar RolProyecto",
+          "descripcion":"Permiso para Asignar Roles de Proyecto"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":11,
+       "fields":{
+          "nombre":"Ver RolProyecto",
+          "descripcion":"Permiso para Ver Roles de Proyecto"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":12,
+       "fields":{
+          "nombre":"Crear RolProyecto",
+          "descripcion":"Permiso para Crear Roles de Proyecto"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":13,
+       "fields":{
+          "nombre":"Editar RolProyecto",
+          "descripcion":"Permiso para Editar Roles de Proyecto"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":14,
+       "fields":{
+          "nombre":"Borrar RolProyecto",
+          "descripcion":"Permiso para Borrar Roles de Proyecto"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":15,
+       "fields":{
+          "nombre":"Ver Usuario",
+          "descripcion":"Permiso para Ver Usuarios"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":16,
+       "fields":{
+          "nombre":"Crear Usuario",
+          "descripcion":"Permiso para Crear Usuarios"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":17,
+       "fields":{
+          "nombre":"Editar Usuario",
+          "descripcion":"Permiso para Editar Usuarios"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":18,
+       "fields":{
+          "nombre":"Borrar Usuario",
+          "descripcion":"Permiso para Borrar Usuarios"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":19,
+       "fields":{
+          "nombre":"Ver Equipo",
+          "descripcion":"Permiso para Ver Equipo"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":20,
+       "fields":{
+          "nombre":"Crear Equipo",
+          "descripcion":"Permiso para Crear Equipo"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":21,
+       "fields":{
+          "nombre":"Editar Equipo",
+          "descripcion":"Permiso para Editar Equipo"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":22,
+       "fields":{
+          "nombre":"Borrar Equipo",
+          "descripcion":"Permiso para Borrar Equipo"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":23,
+       "fields":{
+          "nombre":"Ver Proyecto",
+          "descripcion":"Permiso para Ver Proyecto"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":24,
+       "fields":{
+          "nombre":"Crear Proyecto",
+          "descripcion":"Permiso para Crear Proyecto"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":25,
+       "fields":{
+          "nombre":"Editar Proyecto",
+          "descripcion":"Permiso para Editar Proyecto"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":26,
+       "fields":{
+          "nombre":"Borrar Proyecto",
+          "descripcion":"Permiso para Borrar Proyecto"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":27,
+       "fields":{
+          "nombre":"Iniciar Proyecto",
+          "descripcion":"Permiso para Iniciar Proyecto"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":28,
+       "fields":{
+          "nombre":"Cancelar Proyecto",
+          "descripcion":"Permiso para Cancelar Proyecto"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":29,
+       "fields":{
+          "nombre":"Ver Sprint",
+          "descripcion":"Permiso para Ver Sprint"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":30,
+       "fields":{
+          "nombre":"Crear Sprint",
+          "descripcion":"Permiso para Crear Sprint"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":31,
+       "fields":{
+          "nombre":"Editar Sprint",
+          "descripcion":"Permiso para Editar Sprint"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":32,
+       "fields":{
+          "nombre":"Borrar Sprint",
+          "descripcion":"Permiso para Borrar Sprint"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":33,
+       "fields":{
+          "nombre":"Iniciar Sprint",
+          "descripcion":"Permiso para Iniciar Sprint"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":34,
+       "fields":{
+          "nombre":"Cancelar Sprint",
+          "descripcion":"Permiso para Cancelar Sprint"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":35,
+       "fields":{
+          "nombre":"Ver TipoUserStory",
+          "descripcion":"Permiso para Ver Tipos de User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":36,
+       "fields":{
+          "nombre":"Crear TipoUserStory",
+          "descripcion":"Permiso para Crear Tipos de User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":37,
+       "fields":{
+          "nombre":"Editar TipoUserStory",
+          "descripcion":"Permiso para Editar Tipos de User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":38,
+       "fields":{
+          "nombre":"Borrar TipoUserStory",
+          "descripcion":"Permiso para Borrar Tipos de User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":39,
+       "fields":{
+          "nombre":"Ver EstadoUS",
+          "descripcion":"Permiso para Ver Estados de User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":40,
+       "fields":{
+          "nombre":"Crear EstadoUS",
+          "descripcion":"Permiso para Crear Estados de User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":41,
+       "fields":{
+          "nombre":"Editar EstadoUS",
+          "descripcion":"Permiso para Editar Estados de User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":42,
+       "fields":{
+          "nombre":"Borrar EstadoUS",
+          "descripcion":"Permiso para Borrar Estados de User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":43,
+       "fields":{
+          "nombre":"Cambiar EstadoUS",
+          "descripcion":"Permiso para Cambiar Estados de User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":44,
+       "fields":{
+          "nombre":"Ver UserStory",
+          "descripcion":"Permiso para Ver User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":45,
+       "fields":{
+          "nombre":"Crear UserStory",
+          "descripcion":"Permiso para Crear User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":46,
+       "fields":{
+          "nombre":"Editar UserStory",
+          "descripcion":"Permiso para Editar User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":47,
+       "fields":{
+          "nombre":"Borrar UserStory",
+          "descripcion":"Permiso para Borrar User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":48,
+       "fields":{
+          "nombre":"Ver ProductBacklog",
+          "descripcion":"Permiso para Ver Product Backlog"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":49,
+       "fields":{
+          "nombre":"Crear ProductBacklog",
+          "descripcion":"Permiso para Crear Product Backlog"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":50,
+       "fields":{
+          "nombre":"Editar ProductBacklog",
+          "descripcion":"Permiso para Editar Product Backlog"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":51,
+       "fields":{
+          "nombre":"Borrar ProductBacklog",
+          "descripcion":"Permiso para Borrar Product Backlog"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":52,
+       "fields":{
+          "nombre":"Ver Kanban",
+          "descripcion":"Permiso para Ver Kanban"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":53,
+       "fields":{
+          "nombre":"Crear Kanban",
+          "descripcion":"Permiso para Crear Kanban"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":54,
+       "fields":{
+          "nombre":"Editar Kanban",
+          "descripcion":"Permiso para Editar Kanban"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":55,
+       "fields":{
+          "nombre":"Borrar Kanban",
+          "descripcion":"Permiso para Borrar Kanban"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":56,
+       "fields":{
+          "nombre":"Cargar trabajo UserStory",
+          "descripcion":"Permiso para Cargar trabajo en el User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":57,
+       "fields":{
+          "nombre":"Solicitar Aprobacion",
+          "descripcion":"Permiso para Solicitar Aprobacion de User Story"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":58,
+       "fields":{
+          "nombre":"Ver Solicitud",
+          "descripcion":"Permiso para Ver Solicitud"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":59,
+       "fields":{
+          "nombre":"Aceptar Solicitud",
+          "descripcion":"Permiso para Aceptar Solicitud"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":60,
+       "fields":{
+          "nombre":"Rechazar Solicitud",
+          "descripcion":"Permiso para Rechazar Solicitud"
+       }
+    },
+    {
+       "model":"Usuario.permisos",
+       "pk":61,
+       "fields":{
+          "nombre":"Permiso de administrador",
+          "descripcion":"Permiso para administrador de sistema."
+       }
+    },
+    {
+       "model":"Usuario.rolsistema",
+       "pk":1,
+       "fields":{
+          "nombre":"admin",
+          "descripcion":"Administrador del sistema.",
+          "permisos":[
+             1,
+             2,
+             3,
+             4,
+             5,
+             6,
+             7,
+             8,
+             9,
+             10,
+             11,
+             12,
+             13,
+             14,
+             15,
+             16,
+             17,
+             18,
+             19,
+             20,
+             21,
+             22,
+             23,
+             24,
+             25,
+             26,
+             27,
+             28,
+             29,
+             30,
+             31,
+             32,
+             33,
+             34,
+             35,
+             36,
+             37,
+             38,
+             39,
+             40,
+             41,
+             42,
+             43,
+             44,
+             45,
+             46,
+             47,
+             48,
+             49,
+             50,
+             51,
+             52,
+             53,
+             54,
+             55,
+             56,
+             57,
+             58,
+             59,
+             60,
+             61
+          ]
+       }
+    },
+    {
+       "model":"Usuario.rolsistema",
+       "pk":2,
+       "fields":{
+          "nombre":"Usuario simple",
+          "descripcion":"Rol para usuarios simples",
+          "permisos":[
 
-         ]
-      }
-   },
-   {
-      "model":"Usuario.rolsistema",
-      "pk":3,
-      "fields":{
-         "nombre":"Usuario simple",
-         "descripcion":"Rol para usuarios simples",
-         "permisos":[
+          ]
+       }
+    },
+    {
+       "model":"Usuario.rolsistema",
+       "pk":3,
+       "fields":{
+          "nombre":"Usuario simple",
+          "descripcion":"Rol para usuarios simples",
+          "permisos":[
 
-         ]
-      }
-   },
-   {
-      "model":"Usuario.rolproyecto",
-      "pk":1,
-      "fields":{
-         "nombre":"Scrum Master",
-         "descripcion":"Scrum Master del Proyecto.",
-         "proyecto":1,
-         "permisos":[
-            11,
-            12,
-            13,
-            14,
-            19,
-            20,
-            21,
-            23,
-            25,
-            27,
-            28,
-            29,
-            30,
-            31,
-            33,
-            34,
-            35,
-            36,
-            37,
-            38,
-            39,
-            40,
-            41,
-            42,
-            44,
-            45,
-            46,
-            47,
-            48,
-            49,
-            50,
-            51,
-            52,
-            58,
-            59,
-            60
-         ]
-      }
-   },
-   {
-      "model":"Usuario.rolproyecto",
-      "pk":2,
-      "fields":{
-         "nombre":"Developer",
-         "descripcion":"Developer del Proyecto.",
-         "proyecto":1,
-         "permisos":[
-            1,
-            35,
-            39,
-            11,
-            43,
-            44,
-            15,
-            48,
-            19,
-            52,
-            54,
-            23,
-            56,
-            57,
-            58,
-            29
-         ]
-      }
-   },
-   {
-      "model":"Usuario.usuario",
-      "pk":1,
-      "fields":{
-         "last_login":"2022-11-03T01:20:28.191Z",
-         "is_superuser":false,
-         "nombre":"desconocido",
-         "email":"marcemolas@fpuna.edu.py",
-         "groups":[
+          ]
+       }
+    },
+    {
+       "model":"Usuario.rolproyecto",
+       "pk":1,
+       "fields":{
+          "nombre":"Scrum Master",
+          "descripcion":"Scrum Master del Proyecto.",
+          "proyecto":1,
+          "permisos":[
+             11,
+             12,
+             13,
+             14,
+             19,
+             20,
+             21,
+             23,
+             25,
+             27,
+             28,
+             29,
+             30,
+             31,
+             33,
+             34,
+             35,
+             36,
+             37,
+             38,
+             39,
+             40,
+             41,
+             42,
+             44,
+             45,
+             46,
+             47,
+             48,
+             49,
+             50,
+             51,
+             52,
+             58,
+             59,
+             60
+          ]
+       }
+    },
+    {
+       "model":"Usuario.rolproyecto",
+       "pk":2,
+       "fields":{
+          "nombre":"Developer",
+          "descripcion":"Developer del Proyecto.",
+          "proyecto":1,
+          "permisos":[
+             1,
+             35,
+             39,
+             11,
+             43,
+             44,
+             15,
+             48,
+             19,
+             52,
+             54,
+             23,
+             56,
+             57,
+             58,
+             29
+          ]
+       }
+    },
+    {
+       "model":"Usuario.usuario",
+       "pk":1,
+       "fields":{
+          "last_login":"2022-11-03T01:20:28.191Z",
+          "is_superuser":false,
+          "nombre":"desconocido",
+          "email":"marcemolas@fpuna.edu.py",
+          "groups":[
 
-         ],
-         "user_permissions":[
+          ],
+          "user_permissions":[
 
-         ],
-         "rolSistema":[
-            1
-         ],
-         "rolProyecto":[
-            2
-         ]
-      }
-   },
-   {
-      "model":"Usuario.usuario",
-      "pk":2,
-      "fields":{
-         "last_login":"2022-11-03T01:21:06.562Z",
-         "is_superuser":false,
-         "nombre":"desconocido",
-         "email":"carinme97@fpuna.edu.py",
-         "groups":[
+          ],
+          "rolSistema":[
+             1
+          ],
+          "rolProyecto":[
+             2
+          ]
+       }
+    },
+    {
+       "model":"Usuario.usuario",
+       "pk":2,
+       "fields":{
+          "last_login":"2022-11-03T01:21:06.562Z",
+          "is_superuser":false,
+          "nombre":"desconocido",
+          "email":"carinme97@fpuna.edu.py",
+          "groups":[
 
-         ],
-         "user_permissions":[
+          ],
+          "user_permissions":[
 
-         ],
-         "rolSistema":[
-            2
-         ],
-         "rolProyecto":[
-            1
-         ]
-      }
-   },
-   {
-      "model":"Usuario.usuario",
-      "pk":3,
-      "fields":{
-         "last_login":"2022-11-03T01:20:15.916Z",
-         "is_superuser":false,
-         "nombre":"desconocido",
-         "email":"nan.rod98@fpuna.edu.py",
-         "groups":[
+          ],
+          "rolSistema":[
+             2
+          ],
+          "rolProyecto":[
+             1
+          ]
+       }
+    },
+    {
+       "model":"Usuario.usuario",
+       "pk":3,
+       "fields":{
+          "last_login":"2022-11-03T01:20:15.916Z",
+          "is_superuser":false,
+          "nombre":"desconocido",
+          "email":"nan.rod98@fpuna.edu.py",
+          "groups":[
 
-         ],
-         "user_permissions":[
+          ],
+          "user_permissions":[
 
-         ],
-         "rolSistema":[
-            3
-         ],
-         "rolProyecto":[
-            2
-         ]
-      }
-   },
-   {
-      "model":"proyecto.equipo",
-      "pk":1,
-      "fields":{
-         "nombre":"Dinamita",
-         "miembros":[
-            2,
-            3,
-            1
-         ]
-      }
-   },
-   {
-      "model":"proyecto.proyecto",
-      "pk":1,
-      "fields":{
-         "nombre":"Proyecto 1",
-         "descripcion":"asdf",
-         "equipo":1,
-         "fecha_inicio":"2022-11-03",
-         "fecha_fin_estimada":"2023-12-12",
-         "fecha_fin_real":null,
-         "estado":"EN_PROCESO",
-         "scrum_master":2
-      }
-   },
-   {
-      "model":"proyecto.sprint",
-      "pk":1,
-      "fields":{
-         "numero":1,
-         "descripcion":"Sprint 1",
-         "proyecto":1,
-         "fecha_inicio":"2022-11-03",
-         "fecha_fin":null,
-         "estado":"EN_PROCESO",
-         "duracion":5
-      }
-   },
-   {
-      "model":"proyecto.miembrossprint",
-      "pk":1,
-      "fields":{
-         "sprint":1,
-         "miembro":3,
-         "carga_horaria":3,
-         "capacidad":15
-      }
-   },
-   {
-      "model":"proyecto.miembrossprint",
-      "pk":2,
-      "fields":{
-         "sprint":1,
-         "miembro":1,
-         "carga_horaria":2,
-         "capacidad":10
-      }
-   },
-   {
-      "model":"proyecto.tipouserstory",
-      "pk":1,
-      "fields":{
-         "nombre":"Tipo1",
-         "prefijo":"T1",
-         "proyecto":1
-      }
-   },
-   {
-      "model":"proyecto.tipouserstory",
-      "pk":2,
-      "fields":{
-         "nombre":"Tipo2",
-         "prefijo":"T2",
-         "proyecto":1
-      }
-   },
-   {
-      "model":"proyecto.ordenestado",
-      "pk":1,
-      "fields":{
-         "orden":1
-      }
-   },
-   {
-      "model":"proyecto.ordenestado",
-      "pk":2,
-      "fields":{
-         "orden":2
-      }
-   },
-   {
-      "model":"proyecto.ordenestado",
-      "pk":3,
-      "fields":{
-         "orden":3
-      }
-   },
-   {
-      "model":"proyecto.ordenestado",
-      "pk":4,
-      "fields":{
-         "orden":4
-      }
-   },
-   {
-      "model":"proyecto.ordenestado",
-      "pk":5,
-      "fields":{
-         "orden":1
-      }
-   },
-   {
-      "model":"proyecto.ordenestado",
-      "pk":6,
-      "fields":{
-         "orden":2
-      }
-   },
-   {
-      "model":"proyecto.ordenestado",
-      "pk":7,
-      "fields":{
-         "orden":3
-      }
-   },
-   {
-      "model":"proyecto.estadous",
-      "pk":1,
-      "fields":{
-         "nombre":"TO DO",
-         "orden":1,
-         "tipoUserStory":1
-      }
-   },
-   {
-      "model":"proyecto.estadous",
-      "pk":2,
-      "fields":{
-         "nombre":"DOING",
-         "orden":2,
-         "tipoUserStory":1
-      }
-   },
-   {
-      "model":"proyecto.estadous",
-      "pk":3,
-      "fields":{
-         "nombre":"DONE",
-         "orden":3,
-         "tipoUserStory":1
-      }
-   },
-   {
-      "model":"proyecto.estadous",
-      "pk":4,
-      "fields":{
-         "nombre":"POR HACER",
-         "orden":4,
-         "tipoUserStory":1
-      }
-   },
-   {
-      "model":"proyecto.estadous",
-      "pk":5,
-      "fields":{
-         "nombre":"TO DO",
-         "orden":5,
-         "tipoUserStory":2
-      }
-   },
-   {
-      "model":"proyecto.estadous",
-      "pk":6,
-      "fields":{
-         "nombre":"DOING",
-         "orden":6,
-         "tipoUserStory":2
-      }
-   },
-   {
-      "model":"proyecto.estadous",
-      "pk":7,
-      "fields":{
-         "nombre":"DONE",
-         "orden":7,
-         "tipoUserStory":2
-      }
-   },
-   {
-      "model":"proyecto.userstory",
-      "pk":1,
-      "fields":{
-         "numero":1,
-         "aprobado_por_scrum_master":false,
-         "proyecto":1,
-         "sprint":null,
-         "nombre":"Crear kanban",
-         "descripcion":"Crear Kanban",
-         "tipo":1,
-         "estado":1,
-         "prioridad":1,
-         "prioridad_de_negocio":1,
-         "prioridad_tecnica":1,
-         "esfuerzo_anterior":0,
-         "duracion":5,
-         "desarrollador":null
-      }
-   },
-   {
-      "model":"proyecto.userstory",
-      "pk":2,
-      "fields":{
-         "numero":2,
-         "aprobado_por_scrum_master":false,
-         "proyecto":1,
-         "sprint":null,
-         "nombre":"Crear Proyecto",
-         "descripcion":"Crear proyecto",
-         "tipo":2,
-         "estado":5,
-         "prioridad":4,
-         "prioridad_de_negocio":5,
-         "prioridad_tecnica":2,
-         "esfuerzo_anterior":0,
-         "duracion":3,
-         "desarrollador":null
-      }
-   },
-   {
-      "model":"proyecto.userstory",
-      "pk":3,
-      "fields":{
-         "numero":2,
-         "aprobado_por_scrum_master":true,
-         "proyecto":1,
-         "sprint":1,
-         "nombre":"Crear Sprint",
-         "descripcion":"a",
-         "tipo":1,
-         "estado":3,
-         "prioridad":10,
-         "prioridad_de_negocio":9,
-         "prioridad_tecnica":9,
-         "esfuerzo_anterior":0,
-         "duracion":10,
-         "desarrollador":3
-      }
-   },
-   {
-      "model":"proyecto.userstory",
-      "pk":4,
-      "fields":{
-         "numero":2,
-         "aprobado_por_scrum_master":false,
-         "proyecto":1,
-         "sprint":1,
-         "nombre":"Crear US",
-         "descripcion":"asdf",
-         "tipo":2,
-         "estado":5,
-         "prioridad":6,
-         "prioridad_de_negocio":5,
-         "prioridad_tecnica":6,
-         "esfuerzo_anterior":0,
-         "duracion":15,
-         "desarrollador":3
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":1,
-      "fields":{
-         "user_story":1,
-         "log":"User Story creado.",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":2,
-      "fields":{
-         "user_story":2,
-         "log":"User Story creado.",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":3,
-      "fields":{
-         "user_story":3,
-         "log":"User Story creado.",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":4,
-      "fields":{
-         "user_story":4,
-         "log":"User Story creado.",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":5,
-      "fields":{
-         "user_story":3,
-         "log":"User Story asignado al Sprint 1",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":6,
-      "fields":{
-         "user_story":4,
-         "log":"User Story asignado al Sprint 1",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":7,
-      "fields":{
-         "user_story":3,
-         "log":"User Story removido del Sprint 1",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":8,
-      "fields":{
-         "user_story":3,
-         "log":"User Story asignado al Sprint 1",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":9,
-      "fields":{
-         "user_story":3,
-         "log":"Sprint 1 iniciado.",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":10,
-      "fields":{
-         "user_story":4,
-         "log":"Sprint 1 iniciado.",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":11,
-      "fields":{
-         "user_story":3,
-         "log":"nan.rod98@fpuna.edu.py se encargara de desarrollar este US.",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":12,
-      "fields":{
-         "user_story":4,
-         "log":"marcemolas@fpuna.edu.py se encargara de desarrollar este US.",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":13,
-      "fields":{
-         "user_story":3,
-         "log":"Hice dos cosas",
-         "horas_trabajadas":1,
-         "fecha":"2022-11-03",
-         "usuario":3,
-         "archivos":"historial/Captura_desde_2022-10-16_17-16-47_ZDuQEGU_2_oaceTi0.png"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":14,
-      "fields":{
-         "user_story":3,
-         "log":"Se solicitó la aprobación del US para terminarlo",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":3,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":16,
-      "fields":{
-         "user_story":4,
-         "log":"nan.rod98@fpuna.edu.py se encargara de desarrollar este US.",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-03",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":17,
-      "fields":{
-         "user_story":4,
-         "log":"Realice el backend",
-         "horas_trabajadas":2,
-         "fecha":"2022-11-04",
-         "usuario":3,
-         "archivos":"historial/Captura_desde_2022-10-16_17-16-47_ZDuQEGU_YiemJVe.png"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":18,
-      "fields":{
-         "user_story":4,
-         "log":"Se solicitó la aprobación del US para terminarlo",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-04",
-         "usuario":3,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.historialus",
-      "pk":19,
-      "fields":{
-         "user_story":4,
-         "log":"Solicitud de aprobación rechazado por scrum master",
-         "horas_trabajadas":0,
-         "fecha":"2022-11-04",
-         "usuario":2,
-         "archivos":"0"
-      }
-   },
-   {
-      "model":"proyecto.aprobaciondeus",
-      "pk":1,
-      "fields":{
-         "numero":1,
-         "user_story":3,
-         "descripcion_del_trabajo":"hie dos cosita tb",
-         "fecha":"2022-11-03",
-         "solicitado_por":3,
-         "archivos":"historial/Captura_desde_2022-10-16_17-16-47_ZDuQEGU_1_hRKsYDh.png",
-         "aprobado_por":null,
-         "estado":"ACEPTADO",
-         "razon_de_rechazo":null
-      }
-   },
-   {
-      "model":"proyecto.aprobaciondeus",
-      "pk":2,
-      "fields":{
-         "numero":1,
-         "user_story":4,
-         "descripcion_del_trabajo":"tengo hasta el backend",
-         "fecha":"2022-11-04",
-         "solicitado_por":3,
-         "archivos":"historial/Captura_desde_2022-10-16_17-16-47.png",
-         "aprobado_por":null,
-         "estado":"RECHAZADO",
-         "razon_de_rechazo":"No esta completo"
-      }
-   },
-   {
-      "model":"sites.site",
-      "pk":1,
-      "fields":{
-         "domain":"127.0.0.1:8000",
-         "name":"127.0.0.1:8000"
-      }
-   },
-   {
-      "model":"account.emailaddress",
-      "pk":1,
-      "fields":{
-         "user":1,
-         "email":"marcemolas@fpuna.edu.py",
-         "verified":true,
-         "primary":true
-      }
-   },
-   {
-      "model":"account.emailaddress",
-      "pk":2,
-      "fields":{
-         "user":2,
-         "email":"carinme97@fpuna.edu.py",
-         "verified":true,
-         "primary":true
-      }
-   },
-   {
-      "model":"account.emailaddress",
-      "pk":3,
-      "fields":{
-         "user":3,
-         "email":"nan.rod98@fpuna.edu.py",
-         "verified":true,
-         "primary":true
-      }
-   }
-]
+          ],
+          "rolSistema":[
+             3
+          ],
+          "rolProyecto":[
+             2
+          ]
+       }
+    },
+    {
+       "model":"proyecto.equipo",
+       "pk":1,
+       "fields":{
+          "nombre":"Dinamita",
+          "miembros":[
+             2,
+             3,
+             1
+          ]
+       }
+    },
+    {
+       "model":"proyecto.proyecto",
+       "pk":1,
+       "fields":{
+          "nombre":"Proyecto 1",
+          "descripcion":"asdf",
+          "equipo":1,
+          "fecha_inicio":"2022-11-03",
+          "fecha_fin_estimada":"2023-12-12",
+          "fecha_fin_real":null,
+          "estado":"EN_PROCESO",
+          "scrum_master":2
+       }
+    },
+    {
+       "model":"proyecto.sprint",
+       "pk":1,
+       "fields":{
+          "numero":1,
+          "descripcion":"Sprint 1",
+          "proyecto":1,
+          "fecha_inicio":"2022-11-03",
+          "fecha_fin":null,
+          "estado":"EN_PROCESO",
+          "duracion":5
+       }
+    },
+    {
+       "model":"proyecto.miembrossprint",
+       "pk":1,
+       "fields":{
+          "sprint":1,
+          "miembro":3,
+          "carga_horaria":3,
+          "capacidad":15
+       }
+    },
+    {
+       "model":"proyecto.miembrossprint",
+       "pk":2,
+       "fields":{
+          "sprint":1,
+          "miembro":1,
+          "carga_horaria":2,
+          "capacidad":10
+       }
+    },
+    {
+       "model":"proyecto.tipouserstory",
+       "pk":1,
+       "fields":{
+          "nombre":"Tipo1",
+          "prefijo":"T1",
+          "proyecto":1
+       }
+    },
+    {
+       "model":"proyecto.tipouserstory",
+       "pk":2,
+       "fields":{
+          "nombre":"Tipo2",
+          "prefijo":"T2",
+          "proyecto":1
+       }
+    },
+    {
+       "model":"proyecto.ordenestado",
+       "pk":1,
+       "fields":{
+          "orden":1
+       }
+    },
+    {
+       "model":"proyecto.ordenestado",
+       "pk":2,
+       "fields":{
+          "orden":2
+       }
+    },
+    {
+       "model":"proyecto.ordenestado",
+       "pk":3,
+       "fields":{
+          "orden":3
+       }
+    },
+    {
+       "model":"proyecto.ordenestado",
+       "pk":4,
+       "fields":{
+          "orden":4
+       }
+    },
+    {
+       "model":"proyecto.ordenestado",
+       "pk":5,
+       "fields":{
+          "orden":1
+       }
+    },
+    {
+       "model":"proyecto.ordenestado",
+       "pk":6,
+       "fields":{
+          "orden":2
+       }
+    },
+    {
+       "model":"proyecto.ordenestado",
+       "pk":7,
+       "fields":{
+          "orden":3
+       }
+    },
+    {
+       "model":"proyecto.estadous",
+       "pk":1,
+       "fields":{
+          "nombre":"TO DO",
+          "orden":1,
+          "tipoUserStory":1
+       }
+    },
+    {
+       "model":"proyecto.estadous",
+       "pk":2,
+       "fields":{
+          "nombre":"DOING",
+          "orden":2,
+          "tipoUserStory":1
+       }
+    },
+    {
+       "model":"proyecto.estadous",
+       "pk":3,
+       "fields":{
+          "nombre":"DONE",
+          "orden":3,
+          "tipoUserStory":1
+       }
+    },
+    {
+       "model":"proyecto.estadous",
+       "pk":4,
+       "fields":{
+          "nombre":"POR HACER",
+          "orden":4,
+          "tipoUserStory":1
+       }
+    },
+    {
+       "model":"proyecto.estadous",
+       "pk":5,
+       "fields":{
+          "nombre":"TO DO",
+          "orden":5,
+          "tipoUserStory":2
+       }
+    },
+    {
+       "model":"proyecto.estadous",
+       "pk":6,
+       "fields":{
+          "nombre":"DOING",
+          "orden":6,
+          "tipoUserStory":2
+       }
+    },
+    {
+       "model":"proyecto.estadous",
+       "pk":7,
+       "fields":{
+          "nombre":"DONE",
+          "orden":7,
+          "tipoUserStory":2
+       }
+    },
+    {
+       "model":"proyecto.userstory",
+       "pk":1,
+       "fields":{
+          "numero":1,
+          "aprobado_por_scrum_master":false,
+          "proyecto":1,
+          "sprint":null,
+          "nombre":"Crear kanban",
+          "descripcion":"Crear Kanban",
+          "tipo":1,
+          "estado":1,
+          "prioridad":1,
+          "prioridad_de_negocio":1,
+          "prioridad_tecnica":1,
+          "esfuerzo_anterior":0,
+          "duracion":5,
+          "desarrollador":null
+       }
+    },
+    {
+       "model":"proyecto.userstory",
+       "pk":2,
+       "fields":{
+          "numero":2,
+          "aprobado_por_scrum_master":false,
+          "proyecto":1,
+          "sprint":null,
+          "nombre":"Crear Proyecto",
+          "descripcion":"Crear proyecto",
+          "tipo":2,
+          "estado":5,
+          "prioridad":4,
+          "prioridad_de_negocio":5,
+          "prioridad_tecnica":2,
+          "esfuerzo_anterior":0,
+          "duracion":3,
+          "desarrollador":null
+       }
+    },
+    {
+       "model":"proyecto.userstory",
+       "pk":3,
+       "fields":{
+          "numero":2,
+          "aprobado_por_scrum_master":true,
+          "proyecto":1,
+          "sprint":1,
+          "nombre":"Crear Sprint",
+          "descripcion":"a",
+          "tipo":1,
+          "estado":3,
+          "prioridad":10,
+          "prioridad_de_negocio":9,
+          "prioridad_tecnica":9,
+          "esfuerzo_anterior":0,
+          "duracion":10,
+          "desarrollador":3
+       }
+    },
+    {
+       "model":"proyecto.userstory",
+       "pk":4,
+       "fields":{
+          "numero":2,
+          "aprobado_por_scrum_master":false,
+          "proyecto":1,
+          "sprint":1,
+          "nombre":"Crear US",
+          "descripcion":"asdf",
+          "tipo":2,
+          "estado":5,
+          "prioridad":6,
+          "prioridad_de_negocio":5,
+          "prioridad_tecnica":6,
+          "esfuerzo_anterior":0,
+          "duracion":15,
+          "desarrollador":3
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":1,
+       "fields":{
+          "user_story":1,
+          "log":"User Story creado.",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":2,
+       "fields":{
+          "user_story":2,
+          "log":"User Story creado.",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":3,
+       "fields":{
+          "user_story":3,
+          "log":"User Story creado.",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":4,
+       "fields":{
+          "user_story":4,
+          "log":"User Story creado.",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":5,
+       "fields":{
+          "user_story":3,
+          "log":"User Story asignado al Sprint 1",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":6,
+       "fields":{
+          "user_story":4,
+          "log":"User Story asignado al Sprint 1",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":7,
+       "fields":{
+          "user_story":3,
+          "log":"User Story removido del Sprint 1",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":8,
+       "fields":{
+          "user_story":3,
+          "log":"User Story asignado al Sprint 1",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":9,
+       "fields":{
+          "user_story":3,
+          "log":"Sprint 1 iniciado.",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":10,
+       "fields":{
+          "user_story":4,
+          "log":"Sprint 1 iniciado.",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":11,
+       "fields":{
+          "user_story":3,
+          "log":"nan.rod98@fpuna.edu.py se encargara de desarrollar este US.",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":12,
+       "fields":{
+          "user_story":4,
+          "log":"marcemolas@fpuna.edu.py se encargara de desarrollar este US.",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":13,
+       "fields":{
+          "user_story":3,
+          "log":"Hice dos cosas",
+          "horas_trabajadas":1,
+          "fecha":"2022-11-03",
+          "usuario":3,
+          "archivos":"historial/Captura_desde_2022-10-16_17-16-47_ZDuQEGU_2_oaceTi0.png"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":14,
+       "fields":{
+          "user_story":3,
+          "log":"Se solicitó la aprobación del US para terminarlo",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":3,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":16,
+       "fields":{
+          "user_story":4,
+          "log":"nan.rod98@fpuna.edu.py se encargara de desarrollar este US.",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-03",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":17,
+       "fields":{
+          "user_story":4,
+          "log":"Realice el backend",
+          "horas_trabajadas":2,
+          "fecha":"2022-11-04",
+          "usuario":3,
+          "archivos":"historial/Captura_desde_2022-10-16_17-16-47_ZDuQEGU_YiemJVe.png"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":18,
+       "fields":{
+          "user_story":4,
+          "log":"Se solicitó la aprobación del US para terminarlo",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-04",
+          "usuario":3,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.historialus",
+       "pk":19,
+       "fields":{
+          "user_story":4,
+          "log":"Solicitud de aprobación rechazado por scrum master",
+          "horas_trabajadas":0,
+          "fecha":"2022-11-04",
+          "usuario":2,
+          "archivos":"0"
+       }
+    },
+    {
+       "model":"proyecto.aprobaciondeus",
+       "pk":1,
+       "fields":{
+          "numero":1,
+          "user_story":3,
+          "descripcion_del_trabajo":"hie dos cosita tb",
+          "fecha":"2022-11-03",
+          "solicitado_por":3,
+          "archivos":"historial/Captura_desde_2022-10-16_17-16-47_ZDuQEGU_1_hRKsYDh.png",
+          "aprobado_por":null,
+          "estado":"ACEPTADO",
+          "razon_de_rechazo":null
+       }
+    },
+    {
+       "model":"proyecto.aprobaciondeus",
+       "pk":2,
+       "fields":{
+          "numero":1,
+          "user_story":4,
+          "descripcion_del_trabajo":"tengo hasta el backend",
+          "fecha":"2022-11-04",
+          "solicitado_por":3,
+          "archivos":"historial/Captura_desde_2022-10-16_17-16-47.png",
+          "aprobado_por":null,
+          "estado":"RECHAZADO",
+          "razon_de_rechazo":"No esta completo"
+       }
+    },
+    {
+       "model":"sites.site",
+       "pk":1,
+       "fields":{
+          "domain":"127.0.0.1:8000",
+          "name":"127.0.0.1:8000"
+       }
+    },
+    {
+       "model":"account.emailaddress",
+       "pk":1,
+       "fields":{
+          "user":1,
+          "email":"marcemolas@fpuna.edu.py",
+          "verified":true,
+          "primary":true
+       }
+    },
+    {
+       "model":"account.emailaddress",
+       "pk":2,
+       "fields":{
+          "user":2,
+          "email":"carinme97@fpuna.edu.py",
+          "verified":true,
+          "primary":true
+       }
+    },
+    {
+       "model":"account.emailaddress",
+       "pk":3,
+       "fields":{
+          "user":3,
+          "email":"nan.rod98@fpuna.edu.py",
+          "verified":true,
+          "primary":true
+       }
+    },
+    {
+       "model":"socialaccount.socialapp",
+       "pk":1,
+       "fields":{
+          "provider":"google",
+          "name":"Google",
+          "client_id":"242966506793-k6sheufi3jmm593app1vki34fq2oppis.apps.googleusercontent.com",
+          "secret":"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",
+          "key":"",
+          "sites":[
+             1
+          ]
+       }
+    },
+    {
+       "model":"socialaccount.socialaccount",
+       "pk":1,
+       "fields":{
+          "user":1,
+          "provider":"google",
+          "uid":"101696548337894312295",
+          "last_login":"2022-11-03T01:20:28.130Z",
+          "date_joined":"2022-11-03T01:10:43.109Z",
+          "extra_data":"{\"id\": \"101696548337894312295\", \"email\": \"marcemolas@fpuna.edu.py\", \"verified_email\": true, \"name\": \"Hugo Marcelo Molas Cespedes\", \"given_name\": \"Hugo Marcelo\", \"family_name\": \"Molas Cespedes\", \"picture\": \"https://lh3.googleusercontent.com/a/ALm5wu07N7WlnxUBY_eMb2v4_jA8GtFB4nScWFi3YOsc=s96-c\", \"locale\": \"es\", \"hd\": \"fpuna.edu.py\"}"
+       }
+    },
+    {
+       "model":"socialaccount.socialaccount",
+       "pk":2,
+       "fields":{
+          "user":2,
+          "provider":"google",
+          "uid":"107871902563944974939",
+          "last_login":"2022-11-03T01:21:06.519Z",
+          "date_joined":"2022-11-03T01:19:07.470Z",
+          "extra_data":"{\"id\": \"107871902563944974939\", \"email\": \"carinme97@fpuna.edu.py\", \"verified_email\": true, \"name\": \"Carin Lucia Martinez Espinola\", \"given_name\": \"Carin Lucia\", \"family_name\": \"Martinez Espinola\", \"picture\": \"https://lh3.googleusercontent.com/a/ALm5wu10gh3LNlbAE6idVJlXhZmFgmZIiiLFTqiDGeMz=s96-c\", \"locale\": \"es\", \"hd\": \"fpuna.edu.py\"}"
+       }
+    },
+    {
+       "model":"socialaccount.socialaccount",
+       "pk":3,
+       "fields":{
+          "user":3,
+          "provider":"google",
+          "uid":"112410875675995736132",
+          "last_login":"2022-11-03T01:20:15.901Z",
+          "date_joined":"2022-11-03T01:20:11.821Z",
+          "extra_data":"{\"id\": \"112410875675995736132\", \"email\": \"nan.rod98@fpuna.edu.py\", \"verified_email\": true, \"name\": \"Nando Antonio Rodriguez Orihuela\", \"given_name\": \"Nando Antonio\", \"family_name\": \"Rodriguez Orihuela\", \"picture\": \"https://lh3.googleusercontent.com/a/ALm5wu3hrwnxbDISQLSOWiOSAZdkoaNHO36Zpn4m4XSf=s96-c\", \"locale\": \"es\", \"hd\": \"fpuna.edu.py\"}"
+       }
+    }
+ ]
