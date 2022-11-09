@@ -44,13 +44,13 @@
 
     {{ tipos_dict|json_script:"tipos_dict" }}
 
-    <div class="filtros" style="padding: 15px;color:black">Filtrar por:
+    <div class="filtros" style="padding: 15px;color:navajowhite">Filtrar por:
         {% for tipo in tipos_dict %}
-            <a style="color:black" href="{% url "detalle_proyecto" id_proyecto=id_proyecto %}?id_tipo_us={{ tipo.id }}">{{ tipo.nombre }}</a>
+            <a style="color:lightseagreen" href="{% url "detalle_proyecto" id_proyecto=id_proyecto %}?id_tipo_us={{ tipo.id }}">{{ tipo.nombre }}</a>
         {% endfor %}
     </div>
 
-    <div class="titulo-tipo-us" style="padding-left: 15px; color:black">Tipo de US: {{ tipo_mostrado_en_pantalla }}</div>
+    <div class="titulo-tipo-us" style="padding-left: 15px; color:navajowhite">Tipo de US: {{ tipo_mostrado_en_pantalla }}</div>
 
     <div id="myKanban"></div>
 

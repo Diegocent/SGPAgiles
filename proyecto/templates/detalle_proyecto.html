@@ -10,7 +10,7 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 body {
     font-family: 'Poppins', sans-serif;
-    background: #fafafa;
+    background: #2c3e50;
 }
 
 p {
@@ -267,6 +267,7 @@ a.article:hover {
 
 
         {% if sprint is not None %}
+            <h1>Tablero Kanban</h1>
             <div style="padding-left: 10px">{% include "kanban/tablero.html" %}</div>
         {% else %}
             {% if proyecto.estado == "EN_PROCESO" %}

@@ -66,10 +66,14 @@
 {% block content %}
   <main class="px-3">
       {% if not request.user.is_authenticated  %}
+
         <h1>Sistema Gerenciador de Proyectos</h1>
+
         <p class="lead"> Grupo 9 </p>
+
         <p class="lead">
-        <a href="{% provider_login_url 'google' %}" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Iniciar Sesión</a>
+
+        <a href="{% provider_login_url 'google' %}"class="btn btn-secondary btn-lg btn-block">Iniciar Sesión</a>
          </p>
       {% else %}
 
