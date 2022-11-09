@@ -12,17 +12,12 @@ fi
 echo "#######################################"
 echo "###########   SGPAgiles    ############"
 echo "#######################################"
-echo "Elija la iteracion:"
-echo "1- v0.0.1"
-echo "2- v0.0.2"
-echo "3- v0.0.3"
-echo "4- v0.0.4"
-echo "5- v0.0.5"
-echo "6- v0.0.6"
-read -p 'Input: ' iteracion
+echo "Elija cual iteracion del proyecto usar:"
+echo "$(git tag -l)"
+read -p 'Nombre de la iteracion: ' iteracion
 
 if [[ $iteracion -eq 1 ]]; then
-  git checkout v0.0.1
+  git checkout v0.0.1 --force
 elif [[ $iteracion -eq 2 ]]; then
   docker compose down -v
   docker compose up --build
