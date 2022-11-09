@@ -25,7 +25,9 @@ services:
     env_file:
       - .env
     volumes:
-      - .:/usr/src/is2/
+      - .:/usr/src/app/
+      - python:/usr/local/lib/python3.8/dist-packages
+      - socket:/var/run/postgresql/
     networks:
       is2:
         aliases:
@@ -38,7 +40,9 @@ services:
 volumes:
   postgres:
     driver: local
-  django-apache2:
+  socket:
+    driver: local
+  python:
     driver: local
 networks:
   is2:
