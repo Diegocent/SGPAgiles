@@ -154,4 +154,4 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, '')
-MEDIA_URL = '/historial/'
+MEDIA_URL = '/'
