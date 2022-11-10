@@ -1448,7 +1448,7 @@ class AgregarTrabajoAUserStory(View):
 
             cleaned_data = form.cleaned_data
 
-
+            archivo = cleaned_data["archivos"]
             HistorialUS.objects.create(log=cleaned_data["log"], user_story_id=id_us,
                                        horas_trabajadas=cleaned_data["horas_trabajadas"],
                                        fecha=date.today(), usuario_id=request.user.id, archivos=cleaned_data["archivos"]
