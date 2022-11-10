@@ -31,23 +31,37 @@ echo "3- Como lo deje."
 read -p 'Input: ' estado
 
 if [[ $iteracion -eq 1 ]]; then
+  echo "INICIANDO SERVIDOR DE DESARROLLO"
   if [[ $estado -eq 1 ]]; then
+    echo "DESDE CERO"
     docker compose down -v
     docker compose up --build
   elif [[ $estado -eq 2 ]]; then
+    echo "DESDE CERO PERO PRECARGADO"
     docker compose down -v
     docker compose -f docker-compose-test.yml up --build
   elif [[ $estado -eq 3 ]]; then
+    echo "COMO ESTABA"
     docker compose up --build
+  else
+    echo "no valido"
   fi
 elif [[ $iteracion -eq 2 ]]; then
-  docker compose down -v
-  docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build
-elif [[ $iteracion -eq 3 ]]; then
-  docker compose down -v
-  docker compose -f docker-compose.yml -f docker-compose-test.prod.yml up --build
-elif [[ $iteracion -eq 4 ]]; then
-  docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build
+  echo "INICIANDO SERVIDOR DE PRODUCCION"
+  if [[ $estado -eq 1 ]]; then
+    echo "DESDE CERO"
+    docker compose down -v
+    docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build
+  elif [[ $estado -eq 2 ]]; then
+    echo "DESDE CERO PERO PRECARGADO"
+    docker compose down -v
+    docker compose -f docker-compose.yml -f docker-compose-test.prod.yml up --build
+  elif [[ $estado -eq 3 ]]; then
+    echo "COMO ESTABA"
+    docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build
+  else
+    echo "no valido"
+  fi
 else
   echo "no valido"
 fi
