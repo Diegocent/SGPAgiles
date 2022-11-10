@@ -20,7 +20,7 @@ services:
   django-apache2:
     build: .
     container_name: django-deployment
-    command:  bash -c "pip install -r requirements.txt && python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py loaddata datos.json && service apache2 start && python3 manage.py runserver 0.0.0.0:8000"
+    command:  bash -c "pip install -r requirements.txt && python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py loaddata datos.json && chmod -R 777 historial/ && apache2ctl -D FOREGROUND"
     ports:
       - '80:80'
       - '3501:3500'
