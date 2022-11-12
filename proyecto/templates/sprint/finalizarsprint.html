@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+    {% load widget_tweaks %}
+<h1 style="text-align: left; color: white">Finalizar Sprint</h1>
+<div class="row">
+
+<div class="col-xl-6 col-md-6">
+    <h3 style="text-align: left; color: white">Estas a punto de finalizar un sprint. Estas seguro?</h3>
+<form method="post">
+    {% csrf_token %}
+
+    <input type="submit" value="Finalizar Sprint">
+</form>
+</div>
+</div>
+{% endblock %}

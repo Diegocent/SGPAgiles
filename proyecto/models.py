@@ -214,6 +214,13 @@ class UserStory(models.Model):
         else:
             return 1
 
+    @property
+    def finalizado(self):
+        if self.estado.nombre == "DONE":
+            return True
+        else:
+            return False
+
     class Meta:
         ordering = ["-prioridad"]
 

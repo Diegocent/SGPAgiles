@@ -893,22 +893,25 @@ class ActualizarSprintView(View):
 
 
 class verProductBacklog(View):
-    permisos = ["Ver ProductBakclog"]
+    permisos = ["Ver ProductBacklog"]
 
     def get(self, request, id_proyecto):
-        usuario: Usuario = request.user
-        if usuario.es_admin() or usuario.es_scrum_master(id_proyecto):
-            uss = UserStory.objects.all().filter(proyecto=id_proyecto)
-            context = {
-                'uss': uss,
-                'id_proyecto': id_proyecto
-            }
-        else:
-            context = {
-                "uss": [],
-                'id_proyecto': id_proyecto
-            }
-        return render(request, 'backlog/ver_product_backlog.html', context)
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                uss = UserStory.objects.all().filter(proyecto=id_proyecto)
+                uss = [us for us in uss if not us.finalizado]
+                context = {
+                    'uss': uss,
+                    'id_proyecto': id_proyecto
+                }
+                return render(request, 'backlog/ver_product_backlog.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
 
 
 class AsignarMiembroASprint(View):
@@ -1791,6 +1794,7 @@ class DetalleSolicitud(View):
         elif not user.is_authenticated:
             return redirect("home")
 
+
 class TableroKanbanView(View):
 
     permisos = ["Ver Proyecto"] #Funcion para ver el tablero kanban
@@ -1889,3 +1893,117 @@ class CambiarEstadoUSView(View):
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
             return redirect("home")
+
+
+class FinalizarSprint(View):
+
+    permisos = ["Editar Sprint"] #Funcion para iniciar un Sprint
+
+    def get(self, request, id_proyecto, id_sprint):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al Sprint con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                sprint_en_proceso = sprint.estado == EstadoSprint.EN_PROCESO
+
+                if sprint_en_proceso:
+                    return render(request, 'sprint/finalizarsprint.html')
+                elif not sprint_en_proceso:
+                    messages.error(request, message="No se puede finalizar un sprint que no está en proceso!")
+                return redirect("ver_sprints", id_proyecto)
+
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_sprint):
+        sprint = Sprint.objects.get(proyecto_id=id_proyecto, id=id_sprint)
+        sprint.fecha_fin = date.today()
+        sprint.estado = EstadoSprint.TERMINADO
+        sprint.save()
+        self.guardar_eventos_en_historial(sprint=sprint, request=request)
+        messages.success(request, 'Sprint finalizado correctamente!')
+        return redirect('detalle_proyecto', id_proyecto)
+
+    @staticmethod
+    def guardar_eventos_en_historial(sprint, request):
+        user_stories = UserStory.objects.filter(sprint=sprint)
+        for us in user_stories:
+            if us.finalizado:
+                HistorialUS.objects.create(log="Sprint {} finalizado.".format(sprint.numero),
+                                           fecha=date.today(),
+                                           user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
+            else:
+                us.esfuerzo_anterior = 3
+                us.calcular_prioridad()
+                us.sprint = None
+                us.desarrollador = None
+                us.save()
+                HistorialUS.objects.create(log="Sprint {} finalizado. Pero US no fue terminado. Ajustando prioridad".format(sprint.numero),
+                                           fecha=date.today(),
+                                           user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
+
+
+class CancelarSprint(View):
+
+    permisos = ["Editar Sprint"] #Funcion para iniciar un Sprint
+
+    def get(self, request, id_proyecto, id_sprint):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al Sprint con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                sprint_en_proceso = sprint.estado == EstadoSprint.EN_PROCESO
+
+                if sprint_en_proceso:
+                    return render(request, 'sprint/cancelarsprint.html')
+                elif not sprint_en_proceso:
+                    messages.error(request, message="No se puede cancelar un sprint que no está en proceso!")
+                return redirect("ver_sprints", id_proyecto)
+
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_sprint):
+        sprint = Sprint.objects.get(proyecto_id=id_proyecto, id=id_sprint)
+        sprint.fecha_fin = date.today()
+        sprint.estado = EstadoSprint.CANCELADO
+        sprint.save()
+        self.guardar_eventos_en_historial(sprint=sprint, request=request)
+        messages.success(request, 'Sprint CANCELADO!')
+        return redirect('detalle_proyecto', id_proyecto)
+
+    @staticmethod
+    def guardar_eventos_en_historial(sprint, request):
+        user_stories = UserStory.objects.filter(sprint=sprint)
+        for us in user_stories:
+            if us.finalizado:
+                HistorialUS.objects.create(log="Sprint {} CANCELADO".format(sprint.numero),
+                                           fecha=date.today(),
+                                           user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
+            else:
+                us.esfuerzo_anterior = 3
+                us.calcular_prioridad()
+                us.sprint = None
+                us.desarrollador = None
+                us.save()
+                HistorialUS.objects.create(log="Sprint {} CANCELADO. Pero US no fue terminado. Ajustando prioridad".format(sprint.numero),
+                                           fecha=date.today(),
+                                           user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
+
+

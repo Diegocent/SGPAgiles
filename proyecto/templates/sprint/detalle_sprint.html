@@ -14,8 +14,8 @@
         {% endif %}
     {% endif %}
     {% if sprint.estado == "EN_PROCESO" %}
-        <a><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Finalizar Sprint</button></a>
-        <a><button type="button" class="btn btn-lg btn-danger fw-bold border-opacity-75 bg-black">Cancelar Sprint</button></a>
+        <a href="{% url "finalizar_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Finalizar Sprint</button></a>
+        <a href="{% url "cancelar_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}"><button type="button" class="btn btn-lg btn-danger fw-bold border-opacity-75 bg-black">Cancelar Sprint</button></a>
     {% endif %}
     <br>
     <br>
