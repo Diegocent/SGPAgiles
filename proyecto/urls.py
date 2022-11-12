@@ -5,6 +5,7 @@ urlpatterns = [
     path('crear', views.CrearProyectoView.as_view(), name='crear'),
     path('', views.VerProyectosView.as_view(), name='ver_proyectos'),
     path('<int:id_proyecto>/', views.VerProyectoView.as_view(), name='detalle_proyecto'),
+    path('<int:id_proyecto>/solicitudes/', views.VerSolicitudesScrumMasterView.as_view(), name='ver_solicitudes_scrum'),
     path('<int:id_proyecto>/backlog/importar/', views.ImportarMainPageView.as_view(), name='importar'),
     path('<int:id_proyecto>/backlog/importar/<int:id_proyecto_a_importar>/roles', views.ImportarRolesDeOtroProyectoView.as_view(), name='importar_roles'),
     path('<int:id_proyecto>/backlog/importar/<int:id_proyecto_a_importar>/tipos', views.ImportarTiposUSDeOtroProyectoView.as_view(), name='importar_tipos'),

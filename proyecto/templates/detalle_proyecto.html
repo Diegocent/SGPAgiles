@@ -228,7 +228,7 @@
 
                 <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SPRINTS</a></li>
 
-                <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SOLICITUDES</a></li>
+                <li><a href="{% url 'ver_solicitudes_scrum' id_proyecto=proyecto.id %}">SOLICITUDES</a></li>
 
                 {% if proyecto.estado == "NO_INICIADO" and equipo %}
                     <li><a href="{% url 'iniciar_proyecto' id_proyecto=id_proyecto %}">Iniciar Proyecto</a></li>

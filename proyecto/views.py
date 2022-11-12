@@ -913,7 +913,6 @@ class verProductBacklog(View):
             return redirect("home")
 
 
-
 class AsignarMiembroASprint(View):
     permisos = ["Editar Sprint"] #Se edita el sprint para poder asignarle miembros
 
@@ -2006,4 +2005,27 @@ class CancelarSprint(View):
                                            fecha=date.today(),
                                            user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
 
+
+class VerSolicitudesScrumMasterView(View):
+    permisos = ["Editar Sprint"]  # Funcion para iniciar un Sprint
+
+    def get(self, request, id_proyecto):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+
+                user_stories = UserStory.objects.filter(proyecto_id=id_proyecto)
+                solicitudes = AprobacionDeUS.objects.filter(user_story__in=user_stories, estado=EstadoAprobacion.EN_ESPERA)
+                if not user.es_scrum_master(id_proyecto=id_proyecto):
+                    print("hola")
+                    solicitudes = [solicitud for solicitud in solicitudes if solicitud.solicitado_por == user]
+                context = {
+                    "solicitudes": solicitudes
+                }
+                return render(request, 'US/versolicitudes.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
 
