@@ -2178,7 +2178,6 @@ class EditarFeriadoView(View):
         return redirect('detalle_proyecto', id_proyecto)
 
 
-
 class BurndownChartView(View):
 
     permisos = ["Ver Proyecto"] #Funcion para iniciar un Sprint
@@ -2196,16 +2195,8 @@ class BurndownChartView(View):
                     return redirect("detalle_proyecto", id_proyecto)
 
                 sprint.calcular_fecha_fin_estimada()
-                hay_sprint_sin_finalizar = Sprint.hay_otros_sprints_en_proceso(id_proyecto=id_proyecto)
 
-                if not hay_userstories_sin_terminar and not hay_sprint_sin_finalizar:
-                    return render(request, 'proyecto/finalizarproyecto.html')
-                elif hay_userstories_sin_terminar:
-                    messages.error(request, message="No se puede finalizar un proyecto que tiene user stories sin terminar!")
-                elif hay_sprint_sin_finalizar:
-                    messages.error(request, message="No se puede finalizar un proyecto que tiene un sprint sin finalizar!")
-                return redirect("ver_sprints", id_proyecto)
-
+                return render(request, 'sprint/burndownchart.html')
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
