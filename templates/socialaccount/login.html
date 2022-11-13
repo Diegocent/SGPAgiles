@@ -7,7 +7,7 @@
     <h2>{% blocktrans with provider.name as provider %}Conectar {{ provider }}{% endblocktrans %}</h2>
     <p>{% blocktrans with provider.name as provider %}Usted esta por iniciar sesión desde una cuenta tercerizada {{ provider }}.{% endblocktrans %}</p>
 {% else %}
-<h2>{% blocktrans with provider.name as provider %}Inicie Sesión Vía {{ provider }}{% endblocktrans %}</h2>
+<h2 style="text-align: center">{% blocktrans with provider.name as provider %}Inicie Sesión Vía {{ provider }}{% endblocktrans %}</h2>
 <p>{% blocktrans with provider.name as provider %}Usted esta por iniciar sesión desde una cuenta tercerizada  {{ provider }}.{% endblocktrans %}</p>
 {% endif %}
 <form method="post">
