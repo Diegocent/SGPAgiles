@@ -1,6 +1,7 @@
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from Usuario.models import Usuario
+from datetime import datetime, timedelta
 # Create your models here.
 
 
@@ -56,6 +57,7 @@ class Sprint(models.Model):
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
     fecha_inicio = models.DateField(null=True)
     fecha_fin = models.DateField(null=True)
+    fecha_fin_estimada = models.DateField(null=True)
     estado = models.CharField(choices=EstadoProyecto.choices, max_length=100)
     duracion = models.IntegerField(null=True, verbose_name='Duración en días')
 
@@ -124,6 +126,22 @@ class Sprint(models.Model):
         if len(sprints_en_planificacion) == 0:
             return False
         return True
+
+    def calcular_fecha_fin_estimada(self):
+        fecha_fin = self.fecha_inicio
+        feriados = Feriado.objects.filter(proyecto=self.proyecto).values_list("fecha", flat=True)
+        dias_habiles = 0
+
+        while dias_habiles < self.duracion:
+            es_feriado = fecha_fin in feriados
+            es_finde = fecha_fin.weekday() >= 5
+
+            if not es_feriado and not es_finde:
+                dias_habiles += 1
+
+            fecha_fin += timedelta(days=1)
+
+        self.fecha_fin_estimada = fecha_fin
 
 
 class MiembrosSprint(models.Model):
@@ -268,3 +286,9 @@ class AprobacionDeUS(models.Model):
             return ultimo_valor.numero + 1
         else:
             return 1
+
+
+class Feriado(models.Model):
+    nombre = models.CharField(max_length=100)
+    fecha = models.DateField()
+    proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)

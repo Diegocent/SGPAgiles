@@ -1,6 +1,7 @@
 from django.forms import ModelForm
 
-from .models import Equipo, TipoUserStory, UserStory, Sprint, MiembrosSprint, Proyecto, HistorialUS, AprobacionDeUS
+from .models import Equipo, TipoUserStory, UserStory, Sprint, MiembrosSprint, Proyecto, HistorialUS, AprobacionDeUS, \
+    Feriado
 from Usuario.models import Permisos, Usuario, RolProyecto
 from django import forms
 
@@ -72,6 +73,7 @@ class FormUS(ModelForm):
 
     prioridad_de_negocio = forms.IntegerField(min_value=1, max_value=10, label="Prioridad de negocio") #Prioridad de negocio para el US
     prioridad_tecnica = forms.IntegerField(min_value=1, max_value=10, label="Prioridad tecnica") #Prioridad tecnica para el US
+    duracion = forms.IntegerField(label="Tiempo estimado en horas.")
 
     class Meta:
         model = UserStory #Campos para nombre, descripcion, tipo, prioridad de negocio, prioridad de tecnica y la duracion que tendra
@@ -85,6 +87,15 @@ class FormSprint(ModelForm):
     class Meta:
         model = Sprint
         fields = ["descripcion", "duracion"]#Campos para la descripcion y la duracion
+
+
+class FormFeriado(ModelForm):
+
+    fecha = forms.DateField(label="Ingrese la fecha del feriado.", required=True)
+
+    class Meta:
+        model = Feriado
+        fields = ["fecha", "nombre"]
 
 
 class FormMiembroSprint(ModelForm):

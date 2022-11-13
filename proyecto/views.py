@@ -9,9 +9,9 @@ from django.views import View
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
     FormUS, FormSprint, FormMiembroSprint, FormUSSprint, FormImportarMainPage, FormImportarRolesProyecto, \
     FormImportarTiposDeUS, FormAsignarDevAUserStory, FormAgregarTrabajoUS, FormAsignarRolAUsuario, \
-    FormSolicitarAprobacion, FormRechazarSolicitud
+    FormSolicitarAprobacion, FormRechazarSolicitud, FormFeriado
 from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado, \
-    EstadoSprint, MiembrosSprint, HistorialUS, AprobacionDeUS, EstadoAprobacion
+    EstadoSprint, MiembrosSprint, HistorialUS, AprobacionDeUS, EstadoAprobacion, Feriado
 from Usuario.models import Usuario, RolProyecto
 from django.contrib import messages
 from datetime import date
@@ -2041,7 +2041,7 @@ class VerSolicitudesScrumMasterView(View):
 
 class FinalizarProyecto(View):
 
-    permisos = ["Cancelar Proyecto"] #Funcion para iniciar un Sprint
+    permisos = ["Finalizar Proyecto"] #Funcion para iniciar un Sprint
 
     def get(self, request, id_proyecto):
         user: Usuario = request.user
@@ -2090,3 +2090,123 @@ class FinalizarProyecto(View):
                                            user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
 
 
+class CrearFeriadoView(View):
+    form_class = FormFeriado
+    permisos = ["Crear Feriado"] #Funcion para iniciar un Sprint
+
+    def get(self, request, id_proyecto):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                form = self.form_class()
+                return render(request, 'proyecto/crearferiado.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+           cleaned_data = form.cleaned_data
+           Feriado.objects.create(proyecto_id=id_proyecto, fecha=cleaned_data["fecha"])
+        else:
+            return render(request, 'proyecto/crearferiado.html', {'form': form})
+        return redirect('detalle_proyecto', id_proyecto)
+
+
+class BorrarFeriadoView(View):
+    form_class = FormFeriado
+    permisos = ["Borrar Feriado"] #Funcion para iniciar un Sprint
+
+    def get(self, request, id_proyecto, id_feriado):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    feriado = Feriado.objects.get(id=id_feriado, proyecto_id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al feriado con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                form = FormFeriado(instance=feriado)
+                return render(request, 'proyecto/borrarferiado.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_feriado):
+        feriado = Feriado.objects.get(id=id_feriado)
+
+        feriado.delete()
+        messages.success(request, "Feriado borrado exitosamente")
+        return redirect('detalle_proyecto', id_proyecto)
+
+
+class EditarFeriadoView(View):
+    form_class = FormFeriado
+    permisos = ["Editar Feriado"] #Funcion para iniciar un Sprint
+
+    def get(self, request, id_proyecto, id_feriado):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    feriado = Feriado.objects.get(id=id_feriado, proyecto_id=id_proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al feriado con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                form = FormFeriado(instance=feriado)
+                return render(request, 'proyecto/borrarferiado.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_feriado):
+        feriado = Feriado.objects.get(id= id_feriado)
+        form = self.form_class(request.POST, instance=feriado)
+        if form.is_valid():
+           form.save()
+        else:
+            return render(request, 'proyecto/crearferiado.html', {'form': form})
+        return redirect('detalle_proyecto', id_proyecto)
+
+
+
+class BurndownChartView(View):
+
+    permisos = ["Ver Proyecto"] #Funcion para iniciar un Sprint
+
+    def get(self, request, id_proyecto, id_sprint):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    proyecto = Proyecto.objects.get(id=id_proyecto)
+                    sprint = Sprint.objects.get(id=id_sprint, proyecto=proyecto)
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al proyecto o el sprint con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                sprint.calcular_fecha_fin_estimada()
+                hay_sprint_sin_finalizar = Sprint.hay_otros_sprints_en_proceso(id_proyecto=id_proyecto)
+
+                if not hay_userstories_sin_terminar and not hay_sprint_sin_finalizar:
+                    return render(request, 'proyecto/finalizarproyecto.html')
+                elif hay_userstories_sin_terminar:
+                    messages.error(request, message="No se puede finalizar un proyecto que tiene user stories sin terminar!")
+                elif hay_sprint_sin_finalizar:
+                    messages.error(request, message="No se puede finalizar un proyecto que tiene un sprint sin finalizar!")
+                return redirect("ver_sprints", id_proyecto)
+
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
