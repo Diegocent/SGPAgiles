@@ -306,6 +306,9 @@ class VerProyectoView(View):
                     context["id_tipo_us"] = id_tipo_us
                     context["tipo_mostrado_en_pantalla"] = tipo_mostrado_en_pantalla
                     context["id_estado_done"] = id_estado_done
+
+                context["puede_finalizar_proyecto"] = not p.tiene_user_stories_sin_terminar() and not Sprint.hay_otros_sprints_en_proceso(id_proyecto=id_proyecto)
+
                 return render(request, 'detalle_proyecto.html', context)
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
@@ -2034,4 +2037,56 @@ class VerSolicitudesScrumMasterView(View):
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
             return redirect("home")
+
+
+class FinalizarProyecto(View):
+
+    permisos = ["Cancelar Proyecto"] #Funcion para iniciar un Sprint
+
+    def get(self, request, id_proyecto):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                try:
+                    proyecto = Proyecto.objects.get(id=id_proyecto)
+                    user_stories = UserStory.objects.filter(proyecto=proyecto)
+                    user_stories = [us for us in user_stories if not us.finalizado]
+                except ObjectDoesNotExist:
+                    messages.error(request, message="No se encuentra al proyecto con esos parametros.")
+                    return redirect("detalle_proyecto", id_proyecto)
+
+                hay_userstories_sin_terminar = len(user_stories) != 0
+                hay_sprint_sin_finalizar = Sprint.hay_otros_sprints_en_proceso(id_proyecto=id_proyecto)
+
+                if not hay_userstories_sin_terminar and not hay_sprint_sin_finalizar:
+                    return render(request, 'proyecto/finalizarproyecto.html')
+                elif hay_userstories_sin_terminar:
+                    messages.error(request, message="No se puede finalizar un proyecto que tiene user stories sin terminar!")
+                elif hay_sprint_sin_finalizar:
+                    messages.error(request, message="No se puede finalizar un proyecto que tiene un sprint sin finalizar!")
+                return redirect("ver_sprints", id_proyecto)
+
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto):
+        proyecto = Proyecto.objects.get(id=id_proyecto)
+        proyecto.fecha_fin = date.today()
+        proyecto.estado = EstadoProyecto.TERMINADO
+        proyecto.save()
+        self.guardar_eventos_en_historial(proyecto=proyecto, request=request)
+        messages.success(request, 'Proyecto finalizado correctamente!')
+        return redirect('detalle_proyecto', id_proyecto)
+
+    @staticmethod
+    def guardar_eventos_en_historial(proyecto, request):
+        user_stories = UserStory.objects.filter(proyecto=proyecto)
+        for us in user_stories:
+            HistorialUS.objects.create(log="Proyecto finalizado.",
+                                           fecha=date.today(),
+                                           user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
+
 

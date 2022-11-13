@@ -37,6 +37,12 @@ class Proyecto(models.Model):
         return TipoUserStory.objects.filter(proyecto=self)
 
 
+    def tiene_user_stories_sin_terminar(self):
+        user_stories = UserStory.objects.filter(proyecto=self)
+        user_stories = [us for us in user_stories if not us.finalizado]
+        return len(user_stories) != 0
+
+
 class EstadoSprint(models.TextChoices):
     NO_INICIADO = 'NO_INICIADO', 'No iniciado'
     EN_PROCESO = 'EN_PROCESO', 'En progreso'
@@ -220,6 +226,7 @@ class UserStory(models.Model):
             return True
         else:
             return False
+
 
     class Meta:
         ordering = ["-prioridad"]

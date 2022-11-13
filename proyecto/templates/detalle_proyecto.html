@@ -229,7 +229,9 @@
                 <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SPRINTS</a></li>
 
                 <li><a href="{% url 'ver_solicitudes_scrum' id_proyecto=proyecto.id %}">SOLICITUDES</a></li>
-
+                {% if puede_finalizar_proyecto %}
+                    <li><a href="{% url 'finalizar_proyecto' id_proyecto=proyecto.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Finalizar Proyecto</button></a></li>
+                {% endif %}
                 {% if proyecto.estado == "NO_INICIADO" and equipo %}
                     <li><a href="{% url 'iniciar_proyecto' id_proyecto=id_proyecto %}">Iniciar Proyecto</a></li>
                 {% endif %}
