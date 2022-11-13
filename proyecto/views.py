@@ -1905,16 +1905,22 @@ class FinalizarSprint(View):
             if tiene_permisos:
                 try:
                     sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+                    user_stories = UserStory.objects.filter(sprint=sprint)
+                    user_stories = [us for us in user_stories if not us.finalizado]
+                    solicitudes = AprobacionDeUS.objects.filter(user_story__in=user_stories, estado=EstadoAprobacion.EN_ESPERA)
                 except ObjectDoesNotExist:
                     messages.error(request, message="No se encuentra al Sprint con esos parametros.")
                     return redirect("detalle_proyecto", id_proyecto)
 
                 sprint_en_proceso = sprint.estado == EstadoSprint.EN_PROCESO
+                hay_solicitudes_sin_procesar = len(solicitudes) != 0
 
-                if sprint_en_proceso:
+                if sprint_en_proceso and not hay_solicitudes_sin_procesar:
                     return render(request, 'sprint/finalizarsprint.html')
                 elif not sprint_en_proceso:
                     messages.error(request, message="No se puede finalizar un sprint que no está en proceso!")
+                elif hay_solicitudes_sin_procesar:
+                    messages.error(request, message="No se puede finalizar el sprint! Quedan solicitudes de aprobacion de US para procesar.")
                 return redirect("ver_sprints", id_proyecto)
 
             elif not tiene_permisos:
