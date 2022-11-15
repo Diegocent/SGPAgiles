@@ -1,6 +1,8 @@
+import datetime
 import json
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import QuerySet
 from django.forms import model_to_dict
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -2182,6 +2184,38 @@ class BurndownChartView(View):
 
     permisos = ["Ver Proyecto"] #Funcion para iniciar un Sprint
 
+    @staticmethod
+    def calcular_fechas_del_sprint_eje_x(fecha_inicial: date, fecha_fin: date):
+        array_de_fechas = []
+        while fecha_inicial <= fecha_fin:
+            array_de_fechas.append(fecha_inicial)
+            fecha_inicial += datetime.timedelta(days=1)
+            print(fecha_inicial)
+        return array_de_fechas
+
+    @staticmethod
+    def calcular_horas_supuestas_a_trabajar_eje_y(fecha_inicial: date, fecha_fin: date):
+        array_de_fechas = []
+        while fecha_inicial <= fecha_fin:
+            array_de_fechas.append(fecha_inicial)
+            fecha_inicial += datetime.timedelta(days=1)
+            print(fecha_inicial)
+        return fecha_fin
+
+    @staticmethod
+    def calcular_horas_reales_trabajadas_eje_y(user_stories: QuerySet[UserStory], fechas: list[date]):
+        array_de_horas = []
+        for fecha in fechas:
+            historial = HistorialUS.objects.filter(user_story__in=user_stories, fecha=fecha)
+
+            sum_horas = 0
+            for historia in historial:
+                sum_horas += historia.horas_trabajadas
+
+            array_de_horas.append(sum_horas)
+        return array_de_horas
+
+
     def get(self, request, id_proyecto, id_sprint):
         user: Usuario = request.user
         if user.is_authenticated:
@@ -2190,11 +2224,14 @@ class BurndownChartView(View):
                 try:
                     proyecto = Proyecto.objects.get(id=id_proyecto)
                     sprint = Sprint.objects.get(id=id_sprint, proyecto=proyecto)
+                    user_stories = UserStory.objects.filter(sprint=sprint)
                 except ObjectDoesNotExist:
                     messages.error(request, message="No se encuentra al proyecto o el sprint con esos parametros.")
                     return redirect("detalle_proyecto", id_proyecto)
 
                 sprint.calcular_fecha_fin_estimada()
+                array_de_fechas = self.calcular_fechas_del_sprint_eje_x(fecha_inicial=sprint.fecha_inicio, fecha_fin=sprint.fecha_fin_estimada)
+                array_de_horas_trabajadas = self.calcular_horas_reales_trabajadas_eje_y(user_stories=user_stories, fechas=array_de_fechas)
 
                 return render(request, 'sprint/burndownchart.html')
             elif not tiene_permisos:
