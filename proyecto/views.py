@@ -2194,7 +2194,7 @@ class BurndownChartView(View):
         return array_de_fechas
 
     @staticmethod
-    def calcular_horas_supuestas_a_trabajar_eje_y(fecha_inicial: date, fecha_fin: date):
+    def calcular_horas_ideales_a_trabajar_eje_y(fecha_inicial: date, fecha_fin: date):
         array_de_fechas = []
         while fecha_inicial <= fecha_fin:
             array_de_fechas.append(fecha_inicial)
