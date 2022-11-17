@@ -55,6 +55,7 @@ urlpatterns = [
     path('<int:id_proyecto>/sprint/<int:id_sprint>/iniciar/', views.IniciarSprint.as_view(), name='iniciar_sprint'),
     path('<int:id_proyecto>/sprint/<int:id_sprint>/finalizar/', views.FinalizarSprint.as_view(), name='finalizar_sprint'),
     path('<int:id_proyecto>/sprint/<int:id_sprint>/cancelar/', views.FinalizarSprint.as_view(), name='cancelar_sprint'),
+    path('<int:id_proyecto>/sprint/<int:id_sprint>/burndown/', views.BurndownChartView.as_view(), name='ver_burndown'),
     path('<int:id_proyecto>/backlog/', views.verProductBacklog.as_view(), name='ver_product_backlog'),
     path('<int:id_proyecto>/finalizar/', views.FinalizarProyecto.as_view(), name='finalizar_proyecto'),
     path('<int:id_proyecto>/kanban/', views.TableroKanbanView.as_view(), name='kanban'),
