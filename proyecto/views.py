@@ -2029,10 +2029,10 @@ class VerSolicitudesScrumMasterView(View):
                 user_stories = UserStory.objects.filter(proyecto_id=id_proyecto)
                 solicitudes = AprobacionDeUS.objects.filter(user_story__in=user_stories, estado=EstadoAprobacion.EN_ESPERA)
                 if not user.es_scrum_master(id_proyecto=id_proyecto):
-                    print("hola")
                     solicitudes = [solicitud for solicitud in solicitudes if solicitud.solicitado_por == user]
                 context = {
-                    "solicitudes": solicitudes
+                    "solicitudes": solicitudes,
+                    "id_proyecto": id_proyecto
                 }
                 return render(request, 'US/versolicitudes.html', context)
             elif not tiene_permisos:

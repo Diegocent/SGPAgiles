@@ -1,3 +1,55 @@
-{% for solicitud in solicitudes %}
-    {{ solicitud }}
-{% endfor %}
+{% extends 'base.html' %}
+{% block content %}
+
+    <style>
+
+        .table-custom{
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+
+        }
+
+        .table-custom th{
+            border: none;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            color: white;
+        }
+
+        .table-custom tr{
+            /* height: 20%; */
+            border-bottom: 1px solid rgb(212, 212, 212);
+            color: white;
+        }
+
+    </style>
+
+    <h1 class="mt-4">Solicitudes de aprobación</h1>
+
+    <table class="table-custom">
+        <thead>
+        <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Nº Solicitud</th>
+            <th scope="col">Codigo US</th>
+            <th scope="col">Nombre US</th>
+            <th scope="col">Solicitado por</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for solicitud in solicitudes %}
+            <tr height="60px">
+                <td>{{ solicitud.fecha }}</td>
+                <td><a href="{% url "detalle_solicitud" id_proyecto=id_proyecto id_us=solicitud.user_story.id id_solicitud=solicitud.id %}">Solicitud Nº {{ solicitud.numero }}</a></td>
+                <td>{{ solicitud.user_story.codigo }}</td>
+                <td>{{ solicitud.user_story.nombre }}</td>
+                <td>{{ solicitud.solicitado_por.email }}</td>
+                <td></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
