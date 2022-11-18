@@ -2203,16 +2203,27 @@ class BurndownChartView(View):
         return fecha_fin
 
     @staticmethod
-    def calcular_horas_reales_trabajadas_eje_y(user_stories: QuerySet[UserStory], fechas: list[date]):
+    def calcular_horas_reales_trabajadas_eje_y(user_stories: QuerySet[UserStory], fechas: list[date], total_de_horas_del_sprint: int):
         array_de_horas = []
+        contador = 0
         for fecha in fechas:
             historial = HistorialUS.objects.filter(user_story__in=user_stories, fecha=fecha)
 
             sum_horas = 0
+
             for historia in historial:
                 sum_horas += historia.horas_trabajadas
 
-            array_de_horas.append(sum_horas)
+            if contador == 0:
+                array_de_horas.append(sum_horas)
+            else:
+                array_de_horas.append(sum_horas + array_de_horas[contador-1])
+
+            contador += 1
+
+        for x in range(0, len(array_de_horas)):
+            array_de_horas[x] = total_de_horas_del_sprint - array_de_horas[x]
+
         return array_de_horas
 
 
@@ -2231,7 +2242,26 @@ class BurndownChartView(View):
 
                 sprint.calcular_fecha_fin_estimada()
                 array_de_fechas = self.calcular_fechas_del_sprint_eje_x(fecha_inicial=sprint.fecha_inicio, fecha_fin=sprint.fecha_fin_estimada)
-                array_de_horas_trabajadas = self.calcular_horas_reales_trabajadas_eje_y(user_stories=user_stories, fechas=array_de_fechas)
+
+                total_de_horas_del_sprint = sprint.capacidad_usada
+                array_de_horas_trabajadas = self.calcular_horas_reales_trabajadas_eje_y(user_stories=user_stories,
+                                                                                        fechas=array_de_fechas, total_de_horas_del_sprint=total_de_horas_del_sprint)
+
+                cantidad_de_dias = len(array_de_fechas)
+                feriados = Feriado.objects.filter(proyecto=sprint.proyecto).values_list("fecha", flat=True)
+                array_horas_ideales = []
+                contador_dias = 0
+                for fecha in array_de_fechas:
+                    es_feriado = fecha in feriados
+                    es_finde = fecha.weekday() >= 5
+
+                    if es_feriado and es_finde:
+                        hora_ideal = -1
+                    else:
+                        hora_ideal = int(total_de_horas_del_sprint - (total_de_horas_del_sprint/cantidad_de_dias) * contador_dias)
+                    array_horas_ideales.append(hora_ideal)
+                    contador_dias+=1
+                print(array_horas_ideales)
 
                 return render(request, 'sprint/burndownchart.html')
             elif not tiene_permisos:
