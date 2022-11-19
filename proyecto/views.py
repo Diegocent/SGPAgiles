@@ -2256,8 +2256,8 @@ class BurndownChartView(View):
                     es_feriado = fecha in feriados
                     es_finde = fecha.weekday() >= 5
 
-                    if es_feriado and es_finde:
-                        hora_ideal = -1
+                    if es_feriado or es_finde:
+                        hora_ideal = array_horas_ideales[contador_dias-1]
                     else:
                         hora_ideal = int(total_de_horas_del_sprint - (total_de_horas_del_sprint/cantidad_de_dias) * contador_dias)
                     array_horas_ideales.append(hora_ideal)
