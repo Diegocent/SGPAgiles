@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1> Burndown </h1>
+    <script>
+        window.onload = function () {
+
+            fechas = {{ array_de_fechas_string|safe }}
+
+                horas_ideales = {{ array_horas_ideales|safe }}
+                    horas_trabajadas = {{ array_de_horas_trabajadas|safe }}
+
+            var coordenadas_horas_ideales = []
+            var coordenadas_horas_trabajadas = []
+
+            for (var i = 0; i<fechas.length; i++){
+
+                fecha = new Date(fechas[i])
+                fecha.setHours(fecha.getHours()+3)
+
+                coordenadas_horas_ideales.push(
+                    {
+                        "x":fecha,
+                        "y":horas_ideales[i]
+                    }
+                )
+
+                coordenadas_horas_trabajadas.push(
+                    {
+                        "x":fecha,
+                        "y":horas_trabajadas[i]
+                    }
+                )
+            }
+
+            console.log(coordenadas_horas_ideales)
+
+            var chart = new CanvasJS.Chart("chartContainer", {
+
+                animationEnabled: true,
+                title: {
+                    text: "Burndown chart del Sprint ..."
+                },
+                axisX: {
+                    title: "Fechas",
+                    valueFormatString: "DD-MM",
+                    interval: 1
+                },
+                axisY: {
+                    title: "Horas restantes de trabajo",
+                    suffix: "hr",
+                    includeZero: true
+                },
+                legend:{
+                    cursor: "pointer",
+                    fontSize: 16,
+                    itemclick: toggleDataSeries
+                },
+                toolTip:{
+                    shared: true
+                },
+                data: [{
+                    showInLegend: true,
+                    type: "line",
+                    name: "Horas reales",
+                    connectNullData: true,
+                    //nullDataLineDashType: "solid",
+                    xValueType: "dateTime",
+                    xValueFormatString: "DD-MM-YYYY",
+                    dataPoints: coordenadas_horas_trabajadas
+                },{
+                    type: "line",
+                    name: "Horas estimadas",
+                    showInLegend: true,
+                    connectNullData: true,
+                    //nullDataLineDashType: "solid",
+                    xValueType: "dateTime",
+                    xValueFormatString: "DD-MM-YYYY",
+                    dataPoints: coordenadas_horas_ideales
+                }]
+            });
+            chart.render();
+
+            function toggleDataSeries(e){
+                if (typeof(e.dataSeries.visible) === "undefined" || e.dataSeries.visible) {
+                    e.dataSeries.visible = false;
+                }
+                else{
+                    e.dataSeries.visible = true;
+                }
+                chart.render();
+            }
+        }
+    </script>
+
+    <body>
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    </body>
+{% endblock %}

@@ -2185,7 +2185,7 @@ class BurndownChartView(View):
     permisos = ["Ver Proyecto"] #Funcion para iniciar un Sprint
 
     @staticmethod
-    def calcular_fechas_del_sprint_eje_x(fecha_inicial: date, fecha_fin: date):
+    def calcular_fechas_del_sprint_eje_x(fecha_inicial, fecha_fin):
         array_de_fechas = []
         while fecha_inicial <= fecha_fin:
             array_de_fechas.append(fecha_inicial)
@@ -2194,7 +2194,7 @@ class BurndownChartView(View):
         return array_de_fechas
 
     @staticmethod
-    def calcular_horas_ideales_a_trabajar_eje_y(fecha_inicial: date, fecha_fin: date):
+    def calcular_horas_ideales_a_trabajar_eje_y(fecha_inicial, fecha_fin):
         array_de_fechas = []
         while fecha_inicial <= fecha_fin:
             array_de_fechas.append(fecha_inicial)
@@ -2203,7 +2203,7 @@ class BurndownChartView(View):
         return fecha_fin
 
     @staticmethod
-    def calcular_horas_reales_trabajadas_eje_y(user_stories: QuerySet[UserStory], fechas: list[date], total_de_horas_del_sprint: int):
+    def calcular_horas_reales_trabajadas_eje_y(user_stories, fechas, total_de_horas_del_sprint):
         array_de_horas = []
         contador = 0
         for fecha in fechas:
@@ -2252,6 +2252,7 @@ class BurndownChartView(View):
                 array_horas_ideales = []
                 contador_dias = 0
                 for fecha in array_de_fechas:
+
                     es_feriado = fecha in feriados
                     es_finde = fecha.weekday() >= 5
 
@@ -2260,10 +2261,18 @@ class BurndownChartView(View):
                     else:
                         hora_ideal = int(total_de_horas_del_sprint - (total_de_horas_del_sprint/cantidad_de_dias) * contador_dias)
                     array_horas_ideales.append(hora_ideal)
-                    contador_dias+=1
-                print(array_horas_ideales)
+                    contador_dias += 1
+                feacha = date.today()
+                feacha.isoformat()
+                array_de_fechas_string = [fecha.isoformat() for fecha in array_de_fechas]
 
-                return render(request, 'sprint/burndownchart.html')
+                context = {
+                    "array_horas_ideales": array_horas_ideales,
+                    "array_de_horas_trabajadas": array_de_horas_trabajadas,
+                    "array_de_fechas_string": array_de_fechas_string
+                }
+
+                return render(request, 'sprint/burndownchart.html', context)
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
