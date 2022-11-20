@@ -2250,21 +2250,23 @@ class BurndownChartView(View):
                 array_de_horas_trabajadas = self.calcular_horas_reales_trabajadas_eje_y(sprint=sprint, user_stories=user_stories,
                                                                                         fechas=array_de_fechas, total_de_horas_del_sprint=total_de_horas_del_sprint)
 
-                cantidad_de_dias = len(array_de_fechas)
+                cantidad_de_dias = sprint.duracion
                 feriados = Feriado.objects.filter(proyecto=sprint.proyecto).values_list("fecha", flat=True)
                 array_horas_ideales = []
                 contador_dias = 0
+
                 for fecha in array_de_fechas:
 
                     es_feriado = fecha in feriados
                     es_finde = fecha.weekday() >= 5
 
                     if es_feriado or es_finde:
-                        hora_ideal = array_horas_ideales[contador_dias-1]
+                        hora_ideal = array_horas_ideales[len(array_horas_ideales)-1]
                     else:
                         hora_ideal = int(total_de_horas_del_sprint - (total_de_horas_del_sprint/cantidad_de_dias) * contador_dias)
+                        contador_dias += 1
                     array_horas_ideales.append(hora_ideal)
-                    contador_dias += 1
+
                 feacha = date.today()
                 feacha.isoformat()
                 array_de_fechas_string = [fecha.isoformat() for fecha in array_de_fechas]
