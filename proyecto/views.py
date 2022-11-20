@@ -1455,8 +1455,11 @@ class AgregarTrabajoAUserStory(View):
 
             cleaned_data = form.cleaned_data
 
+            user_story = UserStory.objects.get(id=id_us)
+
             archivo = cleaned_data["archivos"]
             HistorialUS.objects.create(log=cleaned_data["log"], user_story_id=id_us,
+                                       sprint=user_story.sprint,
                                        horas_trabajadas=cleaned_data["horas_trabajadas"],
                                        fecha=date.today(), usuario_id=request.user.id, archivos=cleaned_data["archivos"]
                                        )
@@ -2203,11 +2206,11 @@ class BurndownChartView(View):
         return fecha_fin
 
     @staticmethod
-    def calcular_horas_reales_trabajadas_eje_y(user_stories, fechas, total_de_horas_del_sprint):
+    def calcular_horas_reales_trabajadas_eje_y(sprint, user_stories, fechas, total_de_horas_del_sprint):
         array_de_horas = []
         contador = 0
         for fecha in fechas:
-            historial = HistorialUS.objects.filter(user_story__in=user_stories, fecha=fecha)
+            historial = HistorialUS.objects.filter(user_story__in=user_stories, fecha=fecha, sprint=sprint)
 
             sum_horas = 0
 
@@ -2244,7 +2247,7 @@ class BurndownChartView(View):
                 array_de_fechas = self.calcular_fechas_del_sprint_eje_x(fecha_inicial=sprint.fecha_inicio, fecha_fin=sprint.fecha_fin_estimada)
 
                 total_de_horas_del_sprint = sprint.capacidad_usada
-                array_de_horas_trabajadas = self.calcular_horas_reales_trabajadas_eje_y(user_stories=user_stories,
+                array_de_horas_trabajadas = self.calcular_horas_reales_trabajadas_eje_y(sprint=sprint, user_stories=user_stories,
                                                                                         fechas=array_de_fechas, total_de_horas_del_sprint=total_de_horas_del_sprint)
 
                 cantidad_de_dias = len(array_de_fechas)
@@ -2269,7 +2272,8 @@ class BurndownChartView(View):
                 context = {
                     "array_horas_ideales": array_horas_ideales,
                     "array_de_horas_trabajadas": array_de_horas_trabajadas,
-                    "array_de_fechas_string": array_de_fechas_string
+                    "array_de_fechas_string": array_de_fechas_string,
+                    "sprint": sprint
                 }
 
                 return render(request, 'sprint/burndownchart.html', context)

@@ -252,6 +252,7 @@ class UserStory(models.Model):
 
 class HistorialUS(models.Model):
     user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
+    sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE, null=True)
     log = models.CharField(max_length=1000)
     horas_trabajadas = models.PositiveIntegerField(default=0)
     fecha = models.DateField()

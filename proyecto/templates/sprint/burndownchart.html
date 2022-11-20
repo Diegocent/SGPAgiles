@@ -38,7 +38,9 @@
 
                 animationEnabled: true,
                 title: {
-                    text: "Burndown chart del Sprint ..."
+                    text: "Burndown chart del Sprint {{ sprint.numero }}",
+                    fontSize: 30,
+                    padding: 10
                 },
                 axisX: {
                     title: "Fechas",
@@ -92,8 +94,8 @@
         }
     </script>
 
-    <body>
-    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    <body style="width: 100%">
+    <div id="chartContainer" style="height: 60%; width: 90%; padding: 20px;"></div>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     </body>
 {% endblock %}
