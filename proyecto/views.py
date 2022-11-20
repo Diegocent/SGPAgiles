@@ -721,9 +721,13 @@ class DetalleEquipoView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                equipo = Equipo.objects.get(id=id_equipo)
-                miembros = equipo.miembros.all()
-
+                try:
+                    proyecto = Proyecto.objects.get(id=id_proyecto)
+                    equipo = Equipo.objects.get(id=id_equipo,proyecto=proyecto)
+                    miembros = equipo.miembros.all()
+                except ObjectDoesNotExist:
+                    messages.error(request, "no se encuentra al equipo con esas caracteristicas")
+                    return redirect("home")
                 context = {
                     'equipo': equipo,
                     'miembros': miembros,
