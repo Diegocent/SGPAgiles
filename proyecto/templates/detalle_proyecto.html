@@ -190,6 +190,13 @@
             </div>
 
             <ul class="list-unstyled components">
+                {% if puede_finalizar_proyecto %}
+                    <li><a href="{% url 'finalizar_proyecto' id_proyecto=proyecto.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Finalizar Proyecto</button></a></li>
+                {% endif %}
+                {% if proyecto.estado == "NO_INICIADO" %}
+                    <li><a href="{% url 'iniciar_proyecto' id_proyecto=id_proyecto %}">
+                        <button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black" {% if not puede_iniciar_un_proyecto %}title="{{ texto_ayuda_no_puede_iniciar_proyecto }}" disabled{% endif %}>Iniciar Proyecto</button></a></li>
+                {% endif %}
                 <p>Scrum Master<br>{{ proyecto.scrum_master}}</p>
                 {% if sprint is not None %}
                     <p style="text-align: left">Sprint Activo<br><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}">N°: {{ sprint.numero }}</a></p>
@@ -229,12 +236,7 @@
                 <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">SPRINTS</a></li>
 
                 <li><a href="{% url 'ver_solicitudes_scrum' id_proyecto=proyecto.id %}">SOLICITUDES</a></li>
-                {% if puede_finalizar_proyecto %}
-                    <li><a href="{% url 'finalizar_proyecto' id_proyecto=proyecto.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Finalizar Proyecto</button></a></li>
-                {% endif %}
-                {% if proyecto.estado == "NO_INICIADO" and equipo %}
-                    <li><a href="{% url 'iniciar_proyecto' id_proyecto=id_proyecto %}">Iniciar Proyecto</a></li>
-                {% endif %}
+
 
         </nav>
 

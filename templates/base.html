@@ -47,7 +47,7 @@
         <div style="color: whitesmoke">
             <div class="dropdown">
                 <button class="btn btn-secondary " type="button" aria-haspopup="true" aria-expanded="false">
-                usuario: {{request.user.email}}
+                Usuario: {{request.user.email}}
                 </button>
                 {% if request.user.is_authenticated %}
                     {% block roles %}

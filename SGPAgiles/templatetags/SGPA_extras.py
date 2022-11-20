@@ -124,3 +124,17 @@ def roles(context):
         'roles': roles,
         'rol_principal': rol_principal
     }
+
+
+@register.inclusion_tag('herramientas/roles_proyecto.html')
+def obtener_roles_proyecto(usuario, id_proyecto):
+    """
+
+    """
+
+    user: Usuario = usuario
+    proyecto = Proyecto.objects.get(id=id_proyecto)
+
+    roles = usuario.rolProyecto.filter(proyecto=proyecto)
+
+    return {"roles": roles}

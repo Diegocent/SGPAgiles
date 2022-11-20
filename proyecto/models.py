@@ -37,11 +37,18 @@ class Proyecto(models.Model):
     def obtener_tipos_de_user_story_del_proyecto(self):
         return TipoUserStory.objects.filter(proyecto=self)
 
-
     def tiene_user_stories_sin_terminar(self):
         user_stories = UserStory.objects.filter(proyecto=self)
         user_stories = [us for us in user_stories if not us.finalizado]
         return len(user_stories) != 0
+
+    def tiene_user_stories(self):
+        user_stories = UserStory.objects.filter(proyecto=self)
+        return len(user_stories) != 0
+
+    def tiene_un_equipo(self):
+        miembros = self.equipo.miembros.all()
+        return len(miembros) > 1
 
 
 class EstadoSprint(models.TextChoices):

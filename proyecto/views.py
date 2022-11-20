@@ -131,6 +131,12 @@ class CrearProyectoView(View):
             proyecto.equipo = equipo
             proyecto.save()
 
+            Notificacion.objects.create(
+                mensaje="Fuiste seleccionado para ser Scrum Master del Proyecto '{}' !".format(proyecto.nombre),
+                usuario=usuario,
+                url="/proyecto/{}".format(proyecto.id)
+            )
+
             messages.success(request, 'Creado exitosamente!')
             return redirect('ver_proyectos')
         return render(request, 'crear_proyecto.html', {'form': form})
@@ -310,7 +316,16 @@ class VerProyectoView(View):
                     context["tipo_mostrado_en_pantalla"] = tipo_mostrado_en_pantalla
                     context["id_estado_done"] = id_estado_done
 
-                context["puede_finalizar_proyecto"] = not p.tiene_user_stories_sin_terminar() and not Sprint.hay_otros_sprints_en_proceso(id_proyecto=id_proyecto)
+                context["puede_finalizar_proyecto"] = not p.tiene_user_stories_sin_terminar() and not Sprint.hay_otros_sprints_en_proceso(id_proyecto=id_proyecto) and p.estado == EstadoProyecto.EN_PROCESO
+                context[
+                    "puede_iniciar_un_proyecto"] = p.tiene_user_stories() and p.tiene_un_equipo() and p.estado == EstadoProyecto.NO_INICIADO
+
+                context["texto_ayuda_no_puede_iniciar_proyecto"] = ""
+                if not context["puede_iniciar_un_proyecto"] :
+                    if not p.tiene_user_stories():
+                        context["texto_ayuda_no_puede_iniciar_proyecto"] += "El proyecto no tiene User Stories! "
+                    if not p.tiene_un_equipo():
+                        context["texto_ayuda_no_puede_iniciar_proyecto"] += "El proyecto no tiene un equipo! "
 
                 return render(request, 'detalle_proyecto.html', context)
             elif not tiene_permisos:
@@ -741,10 +756,13 @@ class ActualizarEquipoView(View):
         equipo = Equipo.objects.get(id=id_equipo)
         form = FormCrearEquipo(request.POST, instance=equipo)
         if form.is_valid():
+            proyecto = Proyecto.objects.get(id=id_proyecto)
 
             self.eliminar_roles_de_miembros_eliminados(equipo_ant=equipo.miembros,
                                                        equipo_nuevo=form.cleaned_data["miembros"],
-                                                       id_proyecto=id_proyecto)
+                                                       proyecto=proyecto)
+
+
 
             for miembro in form.cleaned_data["miembros"]:
                 if len(miembro.rolProyecto.all().filter(proyecto_id=id_proyecto)) == 0:
@@ -752,19 +770,29 @@ class ActualizarEquipoView(View):
                     miembro.save()
                 equipo.miembros.add(miembro)
 
-
             form.save()
 
             return redirect('ver_equipo', id_proyecto, id_equipo)
         return render(request, 'US/editarus.html', {'form': form})
 
-    def eliminar_roles_de_miembros_eliminados(self, equipo_ant, equipo_nuevo, id_proyecto):
+    def eliminar_roles_de_miembros_eliminados(self, equipo_ant, equipo_nuevo, proyecto):
         miembros_viejos = equipo_ant.all()
         miembros_nuevos = equipo_nuevo.all()
         miembros_eliminados = []
         for miembro_viejo in miembros_viejos:
             if miembro_viejo not in miembros_nuevos:
-                miembro_viejo.rolProyecto.remove(*miembro_viejo.rolProyecto.filter(proyecto_id=id_proyecto))
+                miembro_viejo.rolProyecto.remove(*miembro_viejo.rolProyecto.filter(proyecto=proyecto))
+                Notificacion.objects.create(
+                    mensaje="Fuiste eliminado del Proyecto '{}'".format(proyecto.nombre),
+                    usuario=miembro_viejo,
+                )
+        for miembros_nuevo in miembros_nuevos:
+            if miembros_nuevo not in miembros_viejos:
+                Notificacion.objects.create(
+                    mensaje="Fuiste seleccionado para ser parte del Proyecto '{}'".format(proyecto.nombre),
+                    usuario=miembros_nuevo,
+                    url="/proyecto/{}".format(proyecto.id)
+                )
 
         return miembros_eliminados
 
