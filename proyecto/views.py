@@ -15,6 +15,7 @@ from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, Form
 from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado, \
     EstadoSprint, MiembrosSprint, HistorialUS, AprobacionDeUS, EstadoAprobacion, Feriado
 from Usuario.models import Usuario, RolProyecto
+from notificaciones.models import Notificacion
 from django.contrib import messages
 from datetime import date
 # Create your views here.
@@ -967,6 +968,12 @@ class AsignarMiembroASprint(View):
                                           capacidad=capacidad)
             sprint.save()
 
+            Notificacion.objects.create(
+                mensaje="Fuiste agregado al sprint Nº{} con una carga horaria de {}h".format(sprint.numero, form["carga_horaria"]),
+                url="/proyecto/{}/sprint/{}".format(id_proyecto, id_sprint),
+                usuario=form["miembro"]
+            )
+
             messages.success(request, message="Miembro agregado exitosamente.")
             return redirect("ver_sprint", id_proyecto, id_sprint)
         else:
@@ -1127,6 +1134,13 @@ class ActualizarMiembrosSprintView(View):
 
             sprint.save()
 
+            Notificacion.objects.create(
+                mensaje="Fuiste agregado al sprint Nº{} con una carga horaria de {}h".format(sprint.numero,
+                                                                                            form["carga_horaria"]),
+                url="/proyecto/{}/sprint/{}".format(id_proyecto, id_sprint),
+                usuario=form["miembro"]
+            )
+
             messages.success(request, "Miembro del sprint editado correctamente")
             return redirect('ver_sprint', id_proyecto, id_sprint)
         return render(request, 'sprint/editarmiembrosprint.html', {'form': form})
@@ -1158,6 +1172,11 @@ class BorrarMiembrosSprintView(View):
         sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
 
         sprint.save()
+
+        Notificacion.objects.create(
+            mensaje="Fuiste eliminado del sprint Nº{}".format(sprint.numero),
+            usuario=miembrosprint.miembro
+        )
 
         miembrosprint.delete()
 
@@ -1521,6 +1540,12 @@ class AsignarDevAUserStory(View):
                                        fecha=date.today(),
                                        user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
 
+            Notificacion.objects.create(
+                mensaje="Se te asignó el User Story {} - {}".format(us.codigo, us.nombre),
+                usuario=dev,
+                url="/proyecto/{}/backlog/US/{}/".format(id_proyecto,id_us)
+            )
+
             messages.success(request, message="Miembro agregado exitosamente.")
             return redirect("detalle_US", id_proyecto, id_us)
         else:
@@ -1649,6 +1674,8 @@ class SolicitarAprobacionDeUS(View):
         if form.is_valid():
             form = form.cleaned_data
 
+            proyecto = Proyecto.objects.get(id=id_proyecto)
+
             AprobacionDeUS.objects.create(solicitado_por=request.user,
                                           descripcion_del_trabajo=form["descripcion_del_trabajo"],
                                           archivos=form["archivos"],
@@ -1660,6 +1687,12 @@ class SolicitarAprobacionDeUS(View):
             HistorialUS.objects.create(log="Se solicitó la aprobación del US para terminarlo",
                                        fecha=date.today(),
                                        user_story_id=id_us, usuario=request.user, horas_trabajadas=0)
+
+            Notificacion.objects.create(
+                mensaje="Tienes solicitudes de aprobacion pendientes!",
+                usuario=proyecto.scrum_master,
+                url="/proyecto/{}/solicitudes/".format(id_proyecto)
+            )
 
             return redirect('detalle_US', id_proyecto, id_us)
         return render(request, 'US/solicitar_aprobacion.html', {'form': form})
@@ -1715,6 +1748,12 @@ class AprobarSolicitudDeUS(View):
                                                fecha=date.today(),
                                                user_story_id=id_us, usuario=proyecto.scrum_master, horas_trabajadas=0)
 
+                    Notificacion.objects.create(
+                        mensaje="Solicitud de aprobación para el US '{}' fue aceptada! Puede poner el US en la columna DONE".format(us.nombre),
+                        usuario=us.desarrollador,
+                        url="/proyecto/{}/".format(id_proyecto)
+                    )
+
                     messages.success(request, "US aprobado!")
                     return redirect("detalle_proyecto", id_proyecto)
                 else:
@@ -1764,9 +1803,15 @@ class RechazarSolicitudDeUS(View):
             solicitud.estado = EstadoAprobacion.RECHAZADO
             solicitud.save()
 
-            HistorialUS.objects.create(log="Solicitud de aprobación rechazado por scrum master",
+            historial = HistorialUS.objects.create(log="Solicitud de aprobación rechazado por scrum master",
                                        fecha=date.today(),
                                        user_story_id=id_us, usuario=request.user, horas_trabajadas=0)
+
+            Notificacion.objects.create(
+                mensaje="Tu solicitud de aprobación para el US '{}' fue rechazada!".format(historial.user_story.nombre),
+                usuario=solicitud.solicitado_por,
+                url="/proyecto/{}/backlog/US/{}/solicitudes/{}".format(id_proyecto, id_us, id_solicitud)
+            )
 
             return redirect('detalle_US', id_proyecto, id_us)
         return render(request, 'US/solicitar_aprobacion.html', {'form': form})

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <style>
+
+        .table-custom{
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+
+        }
+
+        .table-custom th{
+            border: none;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            color: white;
+        }
+
+        .table-custom tr{
+            /* height: 20%; */
+            border-bottom: 1px solid rgb(212, 212, 212);
+            color: white;
+        }
+
+    </style>
+
+    <h1 class="mt-4">Notificaciones</h1>
+
+    <table class="table-custom">
+        <thead>
+        <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Notificacion</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for notificacion in notificaciones %}
+            <tr height="60px" >
+                <td style="width: 20%">{{ notificacion.timestamp }}</td>
+                {% if notificacion.url is None %}
+                    <td>{{ notificacion.mensaje }}</td>
+                {% else %}
+                    <td><a href="{{ notificacion.url }}">{% if not notificacion.leido %}}(nuevo!){% endif %} {{ notificacion.mensaje }}</a></td>
+                {% endif %}
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

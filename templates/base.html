@@ -70,9 +70,11 @@
         </div>
         <!-- Navbar-->
     <ul class="navbar-nav ml-auto">
-    {% block notificiones %}
-        {% notificaciones %}
-    {% endblock %}
+    {% if request.user.is_authenticated %}
+        {% block notificiones %}
+            {% notificaciones %}
+        {% endblock %}
+    {% endif %}
     <li class="nav-item">
         <a class="nav-link" href="/">Home</a>
     </li>
