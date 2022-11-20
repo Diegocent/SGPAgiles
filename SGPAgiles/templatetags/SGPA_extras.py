@@ -90,3 +90,37 @@ def notificaciones(context):
     return {
         'cantidad_notificaciones': cantidad_notificaciones,
     }
+
+
+@register.inclusion_tag('herramientas/roles.html', takes_context=True)
+def roles(context):
+    """
+
+    """
+    request = context['request']
+    user:Usuario = request.user
+    path: str = request.path
+
+    resultado = re.findall("/proyecto/[0-9]+", path)
+    if len(resultado) > 0:
+        id_proyecto = resultado[0].split("/")[2]
+        proyecto = Proyecto.objects.get(id=id_proyecto)
+        if user in proyecto.equipo.miembros.all():
+            roles = user.rolProyecto.filter(proyecto=proyecto)
+            rol_principal = roles[0]
+
+            rolesSistema = [rol for rol in user.rolSistema.all().values_list("nombre",flat=True)]
+            roles = [rol.nombre for rol in roles]
+            roles += rolesSistema
+        else:
+            roles = [rol.nombre for rol in user.rolSistema.all()]
+            rol_principal = roles[0]
+    else:
+        roles = [rol.nombre for rol in user.rolSistema.all()]
+        rol_principal = roles[0]
+
+
+    return {
+        'roles': roles,
+        'rol_principal': rol_principal
+    }

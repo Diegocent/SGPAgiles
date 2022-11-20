@@ -46,18 +46,14 @@
 
         <div style="color: whitesmoke">
             <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-secondary " type="button" aria-haspopup="true" aria-expanded="false">
                 usuario: {{request.user.email}}
                 </button>
-                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-
-                            {% for rol in request.user.rolSistema.all %}
-                                <tr>
-                                <h5> <td>{{ rol.nombre }} : {{ rol.descripcion }} </td> </h5>
-                                </tr>
-                            {% endfor %}
-
-                </div>
+                {% if request.user.is_authenticated %}
+                    {% block roles %}
+                        {% roles %}
+                    {% endblock %}
+                {% endif %}
             </div>
 
 

@@ -2328,3 +2328,6 @@ class BurndownChartView(View):
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
             return redirect("home")
+
+
+
