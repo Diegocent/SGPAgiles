@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'login',
     'Usuario',
     'proyecto',
+    'notificaciones',
     'django.contrib.sites',
     'allauth',
     'allauth.account',
