@@ -3,6 +3,7 @@ from django.urls import resolve, Resolver404
 import re
 from proyecto.models import Proyecto, TipoUserStory, UserStory, Sprint
 from Usuario.models import RolProyecto, Usuario, RolSistema, Permisos
+from notificaciones.models import Notificacion
 
 register = template.Library()
 
@@ -74,3 +75,18 @@ def exists_path(path):
         return True
     except Resolver404:
         return False
+
+
+@register.inclusion_tag('herramientas/notificaciones.html', takes_context=True)
+def notificaciones(context):
+    """
+
+    """
+    request = context['request']
+    user:Usuario = request.user
+
+    notificaciones = Notificacion.objects.filter(usuario=user, leido=False)
+    cantidad_notificaciones = len(notificaciones)
+    return {
+        'cantidad_notificaciones': cantidad_notificaciones,
+    }
