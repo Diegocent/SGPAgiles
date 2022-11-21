@@ -410,8 +410,12 @@ class CrearRolProyectoView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                form = self.form_class()
-                return render(request, 'roles/crear_rol_proyecto.html', {'form': form})
+                if not Proyecto.ya_termino(id_proyecto):
+                    form = self.form_class()
+                    return render(request, 'roles/crear_rol_proyecto.html', {'form': form})
+                else:
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -488,8 +492,12 @@ class CrearTiposUSView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                form = self.form_class()
-                return render(request, 'tipoUS/creartipous.html', {'form': form})
+                if not Proyecto.ya_termino(id_proyecto):
+                    form = self.form_class()
+                    return render(request, 'tipoUS/creartipous.html', {'form': form})
+                else:
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -550,8 +558,12 @@ class CrearEstadosUSView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                form = self.form_class()
-                return render(request, 'tipoUS/crearestadous.html', {'form': form})
+                if not Proyecto.ya_termino(id_proyecto):
+                    form = self.form_class()
+                    return render(request, 'tipoUS/crearestadous.html', {'form': form})
+                else:
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -587,9 +599,13 @@ class CrearUSView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                form = self.form_class()
-                form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
-                return render(request, 'US/crearus.html', {'form': form})
+                if not Proyecto.ya_termino(id_proyecto):
+                    form = self.form_class()
+                    form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
+                    return render(request, 'US/crearus.html', {'form': form})
+                else:
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -650,18 +666,23 @@ class ActualizarUSView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                us = UserStory.objects.get(id=id_us)
-                if us.sprint is None:
-                    form = FormUS(instance=us)
-                    form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
-                    return render(request, 'US/editarus.html', {'form': form})
-                elif us.sprint.estado == EstadoSprint.NO_INICIADO:
-                    form = FormUS(instance=us)
-                    form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
-                    return render(request, 'US/editarus.html', {'form': form})
+
+                if not Proyecto.ya_termino(id_proyecto):
+                    us = UserStory.objects.get(id=id_us)
+                    if us.sprint is None:
+                        form = FormUS(instance=us)
+                        form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
+                        return render(request, 'US/editarus.html', {'form': form})
+                    elif us.sprint.estado == EstadoSprint.NO_INICIADO:
+                        form = FormUS(instance=us)
+                        form.fields['tipo'].queryset = TipoUserStory.objects.filter(proyecto_id=id_proyecto)
+                        return render(request, 'US/editarus.html', {'form': form})
+                    else:
+                        messages.error(request, 'No se puede editar un US asignado a un sprint!')
+                        return redirect("detalle_proyecto", id_proyecto=id_proyecto)
                 else:
-                    messages.error(request, 'No se puede editar un US asignado a un sprint!')
-                    return redirect("detalle_proyecto", id_proyecto=id_proyecto)
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -697,9 +718,13 @@ class BorrarUSView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                us = UserStory.objects.get(id=id_us)
-                form = FormUS(instance=us)
-                return render(request, 'US/borrarus.html', {'form': form})
+                if not Proyecto.ya_termino(id_proyecto):
+                    us = UserStory.objects.get(id=id_us)
+                    form = FormUS(instance=us)
+                    return render(request, 'US/borrarus.html', {'form': form})
+                else:
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -748,9 +773,13 @@ class ActualizarEquipoView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                equipo = Equipo.objects.get(id=id_equipo)
-                form = FormCrearEquipo(instance=equipo)
-                return render(request, 'equipo/editarequipo.html', {'form': form})
+                if not Proyecto.ya_termino(id_proyecto):
+                    equipo = Equipo.objects.get(id=id_equipo)
+                    form = FormCrearEquipo(instance=equipo)
+                    return render(request, 'equipo/editarequipo.html', {'form': form})
+                else:
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -810,15 +839,21 @@ class CrearSprint(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                proyecto_en_proceso = self.verificar_estado_proyecto(id_proyecto=id_proyecto)
-                no_hay_otro_sprint_en_planificacion = self.verificar_cantidad_de_sprints(id_proyecto=id_proyecto)
-                if proyecto_en_proceso and no_hay_otro_sprint_en_planificacion:
-                    form = self.form_class()
-                    return render(request, 'sprint/crearsprint.html', {'form': form})
-                elif not proyecto_en_proceso:
-                    return render(request, 'sprint/warning.html', {"mensajeerror": "El proyecto no esta iniciado!"})
-                elif not no_hay_otro_sprint_en_planificacion:
-                    return render(request, 'sprint/warning.html', {"mensajeerror": "Ya existe otro sprint en planificacion!"})
+
+                if not Proyecto.ya_termino(id_proyecto):
+                    proyecto_en_proceso = self.verificar_estado_proyecto(id_proyecto=id_proyecto)
+                    no_hay_otro_sprint_en_planificacion = self.verificar_cantidad_de_sprints(id_proyecto=id_proyecto)
+                    if proyecto_en_proceso and no_hay_otro_sprint_en_planificacion:
+                        form = self.form_class()
+                        return render(request, 'sprint/crearsprint.html', {'form': form})
+                    elif not proyecto_en_proceso:
+                        return render(request, 'sprint/warning.html', {"mensajeerror": "El proyecto no esta iniciado!"})
+                    elif not no_hay_otro_sprint_en_planificacion:
+                        return render(request, 'sprint/warning.html',
+                                      {"mensajeerror": "Ya existe otro sprint en planificacion!"})
+                else:
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -900,13 +935,21 @@ class ActualizarSprintView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
-                if sprint.estado == EstadoSprint.NO_INICIADO:
-                    form = self.form_class(instance=sprint)
-                    return render(request, 'sprint/editarsprint.html', {'form': form})
+                if not Proyecto.ya_termino(id_proyecto):
+                    try:
+                        sprint = Sprint.objects.get(id=id_sprint, proyecto_id=id_proyecto)
+                    except ObjectDoesNotExist:
+                        messages.error(request, "No se encuentra al sprint con esas caracteristicas.")
+                        return redirect("detalle_proyecto", id_proyecto)
+                    if sprint.estado == EstadoSprint.NO_INICIADO:
+                        form = self.form_class(instance=sprint)
+                        return render(request, 'sprint/editarsprint.html', {'form': form})
+                    else:
+                        messages.error(request, 'No se puede editar un US asignado a un sprint!')
+                        return redirect("detalle_proyecto", id_proyecto=id_proyecto)
                 else:
-                    messages.error(request, 'No se puede editar un US asignado a un sprint!')
-                    return redirect("detalle_proyecto", id_proyecto=id_proyecto)
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -1257,9 +1300,14 @@ class ImportarMainPageView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                form = self.form_class({'id_proyecto':id_proyecto})
-                form.fields["proyecto"].queryset = Proyecto.objects.all().exclude(id=id_proyecto)
-                return render(request, 'proyecto/importarMainPage.html', {'form': form})
+
+                if not Proyecto.ya_termino(id_proyecto):
+                    form = self.form_class({'id_proyecto': id_proyecto})
+                    form.fields["proyecto"].queryset = Proyecto.objects.all().exclude(id=id_proyecto)
+                    return render(request, 'proyecto/importarMainPage.html', {'form': form})
+                else:
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:

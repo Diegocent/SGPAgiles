@@ -50,6 +50,11 @@ class Proyecto(models.Model):
         miembros = self.equipo.miembros.all()
         return len(miembros) > 1
 
+    @staticmethod
+    def ya_termino(id_proyecto):
+        proyecto = Proyecto.objects.get(id=id_proyecto)
+        return proyecto.estado == EstadoProyecto.TERMINADO
+
 
 class EstadoSprint(models.TextChoices):
     NO_INICIADO = 'NO_INICIADO', 'No iniciado'

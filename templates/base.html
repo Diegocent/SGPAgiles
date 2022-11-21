@@ -83,6 +83,9 @@
 
     </header>
 
+    {% block breadcrumb %}
+        {% breadcrumb %}
+    {% endblock %}
     {% if messages %}
         <ul class="messages">
             {% for message in messages %}
@@ -90,10 +93,6 @@
             {% endfor %}
         </ul>
     {% endif %}
-
-    {% block breadcrumb %}
-        {% breadcrumb %}
-    {% endblock %}
 
     {% load static %}
     <!-- Bootstrap -->

@@ -107,11 +107,12 @@ def roles(context):
         proyecto = Proyecto.objects.get(id=id_proyecto)
         if user in proyecto.equipo.miembros.all():
             roles = user.rolProyecto.filter(proyecto=proyecto)
-            rol_principal = roles[0]
-
             rolesSistema = [rol for rol in user.rolSistema.all().values_list("nombre",flat=True)]
+
             roles = [rol.nombre for rol in roles]
             roles += rolesSistema
+
+            rol_principal = roles[0]
         else:
             roles = [rol.nombre for rol in user.rolSistema.all()]
             rol_principal = roles[0]
