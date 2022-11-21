@@ -703,9 +703,11 @@ class ActualizarUSView(View):
 
             if len(array_de_us) == 0:
                 form.save()
+                if us_obj.sprint is not None:
+                    us_obj.sprint.calcular_capacidad_usada()
                 HistorialUS.objects.create(log="User Story fue editado.", fecha=date.today(),
                                            user_story_id=id_us, usuario=request.user, horas_trabajadas=0)
-                messages.success(request, 'Creado exitosamente!')
+                messages.success(request, 'Editado exitosamente!')
                 if us_obj.sprint is not None:
                     return redirect("ver_sprint", id_proyecto, us_obj.sprint.id)
             else:
@@ -737,7 +739,8 @@ class BorrarUSView(View):
 
     def post(self, request, id_proyecto, id_us):
         us = UserStory.objects.get(id=id_us)
-
+        if us.sprint is not None:
+            us.sprint.calcular_capacidad_usada()
         us.delete()
 
         return redirect('ver_US', id_proyecto)
@@ -1116,8 +1119,8 @@ class AsignarUSASprint(View):
                                            fecha=date.today(),
                                            user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
                 us.save()
-
-            messages.success(request, message="Miembro agregado exitosamente.")
+            sprint.calcular_capacidad_usada()
+            messages.success(request, message="User story agregado exitosamente.")
             return redirect("ver_sprint", id_proyecto, id_sprint)
         else:
             return render(request, 'sprint/asignarussprint.html', {'form': form})
@@ -1172,7 +1175,7 @@ class BorrarUSASprint(View):
                                    fecha=date.today(),
                                    user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
         us.save()
-
+        sprint.calcular_capacidad_usada()
         messages.success(request, message="Miembro eliminado exitosamente.")
         return redirect("ver_sprint", id_proyecto, id_sprint)
 
@@ -2234,8 +2237,12 @@ class CrearFeriadoView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                form = self.form_class()
-                return render(request, 'proyecto/crearferiado.html', {'form': form})
+                if not Proyecto.ya_termino(id_proyecto):
+                    form = self.form_class()
+                    return render(request, 'proyecto/crearferiado.html', {'form': form})
+                else:
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -2260,14 +2267,19 @@ class BorrarFeriadoView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                try:
-                    feriado = Feriado.objects.get(id=id_feriado, proyecto_id=id_proyecto)
-                except ObjectDoesNotExist:
-                    messages.error(request, message="No se encuentra al feriado con esos parametros.")
-                    return redirect("detalle_proyecto", id_proyecto)
 
-                form = FormFeriado(instance=feriado)
-                return render(request, 'proyecto/borrarferiado.html', {'form': form})
+                if not Proyecto.ya_termino(id_proyecto):
+                    try:
+                        feriado = Feriado.objects.get(id=id_feriado, proyecto_id=id_proyecto)
+                    except ObjectDoesNotExist:
+                        messages.error(request, message="No se encuentra al feriado con esos parametros.")
+                        return redirect("detalle_proyecto", id_proyecto)
+
+                    form = FormFeriado(instance=feriado)
+                    return render(request, 'proyecto/borrarferiado.html', {'form': form})
+                else:
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -2290,14 +2302,19 @@ class EditarFeriadoView(View):
         if user.is_authenticated:
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
-                try:
-                    feriado = Feriado.objects.get(id=id_feriado, proyecto_id=id_proyecto)
-                except ObjectDoesNotExist:
-                    messages.error(request, message="No se encuentra al feriado con esos parametros.")
-                    return redirect("detalle_proyecto", id_proyecto)
 
-                form = FormFeriado(instance=feriado)
-                return render(request, 'proyecto/editarferiado.html', {'form': form})
+                if not Proyecto.ya_termino(id_proyecto):
+                    try:
+                        feriado = Feriado.objects.get(id=id_feriado, proyecto_id=id_proyecto)
+                    except ObjectDoesNotExist:
+                        messages.error(request, message="No se encuentra al feriado con esos parametros.")
+                        return redirect("detalle_proyecto", id_proyecto)
+
+                    form = FormFeriado(instance=feriado)
+                    return render(request, 'proyecto/editarferiado.html', {'form': form})
+                else:
+                    messages.error(request, "No se puede modificar un proyecto finalizado.")
+                    return redirect("ver_proyectos")
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:

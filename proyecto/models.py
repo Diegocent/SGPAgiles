@@ -72,6 +72,7 @@ class Sprint(models.Model):
     fecha_fin_estimada = models.DateField(null=True)
     estado = models.CharField(choices=EstadoProyecto.choices, max_length=100)
     duracion = models.IntegerField(null=True, verbose_name='Duración en días')
+    capacidad_usada = models.PositiveIntegerField(default=0)
 
     def __str__(self):
         return 'Sprint {}'.format(self.numero)
@@ -99,13 +100,14 @@ class Sprint(models.Model):
             capacidad += miembro.capacidad
         return capacidad
 
-    @property
-    def capacidad_usada(self):
+
+    def calcular_capacidad_usada(self):
         user_stories = UserStory.objects.filter(sprint=self)
         capacidad_usada = 0
         for us in user_stories:
             capacidad_usada += us.duracion
-        return capacidad_usada
+        self.capacidad_usada = capacidad_usada
+        self.save()
 
     @property
     def tiene_user_stories(self):
