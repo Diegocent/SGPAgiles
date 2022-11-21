@@ -2245,7 +2245,7 @@ class CrearFeriadoView(View):
         form = self.form_class(request.POST)
         if form.is_valid():
            cleaned_data = form.cleaned_data
-           Feriado.objects.create(proyecto_id=id_proyecto, fecha=cleaned_data["fecha"])
+           Feriado.objects.create(proyecto_id=id_proyecto, fecha=cleaned_data["fecha"], nombre=cleaned_data["nombre"])
         else:
             return render(request, 'proyecto/crearferiado.html', {'form': form})
         return redirect('detalle_proyecto', id_proyecto)
@@ -2297,7 +2297,7 @@ class EditarFeriadoView(View):
                     return redirect("detalle_proyecto", id_proyecto)
 
                 form = FormFeriado(instance=feriado)
-                return render(request, 'proyecto/borrarferiado.html', {'form': form})
+                return render(request, 'proyecto/editarferiado.html', {'form': form})
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:
@@ -2308,6 +2308,7 @@ class EditarFeriadoView(View):
         form = self.form_class(request.POST, instance=feriado)
         if form.is_valid():
            form.save()
+           messages.success(request, "Feriado editado exitosamente.")
         else:
             return render(request, 'proyecto/crearferiado.html', {'form': form})
         return redirect('detalle_proyecto', id_proyecto)

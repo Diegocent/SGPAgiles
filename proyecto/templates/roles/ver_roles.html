@@ -14,7 +14,7 @@
         <h3>Roles Disponibles: </h3>
         <ul class="list-group-item list-group-item-dark">
             {% for rol in roles %}
-                <li class="list-group-item"> {{ rol.nombre }}</li>
+                <li class="list-group-item"> {{ rol.nombre }} - <a href="{% url "editar_roles" id_proyecto=id_proyecto id_rol=rol.id %}">Editar</a></li>
 
             {% endfor %}
         </ul>

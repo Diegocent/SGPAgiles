@@ -92,6 +92,7 @@ class FormSprint(ModelForm):
 class FormFeriado(ModelForm):
 
     fecha = forms.DateField(label="Ingrese la fecha del feriado.", required=True)
+    nombre = forms.CharField(label="Ingrese el nombre del feriado.", required=True)
 
     class Meta:
         model = Feriado

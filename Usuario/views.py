@@ -4,6 +4,7 @@ from django.views import View
 from django.contrib import messages
 from .forms import FormRolSistema, FormCrearPermisos, FormAsignarRol
 from .models import RolProyecto, RolSistema, Permisos, Usuario
+from django.core.exceptions import ObjectDoesNotExist
 
 """
 Todos los views para SGPAgiles 
@@ -78,8 +79,38 @@ class CrearRolSistemaView(View):
                 rol.save()
                 messages.success(request, 'Creado exitosamente!')
             else:
-                messages.error(request="Ya existe un rol con ese nombre")
+                messages.error(request, "Ya existe un rol con ese nombre")
 
+            return redirect('ver_roles_sistema')
+        return render(request, 'roles/crear_roles.html', {'form': form})
+
+
+class EditarRolSistemaView(View):
+    form_class = FormRolSistema
+    permisos = ["Crear RolSistema"]
+
+    def get(self, request, id_rol):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos)
+            if tiene_permisos:
+                try:
+                    rol = RolSistema.objects.get(id=id_rol)
+                except ObjectDoesNotExist:
+                    messages.error(request, "No se encuentra al rol con esas caracteristicas")
+                    return redirect("ver_config")
+                form = self.form_class(instance=rol)
+                return render(request, 'roles/crear_roles.html', {'form': form})
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_rol):
+        rol = RolSistema.objects.get(id=id_rol)
+        form = self.form_class(request.POST, instance=rol)
+        if form.is_valid():
+            form.save()
             return redirect('ver_roles_sistema')
         return render(request, 'roles/crear_roles.html', {'form': form})
 
