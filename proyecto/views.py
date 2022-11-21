@@ -183,6 +183,10 @@ class CrearProyectoView(View):
             "Editar ProductBacklog",
             "Borrar ProductBacklog",
             "Ver Kanban",
+            "Ver Feriado",
+            "Crear Feriado",
+            "Editar Feriado",
+            "Borrar Feriado",
         ])
         dev = RolProyecto.objects.create(nombre="Developer",
                                          descripcion="Developer del Proyecto.",
@@ -204,6 +208,7 @@ class CrearProyectoView(View):
             "Cambiar EstadoUS",
             "Editar Kanban",
             "Cargar trabajo UserStory",
+            "Ver Feriado",
         ])
         return scrum
 

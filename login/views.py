@@ -110,6 +110,10 @@ def login(request):
                                     Permisos(nombre="Aceptar Solicitud", descripcion="Permiso para Aceptar Solicitud"),
                                     Permisos(nombre="Rechazar Solicitud",
                                              descripcion="Permiso para Rechazar Solicitud"),
+                                    Permisos(nombre="Ver Feriado", descripcion="Permiso para Ver Feriado"),
+                                    Permisos(nombre="Crear Feriado", descripcion="Permiso para Crear Feriado"),
+                                    Permisos(nombre="Editar Feriado", descripcion="Permiso para Editar Feriado"),
+                                    Permisos(nombre="Borrar Feriado", descripcion="Permiso para Borrar Feriado"),
                                 ]
                                 Permisos.objects.bulk_create(permisos)
                                 permiso_de_admin = Permisos.objects.create(nombre="Permiso de administrador", descripcion="Permiso para administrador de sistema.")
