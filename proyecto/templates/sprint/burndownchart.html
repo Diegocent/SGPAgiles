@@ -12,7 +12,11 @@
             var coordenadas_horas_ideales = []
             var coordenadas_horas_trabajadas = []
 
+            fecha_hoy = new Date()
+            fecha_hoy.setHours(fecha_hoy.getHours()+3)
+
             for (var i = 0; i<fechas.length; i++){
+
 
                 fecha = new Date(fechas[i])
                 fecha.setHours(fecha.getHours()+3)
@@ -26,8 +30,8 @@
 
                 coordenadas_horas_trabajadas.push(
                     {
-                        "x":fecha,
-                        "y":horas_trabajadas[i]
+                        "x": fecha,
+                        "y": fecha_hoy >= fecha ? horas_trabajadas[i] : null
                     }
                 )
             }
