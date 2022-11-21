@@ -59,5 +59,8 @@ urlpatterns = [
     path('<int:id_proyecto>/backlog/', views.verProductBacklog.as_view(), name='ver_product_backlog'),
     path('<int:id_proyecto>/finalizar/', views.FinalizarProyecto.as_view(), name='finalizar_proyecto'),
     path('<int:id_proyecto>/kanban/', views.TableroKanbanView.as_view(), name='kanban'),
-
+    path('<int:id_proyecto>/feriado/', views.VerFeriadosView.as_view(), name='ver_feriados'),
+    path('<int:id_proyecto>/feriado/crear/', views.CrearFeriadoView.as_view(), name='crear_feriado'),
+    path('<int:id_proyecto>/feriado/<int:id_feriado>/editar/', views.EditarFeriadoView.as_view(), name='editar_feriado'),
+    path('<int:id_proyecto>/feriado/<int:id_feriado>/borrar/', views.BorrarFeriadoView.as_view(), name='borrar_feriado'),
 ]

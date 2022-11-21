@@ -2410,4 +2410,24 @@ class BurndownChartView(View):
             return redirect("home")
 
 
+class VerFeriadosView(View):
+    permisos = ["Ver Proyecto"]  # Ver las solicitudes
+
+    def get(self, request, id_proyecto):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                feriados = Feriado.objects.filter(proyecto_id=id_proyecto)
+
+                context = {
+                    'feriados': feriados,
+                    'id_proyecto': id_proyecto,
+                }
+                return render(request, 'proyecto/ver_feriados.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
 

@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <style>
+
+        .table-custom{
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+
+        }
+
+        .table-custom th{
+            border: none;
+            padding-top: 12px;
+            padding-bottom: 12px;
+            color: white;
+        }
+
+        .table-custom tr{
+            /* height: 20%; */
+            border-bottom: 1px solid rgb(212, 212, 212);
+            color: white;
+        }
+
+    </style>
+
+    <h1 class="mt-4">Feriados</h1>
+
+    <a href="{% url "crear_feriado" id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">Crear Feriado</button></a>
+
+
+    <table class="table-custom">
+        <thead>
+        <tr>
+            <th scope="col">Fecha</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        {% for feriado in feriados %}
+            <tr height="60px">
+                <td>{{ feriado.fecha }}</td>
+                <td>{{ feriado.nombre }}</td>
+                <td><a href="{% url "editar_feriado" id_proyecto=id_proyecto id_feriado=feriado.id %}">Editar</a> - <a href="{% url "borrar_feriado" id_proyecto=id_proyecto id_feriado=feriado.id%}">Remover</a></td>
+
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}
