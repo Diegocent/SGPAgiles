@@ -27,7 +27,7 @@
         {% for sprint in sprint_iniciados %}
             <div class="row">
 
-                <div class="card text-white  mb-3" style="max-width: 18rem;background: #6d7fcc;">
+                <div class="card text-white  mb-3" style="max-width: 25rem;background: #6d7fcc;">
                 <div class="card-header">Capacidad: {{ sprint.capacidad }}</div>
                  <div class="card-body" >
                 <div style="background-color: white"> <h1 class="card-title"><strong> <p ><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}" class="link-dark">sprint {{ sprint.numero }}</a> </p></strong></h1>

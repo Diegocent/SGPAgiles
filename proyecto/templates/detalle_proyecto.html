@@ -12,6 +12,11 @@
             font-family: 'Poppins', sans-serif;
             background: #fafafa;
         }
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #2c3e50;
+}
 
         p {
             font-family: 'Poppins', sans-serif;
@@ -244,7 +249,7 @@
             <div>
 
                 {% if sprint is not None %}
-
+                    <h1>Tablero Kanban</h1>
                     <div style="padding-left: 10px">{% include "kanban/tablero.html" %}</div>
                 {% else %}
                     {% if proyecto.estado == "EN_PROCESO" %}
@@ -277,9 +282,6 @@
     <h5 class="card-title">Ya puedes crear un Sprint.</h5>
     <p class="card-text" >Crealo ahora.</p>
    <span class="float-right"><a href="{% url 'crear_sprint' id_proyecto=proyecto.id %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Crear Sprint</a></span>
-
-  </div>
-           </span>
                         </div>
                     {% endif  %}
 

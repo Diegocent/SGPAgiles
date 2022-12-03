@@ -24,10 +24,14 @@
         }
 
     </style>
-
     <h1 class="mt-4">Historial de US</h1>
+
+
     <h3>User story: {{ us.codigo }} - {{ us.nombre }}</h3>
     <h3>Horas trabajadas: {{ horas_trabajadas }} h</h3>
+    {% if us.desarrollador is not None %}
+        <h3>Desarrollador: {{ us.desarrollador.email }}</h3>
+    {% endif %}
     {% if us.sprint is not None and us.sprint.estado == "NO_INICIADO" %}
         <a href="{% url "editar_US" id_proyecto=id_proyecto id_us=us.id %}"><button type="button" class="btn btn-lg btn-info fw-bold border-opacity-75 bg-black">Editar US</button></a>
     {% endif %}
@@ -46,9 +50,7 @@
     <a href="{% url "solicitudes" id_proyecto=id_proyecto id_us=us.id %}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Solicitudes</button></a>
 
 
-    {% if us.desarrollador is not None %}
-        <h3>Desarrollador: {{ us.desarrollador.email }}</h3>
-    {% endif %}
+
 
 
 
