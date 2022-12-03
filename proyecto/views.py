@@ -2076,7 +2076,7 @@ class FinalizarSprint(View):
         sprint.save()
         self.guardar_eventos_en_historial(sprint=sprint, request=request)
         messages.success(request, 'Sprint finalizado correctamente!')
-        return redirect('detalle_proyecto', id_proyecto)
+        return redirect('ver_burndown', id_proyecto, id_sprint)
 
     @staticmethod
     def guardar_eventos_en_historial(sprint, request):

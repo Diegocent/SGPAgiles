@@ -99,6 +99,7 @@
     </script>
 
     <body style="width: 100%">
+    <a href="{% url "detalle_proyecto" id_proyecto=sprint.proyecto.id%}"><button type="button" class="btn btn-info fw-bold border-opacity-75 bg-black">Volver al proyecto</button></a>
     <div id="chartContainer" style="height: 60%; width: 90%; padding: 20px;"></div>
     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     </body>
