@@ -5,41 +5,29 @@
 <div class="verProyecto">
 <body>
 
-<div class="row">
-
-<div class="col-xl-6 col-md-6">
+<div class="boton">
 {% if admin %}
-    <br><br>
-    <a href="crear"> <button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black"><b>Crear Proyecto</b></button> </a>
+    <a style="text-align: center" href="crear">
+        <button type="button" class="btn btn-lg btn-secondary fw-bold border-opacity-75 bg-black">
+            <b style="text-align: right">Crear Proyecto</b>
+        </button> </a>
+    </div>
 {% endif %}
-</div>
-<div class="col-xl-6 col-md-6">
+<div class="proyecto">
 {% if proyectos %}
-    <h1 class="mt-4">Proyectos Actuales: </h1>
-
-
+    <h1 style="text-align: left">Proyectos Actuales </h1>
      {% for proyecto in proyectos %}
-
          <div class="row">
-
-
 <div class="card text-white  mb-3" style="max-width: 18rem;background: #6d7fcc;">
-  <div class="card-header">Estado: ({{ proyecto.estado }}).</div>
+  <div class="card-header">Estado: ({{ proyecto.estado}}).</div>
   <div class="card-body" >
      <div style="background-color: white"> <h1 class="card-title"><strong> <p ><a href="{% url 'detalle_proyecto' id_proyecto=proyecto.id %}" class="link-dark">{{ proyecto.nombre }}.</a> </p></strong></h1>
      </div>
   </div>
-
     <p class="card-text">({{ proyecto.descripcion }}).
 </p>
-
-
     </div>
-
-
 </div>
-
-
      {% endfor %}
 
 {% else %}
