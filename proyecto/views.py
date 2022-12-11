@@ -2519,4 +2519,8 @@ class CambiarScrumMasterView(View):
         nuevo.rolProyecto.add(rol)
         nuevo.save()
         viejo.rolProyecto.remove(rol)
+        if len(viejo.rolProyecto.all()) == 0:
+            rol_dev = RolProyecto.objects.get(proyecto_id=rol.proyecto.id, nombre="Developer")
+            viejo.rolProyecto.add(rol_dev)
+            viejo.save()
 
