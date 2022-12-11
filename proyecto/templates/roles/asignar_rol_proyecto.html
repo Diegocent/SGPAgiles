@@ -10,7 +10,7 @@
       {% for field in form.visible_fields %}
     <div class="form-group class pb-2">
      {{ field.label }}
-    {{field.errors}}
+    {{field.non_field_errors}}
         {% render_field field class="form-control" %}
         {% if field.help_text %}
             <small class="form-text text-muted">{{ field.help_text }}</small>
