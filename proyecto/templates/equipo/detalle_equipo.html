@@ -68,6 +68,8 @@
                         <div class="card-body">
                             <h5 class="card-title"><a href="{% url 'editar_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Editar Miembros</a>
                             </h5>
+                            <h5 class="card-title"><a href="{% url 'cambiar_scrum' id_proyecto=id_proyecto id_equipo=equipo.id %}">Cambiar Scrum Master</a>
+                            </h5>
                             <p class="card-text">Modifica los miembros del equipo: {{ equipo.nombre }}.</p>
                         </div>
                     </div>

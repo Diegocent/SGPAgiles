@@ -2456,9 +2456,6 @@ class VerFeriadosView(View):
             return redirect("home")
 
 
-
-
-
 class CambiarScrumMasterView(View):
     permisos = ["Editar Proyecto"]
     form_class = FormCambiarScrumMaster
