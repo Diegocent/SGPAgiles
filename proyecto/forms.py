@@ -157,6 +157,7 @@ class FormAsignarRolAUsuario(forms.Form):
     def __init__(self, *args, **kwargs):
         self.request = kwargs.pop('request')
         self.id_proyecto = kwargs.pop('id_proyecto')
+        self.usuario_a_asignar = kwargs.pop('usuario_a_asignar')
         scrum_master_rol = RolProyecto.objects.get(proyecto_id=self.id_proyecto, nombre="Scrum Master")
 
         super(FormAsignarRolAUsuario, self).__init__(*args, **kwargs)
@@ -164,10 +165,10 @@ class FormAsignarRolAUsuario(forms.Form):
             id=scrum_master_rol.id)
 
     def clean(self):
-        usuario = self.request.user
+        usuario_a_asignar = self.usuario_a_asignar
         roles = self.cleaned_data["roles"]
         proyecto = Proyecto.objects.get(id=self.id_proyecto)
-        if usuario != proyecto.scrum_master and len(roles) == 0:
+        if usuario_a_asignar != proyecto.scrum_master and len(roles) == 0:
             raise forms.ValidationError("El usuario no es el Scrum Master entonces la lista de roles no puede quedar vacia.")
         return self.cleaned_data
 

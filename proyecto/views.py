@@ -1698,7 +1698,7 @@ class AsignarRolProyectoAUsuario(View):
                     messages.error(request, "No se encuentra el Rol de proyecto con esas caracteristicas")
                     return redirect("detalle_proyecto", id_proyecto)
                 roles = usuario_a_asignar.rolProyecto.all().filter(proyecto_id=id_proyecto)
-                form = self.form_class(request=request, id_proyecto=id_proyecto)
+                form = self.form_class(request=request, id_proyecto=id_proyecto, usuario_a_asignar=usuario_a_asignar)
                 scrum_master_rol = RolProyecto.objects.get(proyecto_id=id_proyecto, nombre="Scrum Master")
                 form.fields["roles"].queryset = RolProyecto.objects.filter(proyecto_id=id_proyecto).exclude(id=scrum_master_rol.id)
                 if len(roles) > 0:
@@ -1710,7 +1710,8 @@ class AsignarRolProyectoAUsuario(View):
             return redirect("home")
 
     def post(self, request, id_proyecto, id_equipo, id_usuario):
-        form = self.form_class(request.POST, request=request, id_proyecto=id_proyecto)
+        usuario_a_asignar = Usuario.objects.get(id=id_usuario, equipo__id=id_equipo, equipo__proyecto__id=id_proyecto)
+        form = self.form_class(request.POST, request=request, id_proyecto=id_proyecto, usuario_a_asignar=usuario_a_asignar)
 
         if form.is_valid():
             form = form.cleaned_data
