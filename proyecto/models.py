@@ -6,6 +6,16 @@ from datetime import datetime, timedelta
 
 
 class Equipo(models.Model):
+    """
+    Una clase utilizada para representar a un Equipo
+
+    Atributos
+    ---------
+    nombre : str
+        El nombre del equipo.
+    miembros : ManyToManyField(Usuario)
+        Miembros del equipo (Usuarios del sistema)
+    """
     nombre = models.CharField(max_length=32, null=True)
     miembros = models.ManyToManyField(Usuario)
 
@@ -22,6 +32,45 @@ class EstadoProyecto(models.TextChoices):
 
 
 class Proyecto(models.Model):
+    """
+    Una clase utilizada para representar a un Proyecto
+
+    Atributos
+    ---------
+    nombre : str
+        El nombre del proyecto.
+    descripcion : str
+        Descripcion del Proyecto
+    equipo : Equipo
+        Objeto que agrupa a los miembros del proyecto. El Scrum Master forma parte del equipo por default.
+    fecha_inicio: Date
+        Fecha de inicio del proyecto
+    fecha_fin_estimada: Date
+        Fecha estimada del fin del proyecto.
+    fecha_fin_real: Date
+        Fecha real del fin del proyecto.
+    estado: EstadoProyecto
+        Estado del proyecto.
+    scrum_master: Usuario
+        Scrum Master del proyecto.
+
+    Metodos
+    -------
+    obtener_tipos_de_user_story_del_proyecto()
+        Devuelve los tipos de User Stories que estan asociados al proyecto
+
+    tiene_user_stories_sin_terminar()
+        Devuelve True si el proyecto tiene user stories sin terminar, False en caso contrario
+
+    tiene_user_stories()
+        Devuelve True si el proyecto tiene user stories, False en caso contrario
+
+    tiene_un_equipo()
+        Devuelve True si el proyecto tiene mas de un miembro en el equipo, False en caso contrario
+
+    ya_termino()
+        Devuelve True si el proyecto tiene el estado TERMINADO, False en caso contrario.
+    """
     nombre = models.CharField(max_length=32)
     descripcion = models.CharField(max_length=500)
     equipo = models.ForeignKey(Equipo, on_delete=models.CASCADE, null=True)
@@ -64,6 +113,45 @@ class EstadoSprint(models.TextChoices):
 
 
 class Sprint(models.Model):
+    """
+       Una clase utilizada para representar a un Sprint
+
+       Atributos
+       ---------
+       nombre : str
+           El nombre del Sprint.
+       descripcion : str
+           Descripcion del Sprint
+       proyecto : Proyecto
+           Proyecto al cual el sprint esta asociado.
+       fecha_inicio: Date
+           Fecha de inicio del proyecto
+       fecha_fin_estimada: Date
+           Fecha estimada del fin del sprint.
+       fecha_fin: Date
+           Fecha real del fin del sprint.
+       estado: EstadoSprint
+           Estado del Sprint.
+       duracion: int
+           Duracion en dias del sprint.
+        capacidad_usada: int
+            Capacidad usada del sprint en horas.
+
+       Metodos
+       -------
+       obtener_tipos_de_user_story_del_proyecto()
+           Devuelve los tipos de User Stories que estan asociados al proyecto
+
+       tiene_user_stories_sin_terminar()
+           Devuelve True si el proyecto tiene user stories sin terminar, False en caso contrario
+
+       tiene_user_stories()
+           Devuelve True si el proyecto tiene user stories, False en caso contrario
+
+       tiene_un_equipo()
+           Devuelve True si el proyecto tiene mas de un miembro en el equipo, False en caso contrario
+
+       """
     numero = models.IntegerField()
     descripcion = models.CharField(max_length=500)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)

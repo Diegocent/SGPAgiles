@@ -11,7 +11,7 @@ from django.views import View
 from .forms import FormCrearProyecto, FormCrearEquipo, FormIniciarProyecto, FormRolProyecto, FormTiposUS, FormEstadoUS, \
     FormUS, FormSprint, FormMiembroSprint, FormUSSprint, FormImportarMainPage, FormImportarRolesProyecto, \
     FormImportarTiposDeUS, FormAsignarDevAUserStory, FormAgregarTrabajoUS, FormAsignarRolAUsuario, \
-    FormSolicitarAprobacion, FormRechazarSolicitud, FormFeriado
+    FormSolicitarAprobacion, FormRechazarSolicitud, FormFeriado, FormCambiarScrumMaster
 from .models import Proyecto, EstadoProyecto, Equipo, TipoUserStory, UserStory, EstadoUS, Sprint, OrdenEstado, \
     EstadoSprint, MiembrosSprint, HistorialUS, AprobacionDeUS, EstadoAprobacion, Feriado
 from Usuario.models import Usuario, RolProyecto
@@ -67,7 +67,9 @@ Actualmente contamos con los siguientes views en Proyecto:
 42. **CambiarEstadoUSView** - Vista para cambiar los estados de US (salta a la seccion [[views.py#CambiarEstadoUSView]])
 """
 
+"""
 
+"""
 class VerProyectosView(View):
 
     def get(self, request):
@@ -89,8 +91,8 @@ class VerProyectosView(View):
                     proyecto = Proyecto.objects.get(equipo=equipo)
                     context['proyectos'].append(proyecto)
             return render(request, 'ver_proyectos.html', context)
-        else:
-            return render(request, 'account/login.html')
+        elif not usuario.is_authenticated:
+            return redirect("home")
 
 
 class CrearProyectoView(View):
@@ -2453,4 +2455,63 @@ class VerFeriadosView(View):
         elif not user.is_authenticated:
             return redirect("home")
 
+
+
+
+
+class CambiarScrumMasterView(View):
+    permisos = ["Editar Proyecto"]
+    form_class = FormCambiarScrumMaster
+
+    def get(self, request, id_proyecto, id_equipo):
+        user: Usuario = request.user
+        if user.is_authenticated:
+            tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
+            if tiene_permisos:
+                form = self.form_class()
+                try:
+                    proyecto = Proyecto.objects.get(id=id_proyecto)
+                    equipo = proyecto.equipo
+
+                    miembros = equipo.miembros.exclude(id=proyecto.scrum_master.id)
+                except ObjectDoesNotExist:
+                    messages.error(request, "No se encontro el proyecto.")
+                    return redirect("ver_proyectos")
+                form.fields["scrum_master"].queryset = miembros
+
+                context = {
+                    'form': form,
+                    'id_proyecto': id_proyecto,
+                }
+                return render(request, 'equipo/cambiarscrummaster.html', context)
+            elif not tiene_permisos:
+                return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
+        elif not user.is_authenticated:
+            return redirect("home")
+
+    def post(self, request, id_proyecto, id_equipo):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            cleaned_data = form.cleaned_data
+            proyecto = Proyecto.objects.get(id=id_proyecto)
+
+            nuevo_scrum = cleaned_data["scrum_master"]
+            viejo_scrum = proyecto.scrum_master
+            self.cambiar_rol_scrum(viejo=viejo_scrum, nuevo=nuevo_scrum)
+            proyecto.scrum_master = nuevo_scrum
+            proyecto.save()
+            messages.error(request, "Scrum Master cambiado exitosamente")
+
+            Notificacion.objects.create(
+                mensaje="Fuiste seleccionado para ser Scrum Master del Proyecto '{}' !".format(proyecto.nombre),
+                usuario=nuevo_scrum,
+                url="/proyecto/{}".format(proyecto.id)
+            )
+        return redirect('detalle_proyecto', id_proyecto)
+
+    def cambiar_rol_scrum(self, viejo: Usuario, nuevo: Usuario):
+        rol = viejo.rolProyecto.get(nombre="Scrum Master")
+        nuevo.rolProyecto.add(rol)
+        nuevo.save()
+        viejo.rolProyecto.remove(rol)
 

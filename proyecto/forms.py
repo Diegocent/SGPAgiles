@@ -171,3 +171,7 @@ class FormRechazarSolicitud(ModelForm):
     class Meta:
         model = AprobacionDeUS
         fields = ["razon_de_rechazo",]
+
+
+class FormCambiarScrumMaster(forms.Form):
+    scrum_master = forms.ModelChoiceField(label="Nuevo Scrum Master del Proyecto.",queryset=Usuario.objects.all())

@@ -40,6 +40,7 @@ urlpatterns = [
     path('<int:id_proyecto>/backlog/US/<int:id_us>/cambiar_estado/', views.CambiarEstadoUSView.as_view(), name='cambiar_estado_us'),
     path('<int:id_proyecto>/equipo/<int:id_equipo>/', views.DetalleEquipoView.as_view(), name='ver_equipo'),
     path('<int:id_proyecto>/equipo/<int:id_equipo>/editar/', views.ActualizarEquipoView.as_view(), name='editar_equipo'),
+    path('<int:id_proyecto>/equipo/<int:id_equipo>/cambiar_scrum/', views.CambiarScrumMasterView.as_view(), name='cambiar_scrum'),
     path('<int:id_proyecto>/equipo/<int:id_equipo>/asignar_roles/<int:id_usuario>', views.AsignarRolProyectoAUsuario.as_view(), name='asignar_rol_proyecto'),
     path('<int:id_proyecto>/sprint/', views.VerSprintsView.as_view(), name='ver_sprints'),
     path('<int:id_proyecto>/sprint/crear/', views.CrearSprint.as_view(), name='crear_sprint'),
