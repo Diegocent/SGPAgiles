@@ -2226,7 +2226,7 @@ class FinalizarProyecto(View):
 
     def post(self, request, id_proyecto):
         proyecto = Proyecto.objects.get(id=id_proyecto)
-        proyecto.fecha_fin = date.today()
+        proyecto.fecha_fin_real = date.today()
         proyecto.estado = EstadoProyecto.TERMINADO
         proyecto.save()
         self.guardar_eventos_en_historial(proyecto=proyecto, request=request)

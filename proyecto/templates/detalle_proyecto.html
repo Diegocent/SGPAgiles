@@ -296,7 +296,29 @@
                                     </div>
 
                                 {% endfor %}
-                            </div></div>
+                            </div>
+                        <div class="col-xl-5 col-md-5 float-right">
+                            <table class="table table-dark">
+                                <thead>
+                                <tr>
+                                    <th scope="col">Nombre del Proyecto</th>
+                                    <th scope="col">{{proyecto.nombre}}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr>
+                                    <td>Fecha inicio:</td>
+                                    <td>{{ proyecto.fecha_inicio }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Fecha fin:</td>
+                                    <td>{{ proyecto.fecha_fin_real }}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        </div>
+
                     {% endif  %}
 
                 {% endif %}
