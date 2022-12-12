@@ -2230,6 +2230,16 @@ class FinalizarProyecto(View):
         proyecto.estado = EstadoProyecto.TERMINADO
         proyecto.save()
         self.guardar_eventos_en_historial(proyecto=proyecto, request=request)
+
+        miembros = proyecto.equipo.miembros.all()
+
+        for miembro in miembros:
+            Notificacion.objects.create(
+                mensaje="El proyecto '{}' se dio por finalizado!".format(proyecto.nombre),
+                usuario=miembro,
+                url="/proyecto/{}".format(proyecto.id)
+            )
+
         messages.success(request, 'Proyecto finalizado correctamente!')
         return redirect('detalle_proyecto', id_proyecto)
 
