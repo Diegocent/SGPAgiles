@@ -334,6 +334,10 @@ class VerProyectoView(View):
                     if not p.tiene_un_equipo():
                         context["texto_ayuda_no_puede_iniciar_proyecto"] += "El proyecto no tiene un equipo! "
 
+                sprint_finalizados = Sprint.objects.filter(proyecto_id=id_proyecto, estado=EstadoSprint.TERMINADO)
+
+                context["sprint_finalizados"] = sprint_finalizados
+
                 return render(request, 'detalle_proyecto.html', context)
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
@@ -2189,7 +2193,7 @@ class VerSolicitudesScrumMasterView(View):
 
 class FinalizarProyecto(View):
 
-    permisos = ["Finalizar Proyecto"] #Funcion para iniciar un Sprint
+    permisos = ["Editar Proyecto"] #Funcion para iniciar un Sprint
 
     def get(self, request, id_proyecto):
         user: Usuario = request.user
@@ -2419,7 +2423,11 @@ class BurndownChartView(View):
                     es_finde = fecha.weekday() >= 5
 
                     if es_feriado or es_finde:
-                        hora_ideal = array_horas_ideales[len(array_horas_ideales)-1]
+                        if len(array_horas_ideales) != 0:
+                            hora_ideal = array_horas_ideales[len(array_horas_ideales)-1]
+                        else:
+                            hora_ideal = int(total_de_horas_del_sprint - (
+                                        total_de_horas_del_sprint / cantidad_de_dias) * contador_dias)
                     else:
                         hora_ideal = int(total_de_horas_del_sprint - (total_de_horas_del_sprint/cantidad_de_dias) * contador_dias)
                         contador_dias += 1

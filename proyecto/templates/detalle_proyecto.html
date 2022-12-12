@@ -12,11 +12,11 @@
             font-family: 'Poppins', sans-serif;
             background: #fafafa;
         }
-@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-body {
-    font-family: 'Poppins', sans-serif;
-    background: #2c3e50;
-}
+        @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #2c3e50;
+        }
 
         p {
             font-family: 'Poppins', sans-serif;
@@ -203,22 +203,26 @@ body {
                         <button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black" {% if not puede_iniciar_un_proyecto %}title="{{ texto_ayuda_no_puede_iniciar_proyecto }}" disabled{% endif %}>Iniciar Proyecto</button></a></li>
                 {% endif %}
                 <p>Scrum Master<br>{{ proyecto.scrum_master}}</p>
-                {% if sprint is not None %}
-                    <p style="text-align: left">Sprint Activo<br><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}">N°: {{ sprint.numero }}</a></p>
+                {% if proyecto.estado != "TERMINADO" %}
+                    {% if sprint is not None %}
+                        <p style="text-align: left">Sprint Activo<br><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}">N°: {{ sprint.numero }}</a></p>
+                    {% endif %}
+
+                    <li>
+                        <a href="{% url "ver_roles" id_proyecto=id_proyecto %}">Roles de Proyecto</a>
+                    </li>
+                    <li><a href="{% url 'ver_product_backlog' id_proyecto=id_proyecto %}">Product Backlog</a></li>
+
+                    <li><a href="{% url 'ver_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Equipo</a></li>
+                    <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">Sprints</a></li>
+
+                    <li><a href="{% url 'ver_solicitudes_scrum' id_proyecto=proyecto.id %}">Solicitudes</a></li>
+                    <li><a href="{% url 'ver_feriados' id_proyecto=proyecto.id %}">Feriados</a></li>
+                {% else %}
+
                 {% endif %}
 
-                <li>
-                    <a href="{% url "ver_roles" id_proyecto=id_proyecto %}">Roles de Proyecto</a>
-                </li>
-                <li><a href="{% url 'ver_product_backlog' id_proyecto=id_proyecto %}">Product Backlog</a></li>
-
-                <li><a href="{% url 'ver_equipo' id_proyecto=id_proyecto id_equipo=equipo.id %}">Equipo</a></li>
-                <li><a href="{% url 'ver_sprints' id_proyecto=proyecto.id %}">Sprints</a></li>
-
-                <li><a href="{% url 'ver_solicitudes_scrum' id_proyecto=proyecto.id %}">Solicitudes</a></li>
-                <li><a href="{% url 'ver_feriados' id_proyecto=proyecto.id %}">Feriados</a></li>
-
-
+            </ul>
         </nav>
 
         <!-- Page Content  -->
@@ -274,15 +278,25 @@ body {
                                 </tbody>
                             </table>
                         </div>
-                        <div class="col-xl-6 col-md-6 float-right">
-            <span class="float-right">
-            <div class="card text-white  mb-3" style="max-width: 18rem;background: #6d7fcc;">
-  <div class="card-header">Enhorabuena!</div>
-  <div class="card-body">
-    <h5 class="card-title">Ya puedes crear un Sprint.</h5>
-    <p class="card-text" >Crealo ahora.</p>
-   <span class="float-right"><a href="{% url 'crear_sprint' id_proyecto=proyecto.id %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Crear Sprint</a></span>
-                        </div>
+                    {% elif proyecto.estado == "TERMINADO" %}
+                        <button class="btn btn-lg btn-info fw-bold border-opacity-75 bg-black">Proyecto Finalizado</button>
+
+                        <div class="row">
+
+                            <div class="col-xl-6 col-md-6">
+                                <h2 class="mt-4">Review de sprints: </h2>
+                                {% for sprint in sprint_finalizados %}
+
+                                    <div class="card text-white  mb-3" style="max-width: 18rem;background: #6d7fcc;">
+                                        <div class="card-body" >
+                                            <div style="background-color: white"> <h1 class="card-title"><strong>
+                                                <p ><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}" class="link-dark"> sprint {{ sprint.numero }}</a> </p></strong></h1>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+                            </div></div>
                     {% endif  %}
 
                 {% endif %}
@@ -290,7 +304,7 @@ body {
 
 
 
-            </div>
-        </div>
 
+
+            </div>
 {% endblock %}
