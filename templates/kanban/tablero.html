@@ -40,6 +40,14 @@
             font-size: 16px;
         }
 
+        .kanban-title-board {
+            font-weight: 700;
+            margin: 0;
+            padding: 0;
+            display: inline;
+            color: black;
+        }
+
     </style>
 
     {{ tipos_dict|json_script:"tipos_dict" }}
@@ -50,7 +58,7 @@
         {% endfor %}
     </div>
 
-    <div class="titulo-tipo-us" style="padding-left: 15px; color:navajowhite">Tipo de US: {{ tipo_mostrado_en_pantalla }}</div>
+    <div class="titulo-tipo-us" style="padding-left: 15px; color:navajowhite; padding-bottom: 10px">Tipo de US: {{ tipo_mostrado_en_pantalla }}</div>
 
     <div id="myKanban"></div>
 
@@ -62,8 +70,8 @@
             token = document.cookie.split(";").find((row)=> row.trim().startsWith("csrftoken=")).split("=")[1].trim()
             console.log(token)
             data = {
-                    "estado": id_estado_nuevo
-                }
+                "estado": id_estado_nuevo
+            }
             fetch(url, {
                 credentials: 'include',
                 method: "POST",
@@ -78,44 +86,44 @@
         verificar_dropEl = function (el, target, source, sibling) {
 
 
-                id_estado_done = "_{{ id_estado_done }}"
-                dev = el.getAttribute("data-username")
-                user = "{{ request.user.email }}"
+            id_estado_done = "_{{ id_estado_done }}"
+            dev = el.getAttribute("data-username")
+            user = "{{ request.user.email }}"
 
-                us_data_id = el.getAttribute("data-eid")
-                estado_data_id = target.parentElement.getAttribute("data-id")
-                id_estado_done = "_{{ id_estado_done }}"
-
-
-                esta_aprobado = el.getAttribute("data-aprobado")
-
-                if (dev === user) {
+            us_data_id = el.getAttribute("data-eid")
+            estado_data_id = target.parentElement.getAttribute("data-id")
+            id_estado_done = "_{{ id_estado_done }}"
 
 
+            esta_aprobado = el.getAttribute("data-aprobado")
 
-                    /*    alert("El estado del US no coinicide con el de la base de datos. Favor reinicie la pagina")
-                        return false*/
-
-                    if (id_estado_done !== estado_data_id) {
-                        actualizar_estado_actual(us_data_id, estado_data_id)
-                        console.log("NO ES DONE")
-                        return true
-                    }
-                    else if (esta_aprobado === "true") {
-                        actualizar_estado_actual(us_data_id, estado_data_id)
-                        console.log("SI ES DONE y esta aprobado ")
-                        return true
-                    }else {
-                        console.log("ES DONE Y NO esta aprobado ")
-                        alert("El US debe ser aprobado por el Scrum Master para ponerlo en DONE")
-                        return false
-                    }
-                }else
-                    alert("Solo el desarrolador del user story puede moverlo en el kanban")
-                return false
+            if (dev === user) {
 
 
-            }
+
+                /*    alert("El estado del US no coinicide con el de la base de datos. Favor reinicie la pagina")
+                    return false*/
+
+                if (id_estado_done !== estado_data_id) {
+                    actualizar_estado_actual(us_data_id, estado_data_id)
+                    console.log("NO ES DONE")
+                    return true
+                }
+                else if (esta_aprobado === "true") {
+                    actualizar_estado_actual(us_data_id, estado_data_id)
+                    console.log("SI ES DONE y esta aprobado ")
+                    return true
+                }else {
+                    console.log("ES DONE Y NO esta aprobado ")
+                    alert("El US debe ser aprobado por el Scrum Master para ponerlo en DONE")
+                    return false
+                }
+            }else
+                alert("Solo el desarrolador del user story puede moverlo en el kanban")
+            return false
+
+
+        }
 
         const tipos_dict = JSON.parse(document.getElementById('tipos_dict').textContent)
         id_tipo_us = 2

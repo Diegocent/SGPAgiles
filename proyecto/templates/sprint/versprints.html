@@ -2,49 +2,66 @@
 {% block content %}
 
 
-<div class="row">
+    <div class="row">
 
-    <div class="col-xl-6 col-md-6">
-    <h1 class="mt-4">Sprints Planificados: </h1>
-    {% for sprint in sprint_planeados %}
+        <div class="col-xl-6 col-md-6">
+            <h1 class="mt-4">Sprints Planificados: </h1>
+            {% for sprint in sprint_planeados %}
 
-        <div class="card text-white  mb-3" style="max-width: 18rem;background: #6d7fcc;">
-        <div class="card-header">Capacidad: {{ sprint.capacidad }}</div>
-        <div class="card-body" >
-        <div style="background-color: white"> <h1 class="card-title"><strong> <p ><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}" class="link-dark">sprint {{ sprint.numero }}</a> </p></strong></h1>
-        </div>
-        </div>
-        <p class="card-text">({{ sprint.descripcion }}).</p>
+                <div class="card text-white  mb-3" style="max-width: 18rem;background: #6d7fcc;">
+                    <div class="card-header">Capacidad: {{ sprint.capacidad }}</div>
+                    <div class="card-body" >
+                        <div style="background-color: white"> <h1 class="card-title"><strong> <p ><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}" class="link-dark">sprint {{ sprint.numero }}</a> </p></strong></h1>
+                        </div>
+                    </div>
+                    <p class="card-text">({{ sprint.descripcion }}).</p>
+                </div>
+
+            {% endfor %}
         </div>
 
-    {% endfor %}
+        <div class="col-xl-6 col-md-6">
+
+            <h1 class="mt-4">Sprints Iniciados: </h1>
+
+            {% for sprint in sprint_iniciados %}
+                <div class="row">
+
+                    <div class="card text-white  mb-3" style="max-width: 25rem;background: #6d7fcc;">
+                        <div class="card-header">Capacidad: {{ sprint.capacidad }}</div>
+                        <div class="card-body" >
+                            <div style="background-color: white"> <h1 class="card-title"><strong> <p ><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}" class="link-dark">sprint {{ sprint.numero }}</a> </p></strong></h1>
+                            </div>
+                        </div>
+                        <p class="card-text">({{ sprint.descripcion }}).</p>
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        </div>
+        {% if not hay_otro_sprint_planificado %}
+            <a href="{% url "crear_sprint" id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-info fw-bold border-opacity-75 bg-black">Planificar Sprint</button></a>
+        {% endif %}
     </div>
 
-    <div class="col-xl-6 col-md-6">
+    <div class="row">
 
-    <h1 class="mt-4">Sprints Iniciados: </h1>
+        <div class="col-xl-6 col-md-6">
+            <h1 class="mt-4">Sprints Finalizados: </h1>
+            {% for sprint in sprint_finalizados %}
 
-        {% for sprint in sprint_iniciados %}
-            <div class="row">
-
-                <div class="card text-white  mb-3" style="max-width: 25rem;background: #6d7fcc;">
-                <div class="card-header">Capacidad: {{ sprint.capacidad }}</div>
-                 <div class="card-body" >
-                <div style="background-color: white"> <h1 class="card-title"><strong> <p ><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}" class="link-dark">sprint {{ sprint.numero }}</a> </p></strong></h1>
+                <div class="card text-white  mb-3" style="max-width: 18rem;background: #6d7fcc;">
+                    <div class="card-header">Capacidad: {{ sprint.capacidad }}</div>
+                    <div class="card-body" >
+                        <div style="background-color: white"> <h1 class="card-title"><strong> <p ><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}" class="link-dark">sprint {{ sprint.numero }}</a> </p></strong></h1>
+                        </div>
+                    </div>
+                    <p class="card-text">({{ sprint.descripcion }}).</p>
                 </div>
-                </div>
-                 <p class="card-text">({{ sprint.descripcion }}).</p>
-                </div>
-            </div>
 
-        {% endfor %}
-
-    </div>
-  {% if not hay_otro_sprint_planificado %}
-        <a href="{% url "crear_sprint" id_proyecto=id_proyecto %}"><button type="button" class="btn btn-lg btn-info fw-bold border-opacity-75 bg-black">Planificar Sprint</button></a>
-    {% endif %}
-</div>
-
+            {% endfor %}
+        </div>
 
     </div>
 
