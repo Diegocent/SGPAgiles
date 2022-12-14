@@ -219,7 +219,9 @@
                     <li><a href="{% url 'ver_solicitudes_scrum' id_proyecto=proyecto.id %}">Solicitudes</a></li>
                     <li><a href="{% url 'ver_feriados' id_proyecto=proyecto.id %}">Feriados</a></li>
                 {% else %}
-
+                    <div style="width: 100%">
+                        <button class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black" style="width: 100%">Proyecto Finalizado</button>
+                    </div>
                 {% endif %}
 
             </ul>
@@ -279,26 +281,11 @@
                             </table>
                         </div>
                     {% elif proyecto.estado == "TERMINADO" %}
-                        <button class="btn btn-lg btn-info fw-bold border-opacity-75 bg-black">Proyecto Finalizado</button>
 
-                        <div class="row">
 
-                            <div class="col-xl-6 col-md-6">
-                                <h2 class="mt-4">Review de sprints: </h2>
-                                {% for sprint in sprint_finalizados %}
-
-                                    <div class="card text-white  mb-3" style="max-width: 18rem;background: #6d7fcc;">
-                                        <div class="card-body" >
-                                            <div style="background-color: white"> <h1 class="card-title"><strong>
-                                                <p ><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}" class="link-dark"> sprint {{ sprint.numero }}</a> </p></strong></h1>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                {% endfor %}
-                            </div>
-                        <div class="col-xl-5 col-md-5 float-right">
-                            <table class="table table-dark">
+                        <div class="col">
+                            <div>
+                                <table class="table table-dark">
                                 <thead>
                                 <tr>
                                     <th scope="col">Nombre del Proyecto</th>
@@ -316,7 +303,22 @@
                                 </tr>
                                 </tbody>
                             </table>
-                        </div>
+                            </div>
+                            <div class="">
+                                <h2>Review de sprints: </h2>
+                                {% for sprint in sprint_finalizados %}
+
+                                    <div class="card text-white mb-3" style="max-width: 18rem;background: #6d7fcc;">
+                                        <div class="card-body" >
+                                            <div style="background-color: white"> <h1 class="card-title"><strong>
+                                                <p ><a href="{% url "ver_sprint" id_proyecto=id_proyecto id_sprint=sprint.id %}" class="link-dark"> sprint {{ sprint.numero }}</a> </p></strong></h1>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                {% endfor %}
+                            </div>
+
                         </div>
 
                     {% endif  %}
