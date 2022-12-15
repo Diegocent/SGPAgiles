@@ -2096,7 +2096,11 @@ class FinalizarSprint(View):
     def guardar_eventos_en_historial(sprint, request):
         user_stories = UserStory.objects.filter(sprint=sprint)
         for us in user_stories:
-            if us.finalizado:
+            if us.finalizado or us.aprobado_por_scrum_master:
+                if us.aprobado_por_scrum_master and not us.finalizado:
+                    done = EstadoUS.objects.get(nombre="DONE", tipoUserStory=us.tipo)
+                    us.estado = done
+                    us.save()
                 HistorialUS.objects.create(log="Sprint {} finalizado.".format(sprint.numero),
                                            fecha=date.today(),
                                            user_story_id=us.id, usuario=request.user, horas_trabajadas=0)
