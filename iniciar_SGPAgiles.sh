@@ -13,6 +13,12 @@ echo "1- Levantar el servidor."
 echo "2- Correr los tests."
 read -p 'Input: ' accion
 if [[ $accion -eq 1 ]]; then
+  echo "Elija cual iteracion del proyecto usar:"
+  echo "$(git tag -l)"
+  echo "master"
+  read -p 'Nombre de la iteracion: ' iteracion
+
+  git checkout $iteracion --force
   echo "Desea levantar el servidor de desarrollo o el de produccion?:"
 echo "1- Desarrollo."
 echo "2- Produccion."
