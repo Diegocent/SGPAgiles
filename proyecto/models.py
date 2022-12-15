@@ -380,6 +380,55 @@ class Prioridad(models.TextChoices):
 
 
 class UserStory(models.Model):
+    """
+    Clase utilizada para representar a un User Story (US)
+
+    Atributos
+    ---------
+
+    numero: int
+        Entero utilizado para generar el codigo del User Story
+    aprobado_por_scrum_master: bool
+        Booleano utilizado para saber si el US fue aprobado por el user story
+    proyecto: Proyecto
+        Proyecto al cual fue asignado el US
+    sprint: Sprint
+        Sprint al cual fue asignado el US
+    nombre: str
+    descripcion: str
+    tipo: TipoUserStory
+        Tipo del User Story
+    estado: EstadoUS
+        Estado actual del User Story. default: TO DO
+    prioridad: int
+        Prioridad del US. Calculado usando la prioridad tecnica, la de negocio y el esfuerzo anterior.
+    duracion: int
+        Cuantas horas se estima que se tardaria en terminar el US.
+    desarrollador: Usuario
+        Usuario encargado de trabajar en el US
+
+    Metodos
+    -------
+
+    calcular_prioridad()
+        Funcion utilizada para calcular la prioridad del US usando la prioridad
+        de negocio, la prioridad tecnica y el esfuerzo anterior.
+
+    codigo()
+        propiedad utilizada para generar el codigo del US concatenando el prefijo
+        de su tipo con el numero del US.
+
+    total_horas_trabajadas()
+        Propiedad utilizada para calcular las horas trabajadas del US.
+
+    obtener_ultimo_valor_de_us()
+        Funcion utilizada para obtener el ultimo numero asignado a un US de un
+        proyecto en especifico.
+
+    finalizado()
+        Funcion que devuelve un True en caso de que el estado del US sea DONE, False en caso contrario.
+
+    """
     numero = models.PositiveIntegerField(default=0)
     aprobado_por_scrum_master = models.BooleanField(default=False)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
@@ -435,6 +484,28 @@ class UserStory(models.Model):
 
 
 class HistorialUS(models.Model):
+    """
+    Funcion donde se almacena toda la actividad realizada en el US.
+
+    Atributos
+    ---------
+
+    user_story: UserStory
+        User Story al cual corresponde el historial.
+    sprint: Sprint
+        Sprint al cual esta asociado un entry del historial. (Usado para
+        saber en cual sprint se realizo un trabajo en particular)
+    log: str
+        Descripcion del trabajo realizado por el user o de manera automatica por el sistema.
+    horas_trabajadas: int
+        En caso de que el user cargue un trabajo, debe agregar cuantas horas utilizo para el trabajo.
+    fecha: Date
+        fecha del trabajo o accion realizada al US.
+    usuario: Usuario
+        Quien realizo el trabajo o la accion realizada al US.
+    archivos: File
+        Archivo cargado por el user para evidenciar el trabajo realizado
+    """
     user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE, null=True)
     log = models.CharField(max_length=1000)
@@ -454,6 +525,35 @@ class EstadoAprobacion(models.TextChoices):
 
 
 class AprobacionDeUS(models.Model):
+    """
+    Clase para solicitar la aprobacion del US.
+
+    Atributos
+    ---------
+
+    numero: int
+        Numero de la solicitud
+    user_story: UserStory
+        User Story al cual se realiza la solicitud de aprobacion
+    descripcion_del_trabajo: str
+        descripcion mas general del trabajo realizado.
+    fecha: Date
+        Fecha de cuando se realizo la solicitud
+    solicitado_por: Usuario
+        Usuario que solicito la aprobacion del US.
+    aprobado_por: Usuario
+        Usuario que aprobo el US.
+    estado: str
+        Estado de la solicitud.
+    razon_de_rechazo: str
+        Razon por la cual la solicitud fue rechazada.
+
+    Metodos
+    -------
+
+    obtener_ultimo_valor_de_solicitud()
+        Funcion para obtener el ultimo numero de solicitud de un US en especifico.
+    """
     numero = models.PositiveIntegerField(default=0)
     user_story = models.ForeignKey(UserStory, on_delete=models.CASCADE)
     descripcion_del_trabajo = models.CharField(max_length=1000)
