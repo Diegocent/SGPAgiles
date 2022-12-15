@@ -44,6 +44,25 @@ class RolSistema(models.Model):
 
 
 class RolProyecto(models.Model):
+    """
+        Clase que representa a un rol de proyecto
+
+        Atributos
+        ---------
+        nombre : str
+               El nombre del rol de proyecto
+        descripcion : str
+               El nombre del rol de proyecto
+        permiso : permisos
+            Una lista de los permisos que pertenecen al rol de proyecto
+        proyecto: Proyecto
+            el proyecto al que esta relacionado el rol de proyecto
+
+        metodos
+        -------
+        agregar_permisos()
+            la funcion agrega permisos a un rol de proyecto
+    """
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     permisos = models.ManyToManyField(Permisos)
@@ -59,6 +78,28 @@ class RolProyecto(models.Model):
 
 # Create your models here.
 class Usuario(AbstractBaseUser, PermissionsMixin):
+    """
+        Clase que representa a un usuario
+
+        Atributos
+        ---------
+        nombre : str
+           El nombre del usuario
+        email : str
+           es el email por el que se identifica al usuario
+        rolSistema: RolSistema
+            es el rol de sistema que le pertenece a un usuario
+        rolProyecto
+            es el rol de sistema que le pertenece a un usuario
+        metodos
+        -------
+        es_admin()
+            la funcion devuelve true si el usuario tiene admin como rol de sistema
+        es_scrum_master()
+            Devuelve true si el usuario tiene Scum Master como rol de proyecto
+        tiene_permisos()
+            devuelve true si el usuario tiene los permisos ya sea de sistema o de proyecto
+    """
     nombre = models.CharField(max_length=100, default="desconocido")
     username = None
     password = None
