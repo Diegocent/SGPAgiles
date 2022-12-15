@@ -71,7 +71,11 @@ Actualmente contamos con los siguientes views en Proyecto:
 
 """
 class VerProyectosView(View):
+    """
+    Vista utilizada para la pagina principal de los proyectos.
 
+    Solo se pueden ver los proyectos a cual uno pertenece
+    """
     def get(self, request):
         usuario: Usuario = request.user
         if usuario.is_authenticated: #Si el usuario esta autenticado
@@ -96,6 +100,11 @@ class VerProyectosView(View):
 
 
 class CrearProyectoView(View):
+    """
+    Vista utilizada para crear un proyecto.
+
+    Requerimientos: tener el permiso necesario
+    """
     permisos = ["Crear Proyecto"]
     form_class = FormCrearProyecto
 
@@ -121,19 +130,20 @@ class CrearProyectoView(View):
                 estado=EstadoProyecto.NO_INICIADO,
                 scrum_master=cleaned_data["scrum_master"]
             )
-            scrum = self.crearRoles(proyecto)
+            scrum = self.crearRoles(proyecto) #Crea los roles Scrum y Developer por defecto y retorna el rol scrum
 
+            #se otorga el rol scrum al usuario elegido
             usuario: Usuario = cleaned_data["scrum_master"]
             usuario.rolProyecto.add(scrum)
             usuario.save()
 
-            equipo = Equipo.objects.create(nombre="")
+            equipo = Equipo.objects.create(nombre="") #se crea un equipo por default y se le agrega al scrum master
             equipo.miembros.add(usuario)
 
             proyecto.equipo = equipo
             proyecto.save()
 
-            Notificacion.objects.create(
+            Notificacion.objects.create( #se notifica al scrum master
                 mensaje="Fuiste seleccionado para ser Scrum Master del Proyecto '{}' !".format(proyecto.nombre),
                 usuario=usuario,
                 url="/proyecto/{}".format(proyecto.id)
@@ -145,6 +155,9 @@ class CrearProyectoView(View):
 
     @staticmethod
     def crearRoles(proyecto):
+        """
+        Funcion para crear los roles Scrum Master y Developer para el nuevo proyecto.
+        """
         scrum = RolProyecto.objects.create(nombre="Scrum Master",
                                            descripcion="Scrum Master del Proyecto.",
                                            proyecto=proyecto)
@@ -216,8 +229,14 @@ class CrearProyectoView(View):
 
 
 class VerProyectoView(View):
+    """
+    Vista utilizada para ver un proyecto en especifico.
+    """
     permisos = ["Ver Proyecto"]
     def verificar_estados(self, tipos):
+        """
+        Verifica que todos los tipos del proyecto tengan estados.
+        """
         ok = True
         for tipo in tipos:
             estado = EstadoUS.objects.all().filter(tipoUserStory=tipo)
@@ -247,7 +266,7 @@ class VerProyectoView(View):
                 todos_con_estados = self.verificar_estados(tipos)
                 if equipo:
                     miembros = equipo.miembros.all()
-
+                    #si el usuario que entro a la pagina no es parte del proyecto, no puede ver el proyecto.
                     if usuario not in miembros and not usuario.es_admin() and not usuario.es_scrum_master(id_proyecto):
                         messages.warning(request, "No puedes ver este proyecto.")
                         return redirect('ver_proyectos')
@@ -276,23 +295,23 @@ class VerProyectoView(View):
                     }
 
                 if sprint is not None:
-
+                    #en caso de que exista un sprint activo
                     user_stories = sprint.obtener_user_stories_del_sprint()
                     tipos_de_user_story = p.obtener_tipos_de_user_story_del_proyecto()
 
                     tipos_dict = []
-
+                    #porcion del codigo utilizado para generar el kanban
                     for tipo in tipos_de_user_story:
                         estados_dict = []
                         uss_dict = []
                         estados = EstadoUS.objects.filter(tipoUserStory=tipo)
                         uss = user_stories.filter(tipo=tipo)
                         for estado in estados:
-                            estados_dict.append(model_to_dict(estado))
+                            estados_dict.append(model_to_dict(estado)) #por cada estado de un tipo de us, se genera un dict y se guarda para mandar al context
 
                         for us in uss:
                             us_dict = model_to_dict(us)
-                            if us.desarrollador is not None:
+                            if us.desarrollador is not None: #si no hay desarrollador se manda una cadena vacia
                                 us_dict["desarrollador"] = us.desarrollador.email
                             else:
                                 us_dict["desarrollador"] = ""
@@ -303,7 +322,7 @@ class VerProyectoView(View):
                         tipo_dict["user_stories"] = uss_dict
 
                         tipos_dict.append(tipo_dict)
-                    id_tipo_us = request.GET.get('id_tipo_us', '')
+                    id_tipo_us = request.GET.get('id_tipo_us', '') #se obtiene el tipo de us que selecciono el usuario del query parameter
                     if id_tipo_us != "":
                         try:
                             tipo = tipos_de_user_story.get(id=id_tipo_us)
@@ -322,7 +341,7 @@ class VerProyectoView(View):
                     context["id_tipo_us"] = id_tipo_us
                     context["tipo_mostrado_en_pantalla"] = tipo_mostrado_en_pantalla
                     context["id_estado_done"] = id_estado_done
-
+                #seccion del codigo utilizado para generar el tooltip que ayude al scrum master a iniciar un proyecto
                 context["puede_finalizar_proyecto"] = not p.tiene_user_stories_sin_terminar() and not Sprint.hay_otros_sprints_en_proceso(id_proyecto=id_proyecto) and p.estado == EstadoProyecto.EN_PROCESO
                 context[
                     "puede_iniciar_un_proyecto"] = p.tiene_user_stories() and p.tiene_un_equipo() and p.estado == EstadoProyecto.NO_INICIADO
@@ -346,6 +365,10 @@ class VerProyectoView(View):
 
 
 class CrearEquipoView(View):
+    """
+    Vista utilizada para ver crear un equipo
+    """
+
     permisos = ["Crear Equipo"]
     form_class = FormCrearEquipo
 
@@ -368,7 +391,7 @@ class CrearEquipoView(View):
             equipo = Equipo.objects.create(
                 nombre=cleaned_data["nombre"],
             )
-            for miembro in cleaned_data["miembros"]:
+            for miembro in cleaned_data["miembros"]: #a cada miembro que no sea el scrum se le asigna el rol developer
                 if len(miembro.rolProyecto.all().filter(proyecto_id=id_proyecto))==0:
                     miembro.rolProyecto.add(RolProyecto.objects.get(nombre="Developer", proyecto_id=id_proyecto))
                     miembro.save()
@@ -383,6 +406,9 @@ class CrearEquipoView(View):
 
 
 class IniciarProyectoView(View):
+    """
+    Vista utilizada para iniciar un proyecto
+    """
     form_class = FormIniciarProyecto
     permisos = ["Iniciar Proyecto"]
 
@@ -413,6 +439,9 @@ class IniciarProyectoView(View):
 
 
 class CrearRolProyectoView(View):
+    """
+    Vista utilizada para crear un rol para el proyecto
+    """
     form_class = FormRolProyecto
     permisos = ["Crear RolProyecto"]
 
@@ -453,6 +482,9 @@ class CrearRolProyectoView(View):
 
 
 class VerRolesProyectoView(View):
+    """
+    Vista utilizada para ver todos los roles de un proyecto en especifico.
+    """
     permisos = ["Ver RolProyecto"]
 
     def get(self, request, id_proyecto):
@@ -474,6 +506,9 @@ class VerRolesProyectoView(View):
 
 
 class VerTiposdeUSView(View):
+    """
+    Vista utilizada para ver todos los tipos de US de un proyecto en especifico.
+    """
     permisos = ["Ver TipoUserStory"]
 
     def get(self, request, id_proyecto):
@@ -495,6 +530,9 @@ class VerTiposdeUSView(View):
 
 
 class CrearTiposUSView(View):
+    """
+    Vista utilizada para crear un tipo de US.
+    """
     form_class = FormTiposUS
     permisos = ["Crear TipoUserStory"]
 
@@ -521,7 +559,7 @@ class CrearTiposUSView(View):
             array_de_tipos = TipoUserStory.objects.all().filter(nombre=tipo_del_post['nombre'], proyecto_id=id_proyecto) | TipoUserStory.objects. \
                 all().filter(nombre=tipo_del_post['prefijo'], proyecto_id=id_proyecto)
 
-            if len(array_de_tipos) == 0:
+            if len(array_de_tipos) == 0:#se crean los estados TO DO, DOING y DONE por defecto para cada TIPO de US
                 tipo = TipoUserStory.objects.create(nombre=tipo_del_post['nombre'], prefijo=tipo_del_post['prefijo']
                                                     , proyecto_id=id_proyecto)
                 orden = OrdenEstado.objects.create(orden=1)
@@ -538,6 +576,12 @@ class CrearTiposUSView(View):
 
 
 class DetalleTiposUSView(View):
+    """
+    @marcelomolas en ig
+    @hugomolas en twitter
+
+    Vista utilizada para ver un tipo de US en detalle.
+    """
     permisos = ["Ver TipoUserStory"]
 
     def get(self, request, id_proyecto, id_tipous):
@@ -561,6 +605,9 @@ class DetalleTiposUSView(View):
 
 
 class CrearEstadosUSView(View):
+    """
+    Vista utilizada para crear estados de un US. Los estados son asignados a un Tipo de US.
+    """
     form_class = FormEstadoUS
     permisos = ["Crear EstadoUS"]
 
@@ -602,6 +649,10 @@ class CrearEstadosUSView(View):
 
 
 class CrearUSView(View):
+    """
+    Vista utilizada para crear un User Story
+    """
+
     form_class = FormUS
     permisos = ["Crear UserStory"]
 
@@ -649,6 +700,9 @@ class CrearUSView(View):
 
 
 class VerUSView(View):
+    """
+    Vista utilizada para ver un US en detalle
+    """
     permisos = ["Ver UserStory"]
 
     def get(self, request, id_proyecto):
@@ -669,6 +723,9 @@ class VerUSView(View):
 
 
 class ActualizarUSView(View):
+    """
+    Vista utilizada para actualizar/editar un US
+    """
     form_class = FormUS
     permisos = ["Editar UserStory"]
 
@@ -723,6 +780,9 @@ class ActualizarUSView(View):
 
 
 class BorrarUSView(View):
+    """
+    Vista utilizada para borrar un US.
+    """
     form_class = FormUS
     permisos = ["Borrar UserStory"]
 
