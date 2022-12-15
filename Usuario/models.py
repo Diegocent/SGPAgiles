@@ -5,6 +5,16 @@ from .managers import CustomUserManager
 
 
 class Permisos(models.Model):
+    """
+    Clase que representa a un permiso
+
+    Atributos
+    ---------
+    nombre : str
+           El nombre del permiso
+    descripcion : str
+           El nombre del permiso
+    """
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
 
@@ -13,6 +23,18 @@ class Permisos(models.Model):
 
 
 class RolSistema(models.Model):
+    """
+    Clase que representa a un rol de sistema
+
+    Atributos
+    ---------
+    nombre : str
+           El nombre del rol de sistema
+    descripcion : str
+           El nombre del rol de sistema
+    permiso : permisos
+        Una lista de los permisos que pertenecen al rol
+    """
     nombre = models.CharField(max_length=100)
     descripcion = models.CharField(max_length=100)
     permisos = models.ManyToManyField(Permisos)
