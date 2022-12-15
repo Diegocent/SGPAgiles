@@ -139,17 +139,40 @@ class Sprint(models.Model):
 
        Metodos
        -------
-       obtener_tipos_de_user_story_del_proyecto()
-           Devuelve los tipos de User Stories que estan asociados al proyecto
+       obtener_ultimo_valor_de_sprint()
+           Devuelve el ultimo numero asignado a un sprint de un proyecto en especifico (no es el id del objeto)
 
-       tiene_user_stories_sin_terminar()
-           Devuelve True si el proyecto tiene user stories sin terminar, False en caso contrario
+       tiene_miembros()
+           Devuelve True si el sprint tiene miembros asignados, False en caso contrario
+
+       capacidad() - property
+           Calcula la capacidad del sprint haciendo la suma de la capacidad individual de cada miembro del sprint
+
+       calcular_capacidad_usada()
+           Calcula la capacidad usada del sprint haciendo la suma de la duracion individual
+           de cada US del sprint y lo guarda en disco.
 
        tiene_user_stories()
-           Devuelve True si el proyecto tiene user stories, False en caso contrario
+            Devuelve True si el proyecto tiene user stories, False en caso contrario
 
-       tiene_un_equipo()
-           Devuelve True si el proyecto tiene mas de un miembro en el equipo, False en caso contrario
+        hay_otros_sprints_en_proceso()
+            Devuelve True si el proyecto tiene otros sprints en proceso, False en caso contrario
+
+        hay_otros_sprints_en_proceso()
+            Devuelve True si el proyecto tiene otros sprints en proceso, False en caso contrario
+
+        obtener_sprint_en_proceso()
+            Devuelve el sprint que esta en proceso actualmente
+
+        obtener_user_stories_del_sprint()
+            Devuelve los user stories asignados al sprint
+
+        hay_otros_sprints_en_planificacion()
+           Devuelve True si el proyecto tiene otros sprints en planificacion, False en caso contrario
+
+        calcular_fecha_fin_estimada()
+            Calcula la fecha fin estimada del sprint. Usado para la generacion del burndown chart.
+
 
        """
     numero = models.IntegerField()
@@ -244,9 +267,25 @@ class Sprint(models.Model):
             fecha_fin += timedelta(days=1)
 
         self.fecha_fin_estimada = fecha_fin
+        self.save()
 
 
 class MiembrosSprint(models.Model):
+    """
+   Una clase utilizada para representar a un Sprint
+
+   Atributos
+   ---------
+   sprint : Sprint
+       El Sprint al que esta asociada el miembro
+   miembro : Usuario
+       El usuario asignado al sprint
+   carga_horaria : int
+       Cantidad de horas por dia que el miembro puede trabajar
+    capacidad : int
+       Carga horaria al miembro * duracion del sprint
+
+    """
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
     miembro = models.ForeignKey(Usuario, on_delete=models.CASCADE)
     carga_horaria = models.PositiveIntegerField() #cantidad de horas por dia que el miembro puede trabajar
@@ -257,6 +296,19 @@ class MiembrosSprint(models.Model):
 
 
 class TipoUserStory(models.Model):
+    """
+    Clase utilizada para representar a un Tipo de User Story
+
+    Atributos
+    ---------
+
+    nombre: str
+        El nombre del Tipo de User Story.
+    prefijo: str
+        El prefijo del Tipo de User Story. Se agrega al codigo del User Story
+    proyecto: Proyecto
+        El proyecto del Tipo de User Story.
+    """
     nombre = models.CharField(max_length=100)
     prefijo = models.CharField(max_length=5)
     proyecto = models.ForeignKey(Proyecto, on_delete=models.CASCADE)
@@ -266,6 +318,22 @@ class TipoUserStory(models.Model):
 
 
 class OrdenEstado(models.Model):
+    """
+    Una clase para el orden de un estado de tipo de user story
+
+    Atributos
+    ---------
+
+    orden: int
+        representacion de la orden en un entero
+
+    Metodos
+    -------
+    obtener_ultimo_valor_de_sprint()
+        Devuelve el ultimo numero asignado a un orden ya existente (no es el id del objeto).
+
+
+    """
     orden = models.PositiveIntegerField()
 
     @staticmethod
@@ -280,6 +348,20 @@ class OrdenEstado(models.Model):
 
 
 class EstadoUS(models.Model):
+    """
+    Una clase utilizada para representar el estado de un User Story. Tambien usado para el nombre
+    de las columnas del Kanban
+
+    Atributos
+    ---------
+    nombre: str
+        Nombre del estado
+    orden: Orden
+        Orden asociado del estado. (utilizado para organizar el Kanban).
+    tipoUserStory: TipoUserStory
+        El tipo del User Story al cual pertenece el estado.
+
+    """
     nombre = models.CharField(max_length=100)
     orden = models.ForeignKey(OrdenEstado, on_delete=models.CASCADE, related_name="orden_del_estado")
     tipoUserStory = models.ForeignKey(TipoUserStory, on_delete=models.CASCADE)
