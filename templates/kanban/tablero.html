@@ -48,6 +48,37 @@
             color: black;
         }
 
+        #checkmark {
+            display:inline-block;
+            width: 22px;
+            height:22px;
+            background: #17df32 ;
+            border-radius:50%;
+            -ms-transform: rotate(45deg); /* IE 9 */
+            -webkit-transform: rotate(45deg); /* Chrome, Safari, Opera */
+            transform: rotate(45deg);
+        }
+
+        #checkmark:before{
+            content:"";
+            position: absolute;
+            width:3px;
+            height:9px;
+            background-color:#fff;
+            left:11px;
+            top:6px;
+        }
+
+        #checkmark:after{
+            content:"";
+            position: absolute;
+            width:3px;
+            height:3px;
+            background-color:#fff;
+            left:8px;
+            top:12px;
+        }
+
     </style>
 
     {{ tipos_dict|json_script:"tipos_dict" }}
@@ -216,7 +247,10 @@
         }
 
         function html_del_user_story(us_item){
-            return `<div style="color:black">${us_item.nombre}</div><br><div style="color:black;text-overflow: ellipsis;overflow: hidden">Dev: ${us_item.desarrollador}</div>`
+            if (us_item.aprobado_por_scrum_master)
+                return `<div style="color:black">${us_item.nombre}        <span id="checkmark" title="Aprobado por Scrum Master" ></span></div> <br><div style="color:black;text-overflow: ellipsis;overflow: hidden">Dev: ${us_item.desarrollador}</div>`
+            else
+                return `<div style="color:black">${us_item.nombre}</div><br><div style="color:black;text-overflow: ellipsis;overflow: hidden">Dev: ${us_item.desarrollador}</div>`
         }
 
 
