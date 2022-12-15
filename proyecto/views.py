@@ -1750,11 +1750,13 @@ class SolicitarAprobacionDeUS(View):
             tiene_permisos = user.tiene_permisos(permisos=self.permisos, id_proyecto=id_proyecto)
             if tiene_permisos:
                 try:
+                    proyecto = Proyecto.objects.get(id=id_proyecto)
+                    proyecto_finalizado = proyecto.estado == "TERMINADO"
                     us = UserStory.objects.get(id=id_us, proyecto_id=id_proyecto)
                 except ObjectDoesNotExist:
                     messages.error(request, "No se encuentra el US con esas caracteristicas")
                     return redirect("detalle_proyecto", id_proyecto)
-                if us.total_horas_trabajadas != 0 and us.desarrollador == request.user:
+                if us.total_horas_trabajadas != 0 and us.desarrollador == request.user and not proyecto_finalizado:
                     form = self.form_class()
                     return render(request, 'US/solicitar_aprobacion.html', {'form': form})
                 elif us.total_horas_trabajadas == 0:
@@ -1765,6 +1767,10 @@ class SolicitarAprobacionDeUS(View):
                     messages.error(request,
                                    "No se puede solicitar la aprobacion de un US si no sos su desarrollador!")
                     return redirect("detalle_US", id_proyecto, id_us)
+                elif proyecto_finalizado:
+                    messages.error(request,
+                                   "No se puede solicitar la aprobacion de un US si el proyecto esta finalizado")
+                    return redirect("detalle_proyecto", id_proyecto)
             elif not tiene_permisos:
                 return render(request, 'herramientas/forbidden.html', {'permisos': self.permisos})
         elif not user.is_authenticated:

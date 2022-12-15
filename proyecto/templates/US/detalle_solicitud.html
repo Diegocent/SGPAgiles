@@ -29,7 +29,7 @@
     <h3>User story: {{ us.codigo }} - {{ us.nombre }}</h3>
     <h3>Solicitud Nº {{ solicitud.numero }}</h3>
     <h4>Estado: {{ solicitud.get_estado_display }}</h4>
-    {% if puede_aprobar_y_rechazar %}
+    {% if puede_aprobar_y_rechazar and us.proyecto.estado != "TERMINADO" %}
         <a href="{% url "aprobar_solicitud" id_proyecto=id_proyecto id_us=us.id id_solicitud=solicitud.id%}"><button type="button" class="btn btn-lg btn-success fw-bold border-opacity-75 bg-black">Aprobar</button></a>
         <a href="{% url "rechazar_solicitud" id_proyecto=id_proyecto id_us=us.id id_solicitud=solicitud.id%}"><button type="button" class="btn btn-lg btn-danger fw-bold border-opacity-75 bg-black">Rechazar</button></a>
 
