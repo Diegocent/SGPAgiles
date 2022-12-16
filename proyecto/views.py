@@ -2238,7 +2238,7 @@ class CancelarSprint(View):
 
 
 class VerSolicitudesScrumMasterView(View):
-    permisos = ["Editar Sprint"]  # Funcion para iniciar un Sprint
+    permisos = ["Ver Proyecto"]  # Funcion para iniciar un Sprint
 
     def get(self, request, id_proyecto):
         user: Usuario = request.user
