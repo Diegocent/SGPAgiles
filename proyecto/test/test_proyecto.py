@@ -357,7 +357,7 @@ def test_cerrar_sprint_con_us_sin_aprobar():
     assert len(historial) == 1, "ERROR: ocurrio un error al cerrar un sprint"
 
 @pytest.mark.django_db
-def test_cerrar_sprint_con_us_sin_aprobar():
+def test_cerrar_sprint_con_us_sin_terminar():
     proyecto = Proyecto.objects.create(nombre="ver_pagina_admin",
                                        descripcion="Permiso para ver la pagina del administrador",
                                        estado=EstadoProyecto.NO_INICIADO,
