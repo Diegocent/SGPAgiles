@@ -31,13 +31,13 @@ Actualmente contamos con los siguientes views:</p>
 </ol>
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span>
+      <div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">django.shortcuts</span> <span class="kn">import</span> <span class="n">render</span><span class="p">,</span> <span class="n">redirect</span>
 <span class="kn">from</span> <span class="nn">django.contrib.auth.mixins</span> <span class="kn">import</span> <span class="n">LoginRequiredMixin</span>
 <span class="kn">from</span> <span class="nn">django.views</span> <span class="kn">import</span> <span class="n">View</span>
 <span class="kn">from</span> <span class="nn">django.contrib</span> <span class="kn">import</span> <span class="n">messages</span>
-<span class="kn">from</span> <span class="nn">django.http</span> <span class="kn">import</span> <span class="n">HttpResponseRedirect</span>
 <span class="kn">from</span> <span class="nn">.forms</span> <span class="kn">import</span> <span class="n">FormRolSistema</span><span class="p">,</span> <span class="n">FormCrearPermisos</span><span class="p">,</span> <span class="n">FormAsignarRol</span>
-<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">RolProyecto</span><span class="p">,</span> <span class="n">RolSistema</span><span class="p">,</span> <span class="n">Permisos</span><span class="p">,</span> <span class="n">Usuario</span></pre></div>
+<span class="kn">from</span> <span class="nn">.models</span> <span class="kn">import</span> <span class="n">RolProyecto</span><span class="p">,</span> <span class="n">RolSistema</span><span class="p">,</span> <span class="n">Permisos</span><span class="p">,</span> <span class="n">Usuario</span>
+<span class="kn">from</span> <span class="nn">django.core.exceptions</span> <span class="kn">import</span> <span class="n">ObjectDoesNotExist</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -61,8 +61,9 @@ Actualmente contamos con los siguientes views:</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearPermisoView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
-    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormCrearPermisos</span></pre></div>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearPermisoView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormCrearPermisos</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Crear Permiso&quot;</span><span class="p">]</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -75,8 +76,16 @@ Actualmente contamos con los siguientes views:</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/crear_permisos.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/crear_permisos.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -97,7 +106,7 @@ Actualmente contamos con los siguientes views:</p>
                 <span class="n">descripcion</span><span class="o">=</span><span class="n">cleaned_data</span><span class="p">[</span><span class="s2">&quot;descripcion&quot;</span><span class="p">],</span>
             <span class="p">)</span>
             <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Creado exitosamente!&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;crear_permiso&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;ver_permisos&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/crear_permisos.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
     </div>
   </div>
@@ -110,8 +119,9 @@ Actualmente contamos con los siguientes views:</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearRolSistemaView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
-    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormRolSistema</span></pre></div>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">CrearRolSistemaView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormRolSistema</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Crear RolSistema&quot;</span><span class="p">]</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -124,8 +134,16 @@ Actualmente contamos con los siguientes views:</p>
     </div>
     <div class='code'>
       <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/crear_roles.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/crear_roles.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -150,9 +168,9 @@ Actualmente contamos con los siguientes views:</p>
                 <span class="n">rol</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
                 <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Creado exitosamente!&#39;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="o">=</span><span class="s2">&quot;Ya existe un rol con ese nombre&quot;</span><span class="p">)</span>
+                <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;Ya existe un rol con ese nombre&quot;</span><span class="p">)</span>
 
-            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;crear_roles&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;ver_roles_sistema&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/crear_roles.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
     </div>
   </div>
@@ -165,8 +183,9 @@ Actualmente contamos con los siguientes views:</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">AsignarRolSistemaView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span>
-    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormAsignarRol</span></pre></div>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">EditarRolSistemaView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormRolSistema</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Crear RolSistema&quot;</span><span class="p">]</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -178,9 +197,22 @@ Actualmente contamos con los siguientes views:</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/asignar_rol.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_rol</span><span class="p">):</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">rol</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_rol</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ObjectDoesNotExist</span><span class="p">:</span>
+                    <span class="n">messages</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s2">&quot;No se encuentra al rol con esas caracteristicas&quot;</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;ver_config&quot;</span><span class="p">)</span>
+                <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">rol</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/crear_roles.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -188,6 +220,60 @@ Actualmente contamos con los siguientes views:</p>
     <div class='docs'>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-10'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">post</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">id_rol</span><span class="p">):</span>
+        <span class="n">rol</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">id_rol</span><span class="p">)</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="n">rol</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">form</span><span class="o">.</span><span class="n">is_valid</span><span class="p">():</span>
+            <span class="n">form</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;ver_roles_sistema&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/crear_roles.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-11'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-11'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">AsignarRolSistemaView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">form_class</span> <span class="o">=</span> <span class="n">FormAsignarRol</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Asignar RolSistema&quot;</span><span class="p">]</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-12'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-12'>#</a>
+      </div>
+      
+    </div>
+    <div class='code'>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="n">form</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">form_class</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/asignar_rol.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span></pre></div>
+    </div>
+  </div>
+  <div class='clearall'></div>
+  <div class='section' id='section-13'>
+    <div class='docs'>
+      <div class='octowrap'>
+        <a class='octothorpe' href='#section-13'>#</a>
       </div>
       
     </div>
@@ -203,54 +289,8 @@ Actualmente contamos con los siguientes views:</p>
             <span class="n">usuario</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
             <span class="n">messages</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;Creado exitosamente!&#39;</span><span class="p">)</span>
 
-            <span class="k">return</span> <span class="n">HttpResponseRedirect</span><span class="p">(</span><span class="s1">&#39;asignar_rol&#39;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;usuarios_con_roles&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/asignar_rol.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;form&#39;</span><span class="p">:</span> <span class="n">form</span><span class="p">})</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-11'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-11'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerConfigView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-12'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-12'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
-        <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
-        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
-            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;admin&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;admin&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;ver_config.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-13'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-13'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerRolesSistemaView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -262,7 +302,7 @@ Actualmente contamos con los siguientes views:</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerConfigView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -271,15 +311,23 @@ Actualmente contamos con los siguientes views:</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-15'>#</a>
       </div>
-      <p>usuario: Usuario = request.user
-if usuario.es_admin() or usuario.es_scrum_master():</p>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="n">roles</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;crear_rol&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                <span class="s1">&#39;roles&#39;</span><span class="p">:</span> <span class="n">roles</span>
-        <span class="p">}</span></pre></div>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s1">&#39;admin&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;admin&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;ver_config.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -288,14 +336,11 @@ if usuario.es_admin() or usuario.es_scrum_master():</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-16'>#</a>
       </div>
-      <p>else:
-  context = {
-     &lsquo;crear_rol&rsquo;: False,
-    &ldquo;roles&rdquo;: []
-}</p>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/ver_roles_sistema.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerRolesSistemaView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ver RolSistema&quot;</span><span class="p">]</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -307,7 +352,21 @@ if usuario.es_admin() or usuario.es_scrum_master():</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerPermisosView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="n">roles</span> <span class="o">=</span> <span class="n">RolSistema</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;crear_rol&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="s1">&#39;roles&#39;</span><span class="p">:</span> <span class="n">roles</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/ver_roles_sistema.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                 <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -319,7 +378,8 @@ if usuario.es_admin() or usuario.es_scrum_master():</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span></pre></div>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerPermisosView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ver Permiso&quot;</span><span class="p">]</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -328,15 +388,24 @@ if usuario.es_admin() or usuario.es_scrum_master():</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-19'>#</a>
       </div>
-      <p>usuario: Usuario = request.user
-if usuario.es_admin() or usuario.es_scrum_master():</p>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="n">permisos</span> <span class="o">=</span> <span class="n">Permisos</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
-        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;crear_permiso&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
-                <span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="n">permisos</span>
-        <span class="p">}</span></pre></div>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">user</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="n">tiene_permisos</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">tiene_permisos</span><span class="p">(</span><span class="n">permisos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="n">permisos</span> <span class="o">=</span> <span class="n">Permisos</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;crear_permiso&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                        <span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="n">permisos</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/ver_permisos.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">tiene_permisos</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">user</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -345,14 +414,11 @@ if usuario.es_admin() or usuario.es_scrum_master():</p>
       <div class='octowrap'>
         <a class='octothorpe' href='#section-20'>#</a>
       </div>
-      <p>else:
-  context = {
-     &lsquo;crear_rol&rsquo;: False,
-    &ldquo;roles&rdquo;: []
-}</p>
+      
     </div>
     <div class='code'>
-      <div class="highlight"><pre>        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/ver_permisos.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span></pre></div>
+      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerUsuariosConRolesView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    <span class="n">permisos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Ser Administrador&quot;</span><span class="p">]</span></pre></div>
     </div>
   </div>
   <div class='clearall'></div>
@@ -364,52 +430,20 @@ if usuario.es_admin() or usuario.es_scrum_master():</p>
       
     </div>
     <div class='code'>
-      <div class="highlight"><pre><span class="k">class</span> <span class="nc">VerUsuariosConRolesView</span><span class="p">(</span><span class="n">View</span><span class="p">,</span> <span class="n">LoginRequiredMixin</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-22'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-22'>#</a>
-      </div>
-      
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-23'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-23'>#</a>
-      </div>
-      <p>usuario: Usuario = request.user
-if usuario.es_admin() or usuario.es_scrum_master():</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>        <span class="n">usuarios</span> <span class="o">=</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+      <div class="highlight"><pre>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+        <span class="n">usuario</span><span class="p">:</span> <span class="n">Usuario</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">user</span>
+        <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">usuario</span><span class="o">.</span><span class="n">es_admin</span><span class="p">():</span>
+                <span class="n">usuarios</span> <span class="o">=</span> <span class="n">Usuario</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 
-        <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s1">&#39;usuarios&#39;</span><span class="p">:</span> <span class="n">usuarios</span>
-        <span class="p">}</span></pre></div>
-    </div>
-  </div>
-  <div class='clearall'></div>
-  <div class='section' id='section-24'>
-    <div class='docs'>
-      <div class='octowrap'>
-        <a class='octothorpe' href='#section-24'>#</a>
-      </div>
-      <p>else:
-  context = {
-     &lsquo;crear_rol&rsquo;: False,
-    &ldquo;roles&rdquo;: []
-}</p>
-    </div>
-    <div class='code'>
-      <div class="highlight"><pre>        <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/ver_usuarios_con_roles.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+                <span class="n">context</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s1">&#39;usuarios&#39;</span><span class="p">:</span> <span class="n">usuarios</span>
+                <span class="p">}</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;roles/ver_usuarios_con_roles.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">render</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="s1">&#39;herramientas/forbidden.html&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;permisos&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">permisos</span><span class="p">})</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">usuario</span><span class="o">.</span><span class="n">is_authenticated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s2">&quot;home&quot;</span><span class="p">)</span>
 
 </pre></div>
     </div>

@@ -270,3 +270,118 @@ def test_asignar_dev_a_us():
                                )
     historial = HistorialUS.objects.all()
     assert len(historial)==1, "ERROR: no se pudo asignar dev a user story"
+
+@pytest.mark.django_db
+def test_cerrar_proyecto():
+        proyecto = Proyecto.objects.create(nombre="ver_pagina_admin",
+                                           descripcion="Permiso para ver la pagina del administrador",
+                                           estado=EstadoProyecto.NO_INICIADO,
+                                           fecha_fin_estimada=datetime(year=2023, month=9, day=12, hour=12, minute=12,
+                                                                       tzinfo=pytz.timezone("America/Asuncion")),
+                                           fecha_inicio=datetime(year=2022, month=9, day=12, hour=12, minute=12,
+                                                                 tzinfo=pytz.timezone("America/Asuncion")),
+                                           )
+
+        tipo = TipoUserStory.objects.create(nombre="test1", prefijo="TEST", proyecto=proyecto)
+        us = UserStory.objects.create(nombre="TEST-1", descripcion="TEST", tipo=tipo, proyecto=proyecto,
+                                      prioridad_de_negocio=1, prioridad_tecnica=1, esfuerzo_anterior=0, duracion=10)
+
+        usuario = Usuario.objects.create(email='a@a.a')
+
+        dev: Usuario = usuario
+        us.desarrollador = dev
+        us.save()
+        historial_1 = HistorialUS.objects.create(log="detalle", user_story=us,
+                                                 horas_trabajadas=5,
+                                                 fecha=date.today(), usuario=usuario
+                                                 )
+        historial = HistorialUS.objects.all()
+        assert len(historial) == 1, "ERROR: no se pudo asignar dev a user story"
+
+@pytest.mark.django_db
+def test_cerrar_sprint():
+    proyecto = Proyecto.objects.create(nombre="ver_pagina_admin",
+                                       descripcion="Permiso para ver la pagina del administrador",
+                                       estado=EstadoProyecto.NO_INICIADO,
+                                       fecha_fin_estimada=datetime(year=2023, month=9, day=12, hour=12,
+                                                                   minute=12,
+                                                                   tzinfo=pytz.timezone("America/Asuncion")),
+                                       fecha_inicio=datetime(year=2022, month=9, day=12, hour=12, minute=12,
+                                                             tzinfo=pytz.timezone("America/Asuncion")),
+                                       )
+
+    tipo = TipoUserStory.objects.create(nombre="test1", prefijo="TEST", proyecto=proyecto)
+    us = UserStory.objects.create(nombre="TEST-1", descripcion="TEST", tipo=tipo, proyecto=proyecto,
+                                  prioridad_de_negocio=1, prioridad_tecnica=1, esfuerzo_anterior=0, duracion=10)
+
+    usuario = Usuario.objects.create(email='a@a.a')
+
+    dev: Usuario = usuario
+    us.desarrollador = dev
+    us.save()
+    historial_1 = HistorialUS.objects.create(log="detalle", user_story=us,
+                                             horas_trabajadas=5,
+                                             fecha=date.today(), usuario=usuario
+                                             )
+    historial = HistorialUS.objects.all()
+    assert len(historial) == 1, "ERROR: ocurrio un error al cerrar un sprint"
+
+@pytest.mark.django_db
+def test_cerrar_sprint_con_us_sin_aprobar():
+    proyecto = Proyecto.objects.create(nombre="ver_pagina_admin",
+                                       descripcion="Permiso para ver la pagina del administrador",
+                                       estado=EstadoProyecto.NO_INICIADO,
+                                       fecha_fin_estimada=datetime(year=2023, month=9, day=12, hour=12,
+                                                                   minute=12,
+                                                                   tzinfo=pytz.timezone(
+                                                                       "America/Asuncion")),
+                                       fecha_inicio=datetime(year=2022, month=9, day=12, hour=12, minute=12,
+                                                             tzinfo=pytz.timezone("America/Asuncion")),
+                                       )
+
+    tipo = TipoUserStory.objects.create(nombre="test1", prefijo="TEST", proyecto=proyecto)
+    us = UserStory.objects.create(nombre="TEST-1", descripcion="TEST", tipo=tipo, proyecto=proyecto,
+                                  prioridad_de_negocio=1, prioridad_tecnica=1, esfuerzo_anterior=0,
+                                  duracion=10)
+
+    usuario = Usuario.objects.create(email='a@a.a')
+
+    dev: Usuario = usuario
+    us.desarrollador = dev
+    us.save()
+    historial_1 = HistorialUS.objects.create(log="detalle", user_story=us,
+                                             horas_trabajadas=5,
+                                             fecha=date.today(), usuario=usuario
+                                             )
+    historial = HistorialUS.objects.all()
+    assert len(historial) == 1, "ERROR: ocurrio un error al cerrar un sprint"
+
+@pytest.mark.django_db
+def test_cerrar_sprint_con_us_sin_aprobar():
+    proyecto = Proyecto.objects.create(nombre="ver_pagina_admin",
+                                       descripcion="Permiso para ver la pagina del administrador",
+                                       estado=EstadoProyecto.NO_INICIADO,
+                                       fecha_fin_estimada=datetime(year=2023, month=9, day=12, hour=12,
+                                                                   minute=12,
+                                                                   tzinfo=pytz.timezone(
+                                                                       "America/Asuncion")),
+                                       fecha_inicio=datetime(year=2022, month=9, day=12, hour=12, minute=12,
+                                                             tzinfo=pytz.timezone("America/Asuncion")),
+                                       )
+
+    tipo = TipoUserStory.objects.create(nombre="test1", prefijo="TEST", proyecto=proyecto)
+    us = UserStory.objects.create(nombre="TEST-1", descripcion="TEST", tipo=tipo, proyecto=proyecto,
+                                  prioridad_de_negocio=1, prioridad_tecnica=1, esfuerzo_anterior=0,
+                                  duracion=10)
+
+    usuario = Usuario.objects.create(email='a@a.a')
+
+    dev: Usuario = usuario
+    us.desarrollador = dev
+    us.save()
+    historial_1 = HistorialUS.objects.create(log="detalle", user_story=us,
+                                             horas_trabajadas=5,
+                                             fecha=date.today(), usuario=usuario
+                                             )
+    historial = HistorialUS.objects.all()
+    assert len(historial) == 1, "ERROR: ocurrio un error al cerrar un sprint"
